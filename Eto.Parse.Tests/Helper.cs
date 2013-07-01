@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Eto.Parse.Tests
 {
@@ -21,6 +22,18 @@ namespace Eto.Parse.Tests
 				var method = type.GetMethod(methodName);
 				return (T)method.Invoke(null, null);
 			}
+		}
+
+		public static void TestSpeed(Parser parser, string input, int iterations)
+		{
+			var sw = new Stopwatch();
+			sw.Start();
+			for (int i = 0; i < iterations; i++)
+			{
+				parser.Match(input);
+			}
+			sw.Stop();
+			Console.WriteLine("{0} seconds for {1} iterations", sw.Elapsed.TotalSeconds, iterations);
 		}
 	}
 }

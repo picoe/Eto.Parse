@@ -1,12 +1,15 @@
 using System;
 using NUnit.Framework;
 using Eto.Parse;
+using System.Diagnostics;
 
 namespace Eto.Parse.Tests
 {
 	[TestFixture]
 	public class BnfTests
 	{
+		const int speedIterations = 500;
+
 		const string address = @"Joe Smith
 123 Elm Street
 Vancouver, BC V5V5V5";
@@ -39,6 +42,21 @@ Vancouver, BC V5V5V5";
 			var bnfParser = new BnfParser();
 			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
 			TestAddress(addressParser);
+		}
+
+		[Test]
+		public void BnfParsingSpeed()
+		{
+			var bnfParser = new BnfParser();
+			Helper.TestSpeed(bnfParser, postalAddressBnf, speedIterations);
+		}
+
+		[Test]
+		public void AddressParsingSpeed()
+		{
+			var bnfParser = new BnfParser();
+			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
+			Helper.TestSpeed(addressParser, address, speedIterations);
 		}
 
 		[Test]
