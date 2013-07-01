@@ -28,7 +28,7 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (!args.Push(this))
-				return args.NoMatch;
+				return null;
 			if (Items.Count == 0)
 				throw new InvalidOperationException("There are no items in this sequence");
 			ParseMatch match = null;
@@ -36,10 +36,10 @@ namespace Eto.Parse.Parsers
 			{
 				var parser = Items[i];
 				var childMatch = parser.Parse(args);
-				if (!childMatch.Success)
+				if (childMatch == null)
 				{
 					args.Pop(false);
-					return args.NoMatch;
+					return null;
 				}
 				
 				match = ParseMatch.Merge(match, childMatch);

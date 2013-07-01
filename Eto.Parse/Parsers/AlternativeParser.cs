@@ -30,17 +30,17 @@ namespace Eto.Parse.Parsers
 			for (int i = 0; i < Items.Count; i++)
 			{
 				if (!args.Push(this))
-					return args.NoMatch;
+					return null;
 				var parser = Items[i];
 				var match = parser.Parse(args);
-				if (match.Success)
+				if (match != null)
 				{
 					args.Pop(true);
 					return match;
 				}
 				args.Pop(false);
 			}
-			return args.NoMatch;
+			return null;
 		}
 
 		public override Parser Clone()

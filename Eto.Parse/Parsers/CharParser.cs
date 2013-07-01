@@ -27,18 +27,18 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			if (scanner.IsEnd || Tester == null)
-				return args.NoMatch;
+				return null;
 	
 			long offset = scanner.Offset;
 			
 			if (!scanner.Read())
-				return args.NoMatch;
+				return null;
 
 			bool matched = Tester.Test(scanner.Current);
 			if (matched == Negative)
 			{
 				scanner.Offset = offset;
-				return args.NoMatch;
+				return null;
 			}
 			
 			return args.Match(scanner.Offset, 1);

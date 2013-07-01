@@ -16,12 +16,12 @@ namespace Eto.Parse.Parsers
 		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this)) return args.NoMatch;
+			if (!args.Push(this)) return null;
 			
 			var match = Inner.Parse(args);
 			args.Pop(true);
-			if (match.Success)
-				return args.NoMatch;
+			if (match != null)
+				return null;
 			else
 				return args.EmptyMatch;
 		}

@@ -37,8 +37,11 @@ namespace Eto.Parse.Parsers
 			long offset = scanner.Offset;
 			for (int i = 0; i < val.Length; i++)
 			{
-				if (!scanner.Read() || scanner.Current != val[i]) 
-					return scanner.NoMatch(offset);
+				if (!scanner.Read() || scanner.Current != val[i])
+				{
+					scanner.Offset = offset;
+					return null;
+				}
 			}
 			return args.Match(offset + 1, val.Length);
 		}

@@ -20,7 +20,7 @@ namespace Eto.Parse.Parsers
 			if (args.Scanner.Offset <= 0)
 				return args.EmptyMatch;
 			else
-				return args.NoMatch;
+				return null;
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)

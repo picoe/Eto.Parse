@@ -58,10 +58,10 @@ namespace Eto.Parse
 		{
 			var namedMatch = new NamedMatch(this, args.Scanner);
 			if (!args.Push(this, namedMatch.Matches))
-				return args.NoMatch;
+				return null;
 			var match = Inner.Parse(args);
 			args.Pop();
-			if (match.Success)
+			if (match != null)
 			{
 				namedMatch.Set(match);
 				args.Matches.Add(namedMatch);

@@ -32,11 +32,6 @@ namespace Eto.Parse
 			get { return Scanner.EmptyMatch; }
 		}
 
-		public ParseMatch NoMatch
-		{
-			get { return Scanner.NoMatch(Scanner.Offset); }
-		}
-
 		public ParseMatch Error { get; set; }
 
 		public bool Push(Parser parser, NamedMatchCollection matches = null)

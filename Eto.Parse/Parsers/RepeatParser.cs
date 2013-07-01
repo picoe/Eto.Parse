@@ -30,7 +30,7 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (!args.Push(this))
-				return args.NoMatch;
+				return null;
 			
 			Scanner scanner = args.Scanner;
 			int count = 0;
@@ -40,12 +40,12 @@ namespace Eto.Parse.Parsers
 			while (count < Maximum)
 			{
 				ParseMatch childMatch = Inner.Parse(args);
-				if (!childMatch.Success || childMatch.Empty)
+				if (childMatch == null || childMatch.Empty)
 				{
 					if (count < Minimum)
 					{
 						args.Pop(false);
-						return args.NoMatch;
+						return null;
 					}
 					break;
 				}

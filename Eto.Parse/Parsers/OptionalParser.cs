@@ -21,16 +21,11 @@ namespace Eto.Parse.Parsers
 		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this)) return args.NoMatch;
+			if (!args.Push(this)) return null;
 			
 			ParseMatch match = Inner.Parse(args);
 			args.Pop(true);
-			if (!match.Success)
-			{
-				return args.EmptyMatch;
-			}
-			
-			return match;
+			return match ?? args.EmptyMatch;
 		}
 
 		public override Parser Clone()

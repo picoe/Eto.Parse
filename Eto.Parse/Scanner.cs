@@ -25,20 +25,5 @@ namespace Eto.Parse
 		{
 			get { return new ParseMatch(this, Math.Max(0, Offset), 0); }
 		}
-
-		public virtual ParseMatch NoMatch(long offset)
-		{
-			ParseMatch match = NoMatch();
-			this.Offset = offset;
-			return match;
-		}
-
-		public virtual ParseMatch NoMatch()
-		{
-			ParseMatch match = new ParseMatch(this, Math.Max(0, this.Offset), -1);
-			if (lastError == null || lastError.Index < match.Index)
-				lastError = match;
-			return match;
-		}
 	}
 }
