@@ -5,26 +5,23 @@ namespace Eto.Parse
 {
 	public class ParseArgs : EventArgs
 	{
-		ParseNodeList nodes;
+		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
 
 		public Scanner Scanner { get; private set; }
 
-		public Parser Parser
-		{
-			get { return (nodes.Last != null) ? nodes.Last.Value.Parser : null; }
-		}
-		
 		public NamedMatchCollection Matches
 		{
-			get { return (nodes.Last != null) ? nodes.Last.Value.Matches : null; }
+			get { 
+				var last = nodes.Last;
+				return (last != null) ? last.Value.Matches : null;
+			}
 		}
-		
+
 		public ParseArgs(Scanner scanner)
 		{
-			nodes = new ParseNodeList();
 			Scanner = scanner;
 		}
-		
+
 		public ParseMatch Match(long offset, int length)
 		{
 			return new ParseMatch(Scanner, offset, length);
@@ -34,7 +31,7 @@ namespace Eto.Parse
 		{
 			get { return Scanner.EmptyMatch; }
 		}
-		
+
 		public ParseMatch NoMatch
 		{
 			get { return Scanner.NoMatch(Scanner.Offset); }
@@ -42,44 +39,36 @@ namespace Eto.Parse
 
 		public ParseMatch Error { get; set; }
 
-		public bool Push(Parser parser)
+		public bool Push(Parser parser, NamedMatchCollection matches = null)
 		{
-			//for (int i=0; i< nodes.Count; i++) Console.Write("  ");
-			//if (parser != null) Console.WriteLine("push parser {0}", parser.GetType().Name);
-			//else Console.WriteLine("Push top node");
-			if (IsRecursive(parser)) return false;
-			nodes.AddLast(new ParseNode(parser, Scanner.Offset));
+			if (IsRecursive(parser))
+				return false;
+			nodes.AddLast(new ParseNode(parser, Scanner.Offset, matches ?? Matches ?? new NamedMatchCollection()));
 			return true;
 		}
 
-		public bool Push(NamedMatch namedMatch)
-		{
-			//for (int i=0; i< nodes.Count; i++) Console.Write("  ");
-			//Console.WriteLine("push rule {0}", ruleMatch.Rule.Id);
-			if (IsRecursive(namedMatch.Parser)) return false;
-			nodes.AddLast(new ParseNode(namedMatch.Parser, Scanner.Offset, namedMatch.Matches));
-			return true;
-		}
-		
-		private bool IsRecursive(Parser parser)
+		bool IsRecursive(Parser parser)
 		{
 			LinkedListNode<ParseNode> node = nodes.Last;
-			if (node != null) node = node.Previous;
+			if (node != null)
+				node = node.Previous;
 			
 			while (node != null)
 			{
 				ParseNode parseNode = node.Value;
-				if (parseNode.Offset < Scanner.Offset) break;
-				if (parseNode.Parser == parser)
+				if (parseNode.Offset < Scanner.Offset)
+					return false;
+				if (object.ReferenceEquals(parseNode.Parser, parser))
 				{
-					// add current nodes to a new list and check to see if that is duplicated!
-					ParseNodeList recurseList = new ParseNodeList(node);
-					LinkedListNode<ParseNode> recurseNode = recurseList.Last;
-					node = node.Previous;
-					while (recurseNode != null && node != null)
+					// check to see if we have recursed through the same path already
+					// going through different paths are okay!
+					// e.g. A->B->A->C->B[->A]
+					var recurseNode = nodes.Last;
+					var prevNode = node.Previous;
+					while (recurseNode != null && prevNode != null && recurseNode != node)
 					{
-						if (node.Value.Parser != recurseNode.Value.Parser) return false;
-						node = node.Previous;
+						if (prevNode.Value.Parser != recurseNode.Value.Parser) return false;
+						prevNode = prevNode.Previous;
 						recurseNode = recurseNode.Previous;
 					}
 					
@@ -89,18 +78,15 @@ namespace Eto.Parse
 			}
 			return false;
 		}
-		
+
 		public NamedMatchCollection Pop(bool success)
 		{
-			ParseNode last = nodes.Last.Value;
+			var last = nodes.Last.Value;
 			nodes.RemoveLast();
-			
-			if (success)
-			{
-				if (nodes.Last != null) nodes.Last.Value.Matches.AddRange(last.Matches);
-			}
-			else Scanner.Offset = last.Offset;
-			
+
+			if (!success)
+				Scanner.Offset = last.Offset;
+
 			return last.Matches;
 		}
 
@@ -109,8 +95,8 @@ namespace Eto.Parse
 			nodes.RemoveLast();
 		}
 	}
-	
-	public struct ParseNode
+
+	struct ParseNode
 	{
 		NamedMatchCollection matches;
 		Parser parser;
@@ -122,28 +108,11 @@ namespace Eto.Parse
 
 		public long Offset { get { return offset; } }
 
-		public ParseNode(Parser parser, long offset, NamedMatchCollection matches = null)
+		public ParseNode(Parser parser, long offset, NamedMatchCollection matches)
 		{
 			this.parser = parser;
 			this.offset = offset;
-			this.matches = matches ?? new NamedMatchCollection();
+			this.matches = matches;
 		}
-	}
-
-	public class ParseNodeList : LinkedList<ParseNode>
-	{
-		public ParseNodeList()
-		{
-		}
-		
-		public ParseNodeList(LinkedListNode<ParseNode> node)
-		{
-			while (node != null)
-			{
-				AddLast(node.Value);
-				node = node.Next;
-			}
-		}
-		
 	}
 }

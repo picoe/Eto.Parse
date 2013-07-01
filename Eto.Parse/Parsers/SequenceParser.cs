@@ -28,17 +28,19 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (!args.Push(this)) return args.NoMatch;
-			
+			if (Items.Count == 0)
+				throw new InvalidOperationException("There are no items in this sequence");
 			ParseMatch match = null;
-			foreach (Parser parser in Items)
+			for (int i = 0; i < Items.Count; i++)
 			{
+				var parser = Items[i];
 				ParseMatch match2 = parser.Parse(args);
 				if (!match2.Success) { args.Pop(false); return args.NoMatch; }
 				
 				match = ParseMatch.Merge(match, match2);
 			}
 			args.Pop(true);
-			
+
 			return match;
 		}
 

@@ -19,9 +19,9 @@ namespace Eto.Parse.Testers
 		
 		public override bool Test(char ch)
 		{
-			foreach (char c in chars)
+			for (int i = 0; i < chars.Length; i++)
 			{
-				if (c == ch) return true;
+				if (chars[i] == ch) return true;
 			}
 			return false;
 		}

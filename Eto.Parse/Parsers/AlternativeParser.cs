@@ -27,10 +27,11 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			foreach (Parser parser in Items)
+			for (int i = 0; i < Items.Count; i++)
 			{
 				if (!args.Push(this))
 					return args.NoMatch;
+				var parser = Items[i];
 				var match = parser.Parse(args);
 				if (match.Success)
 				{

@@ -59,6 +59,8 @@ namespace Eto.Parse
 		public ParseMatch Parse(ParseArgs args)
 		{
 			var match = InnerParse(args);
+			if (match == null)
+				throw new InvalidOperationException("Parser returned a null match");
 			if (match.Success)
 				OnSucceeded(match);
 			else if (args.Error == null || match.Index > args.Error.Index)

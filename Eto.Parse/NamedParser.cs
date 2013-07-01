@@ -57,7 +57,7 @@ namespace Eto.Parse
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var namedMatch = new NamedMatch(this, args.Scanner);
-			if (!args.Push(namedMatch))
+			if (!args.Push(this, namedMatch.Matches))
 				return args.NoMatch;
 			var match = Inner.Parse(args);
 			args.Pop();

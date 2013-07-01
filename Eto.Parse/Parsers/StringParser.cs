@@ -30,20 +30,17 @@ namespace Eto.Parse.Parsers
 		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (Value == null)
+			var val = Value;
+			if (val == null)
 				return args.EmptyMatch;
 			Scanner scanner = args.Scanner;
 			long offset = scanner.Offset;
-			long start = -1;
-			foreach (char ch in Value)
+			for (int i = 0; i < val.Length; i++)
 			{
-				if (!scanner.Read()) return scanner.NoMatch(offset);
-				
-				if (scanner.Current != ch) return scanner.NoMatch(offset);
-
-				if (start == -1) start = scanner.Offset;
+				if (!scanner.Read() || scanner.Current != val[i]) 
+					return scanner.NoMatch(offset);
 			}
-			return args.Match(start, (int)(scanner.Offset - start + 1));
+			return args.Match(offset + 1, val.Length);
 		}
 
 		public override Parser Clone()

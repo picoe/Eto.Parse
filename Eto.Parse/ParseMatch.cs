@@ -40,9 +40,9 @@ namespace Eto.Parse
 		
 		public static ParseMatch Merge(ParseMatch left, ParseMatch right)
 		{
-			if (right == null || right.Empty)
+			if (right == null || (right.Empty && left != null))
 				return left;
-			else if (left == null || left.Empty)
+			else if (left == null || (left.Empty && right != null))
 				return right;
 
 			if (!left.Success || !right.Success) throw new ArgumentException("Can only merge successful matches", "match");
