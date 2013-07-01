@@ -3,7 +3,7 @@ using Eto.Parse.Parsers;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Eto.Parse.Writers
+namespace Eto.Parse
 {
 	public interface IParserWriter
 	{

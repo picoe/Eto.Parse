@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.CodeDom.Compiler;
 
-namespace Eto.Parse.Writers
+namespace Eto.Parse
 {
 	public class TextParserWriter : ParserWriter<TextParserWriterArgs>
 	{

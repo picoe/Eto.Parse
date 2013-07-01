@@ -172,9 +172,6 @@
     <Compile Include="FluentExtensions.cs" />
     <Compile Include="Testers\IncludeTester.cs" />
     <Compile Include="Testers\ExcludeTester.cs" />
-    <Compile Include="Writers\ParserWriter.cs" />
-    <Compile Include="Writers\ParserWriterArgs.cs" />
-    <Compile Include="Writers\IParserWriterHandler.cs" />
     <Compile Include="Writers\Code\CharWriter.cs" />
     <Compile Include="Writers\Code\ListWriter.cs" />
     <Compile Include="Writers\Code\NamedWriter.cs" />
@@ -189,10 +186,13 @@
     <Compile Include="Writers\Display\RepeatWriter.cs" />
     <Compile Include="Writers\Display\StringWriter.cs" />
     <Compile Include="Writers\Display\UnaryWriter.cs" />
-    <Compile Include="Writers\TextParserWriter.cs" />
     <Compile Include="Writers\CodeParserWriter.cs" />
     <Compile Include="Writers\DisplayParserWriter.cs" />
-    <Compile Include="Writers\TextParserWriterArgs.cs" />
+    <Compile Include="IParserWriterHandler.cs" />
+    <Compile Include="ParserWriter.cs" />
+    <Compile Include="ParserWriterArgs.cs" />
+    <Compile Include="TextParserWriter.cs" />
+    <Compile Include="TextParserWriterArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
