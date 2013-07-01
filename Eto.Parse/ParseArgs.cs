@@ -19,12 +19,6 @@ namespace Eto.Parse
 			get { return (nodes.Last != null) ? nodes.Last.Value.Matches : null; }
 		}
 		
-		public long Offset
-		{
-			get { return Scanner.Offset; }
-			set { Scanner.Offset = value; }
-		}
-		
 		public ParseArgs(Scanner scanner)
 		{
 			nodes = new ParseNodeList();

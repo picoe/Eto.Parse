@@ -13,6 +13,7 @@ namespace Eto.Parse.Parsers
 		{
 			Tester = other.Tester;
 		}
+
 		public CharParser()
 		{
 		}
@@ -21,24 +22,26 @@ namespace Eto.Parse.Parsers
 		{
 			this.Tester = tester;
 		}
-		
+
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			Scanner scanner = args.Scanner;
-			if (scanner.IsEnd || Tester == null) return args.NoMatch;
+			var scanner = args.Scanner;
+			if (scanner.IsEnd || Tester == null)
+				return args.NoMatch;
 	
 			long offset = scanner.Offset;
 			
-			if (!scanner.Read()) { return args.NoMatch; }
-			
+			if (!scanner.Read())
+				return args.NoMatch;
+
 			bool matched = Tester.Test(scanner.Current);
-			if ((!matched && !Negative) || (matched && Negative))
+			if (matched == Negative)
 			{
-				args.Offset = offset;
+				scanner.Offset = offset;
 				return args.NoMatch;
 			}
 			
-			return args.Match(args.Offset, 1);
+			return args.Match(scanner.Offset, 1);
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)
