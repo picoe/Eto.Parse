@@ -14,6 +14,9 @@ namespace Eto.Parse.Tests
 123 Elm Street
 Vancouver, BC V5V5V5";
 
+		const string addressMissingZipPart = @"Joe Smith
+123 Elm Street";
+
 		const string postalAddressBnf = @"
  <postal-address> 
                   ::= <name-part> <EOL> <street-address> [<EOL>] <zip-part>
@@ -71,6 +74,17 @@ Vancouver, BC V5V5V5";
 			// execute the code and test
 			var addressParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
 			TestAddress(addressParser);
+		}
+
+		[Test]
+		public void FailedMatch()
+		{
+			var bnfParser = new BnfParser();
+			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
+			var match = addressParser.Match(addressMissingZipPart);
+			Assert.IsFalse(match.Success);
+			Assert.That(match.Error != null, "Error was not specified");
+			Assert.That(match.Error.Index == addressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
 		void TestAddress(Parser addressParser)

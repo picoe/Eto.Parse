@@ -26,6 +26,22 @@ namespace Eto.Parse.Tests
 			Assert.AreEqual("hello", match["first"]["value"].Value);
 			Assert.AreEqual("parsing world", match["second"]["value"].Value);
 		}
+
+		[Test]
+		public void RepeatUntil()
+		{
+			var input = "abc def 1234";
+
+			// optional repeating whitespace
+			var ws = -Terminals.WhiteSpace;
+
+			// repeat until we get a digit, and exclude any whitespace inbetween
+			var repeat = +Terminals.AnyChar - (ws & Terminals.Digit);
+
+			var match = repeat.Match(input);
+			Assert.IsTrue(match.Success);
+			Assert.AreEqual("abc def", match.Value);
+		}
 	}
 }
 
