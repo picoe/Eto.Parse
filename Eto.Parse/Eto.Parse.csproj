@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C068996C-0949-4550-B21C-EF724D1894DA}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Eto.Parse</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Eto.Parse</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+      <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BinaryParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CharTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NegatableParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ParseArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scanner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UnaryParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\AlternativeParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\CharParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\EndParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\OptionalParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\RepeatParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\SequenceParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\StringParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scanners\StringScanner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\AnyCharTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\CharSetTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\DigitTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\HexDigitTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\LetterOrDigitTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\LetterTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\WhiteSpaceTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Parsers\NotParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamedParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamedMatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\EolTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\SingleLineWhiteSpaceTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ListParser.cs" />
+    <Compile Include="BnfParser.cs" />
+    <Compile Include="Parser.operators.cs" />
+    <Compile Include="ParseMatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\ControlTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\SymbolTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Testers\PunctuationTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminals.cs" />
+    <Compile Include="Parsers\StartParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ContainerMatch.cs" />
+    <Compile Include="FluentExtensions.cs" />
+    <Compile Include="Testers\IncludeTester.cs" />
+    <Compile Include="Testers\ExcludeTester.cs" />
+    <Compile Include="Writers\ParserWriter.cs" />
+    <Compile Include="Writers\ParserWriterArgs.cs" />
+    <Compile Include="Writers\IParserWriterHandler.cs" />
+    <Compile Include="Writers\Code\CharWriter.cs" />
+    <Compile Include="Writers\Code\ListWriter.cs" />
+    <Compile Include="Writers\Code\NamedWriter.cs" />
+    <Compile Include="Writers\Code\ParserWriter.cs" />
+    <Compile Include="Writers\Code\RepeatWriter.cs" />
+    <Compile Include="Writers\Code\StringWriter.cs" />
+    <Compile Include="Writers\Code\UnaryWriter.cs" />
+    <Compile Include="Writers\Display\CharWriter.cs" />
+    <Compile Include="Writers\Display\ListWriter.cs" />
+    <Compile Include="Writers\Display\NamedWriter.cs" />
+    <Compile Include="Writers\Display\ParserWriter.cs" />
+    <Compile Include="Writers\Display\RepeatWriter.cs" />
+    <Compile Include="Writers\Display\StringWriter.cs" />
+    <Compile Include="Writers\Display\UnaryWriter.cs" />
+    <Compile Include="Writers\TextParserWriter.cs" />
+    <Compile Include="Writers\CodeParserWriter.cs" />
+    <Compile Include="Writers\DisplayParserWriter.cs" />
+    <Compile Include="Writers\TextParserWriterArgs.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Writers\" />
+    <Folder Include="Writers\Code\" />
+    <Folder Include="Writers\Display\" />
+  </ItemGroup>
+</Project>
