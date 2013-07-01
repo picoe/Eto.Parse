@@ -123,7 +123,7 @@ namespace Eto.Parse
 
 			if (match.Error != null)
 			{
-				throw new FormatException(string.Format("Error parsing bnf starting at: \n{0}", bnf.Substring((int)match.Error.Offset)));
+				throw new FormatException(string.Format("Error parsing bnf starting at: \n{0}", bnf.Substring((int)match.Error.Index)));
 			}
 			return parserLookup;
 		}

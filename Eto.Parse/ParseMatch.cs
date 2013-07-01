@@ -7,18 +7,18 @@ namespace Eto.Parse
 	{
 		public Scanner Scanner { get; private set; }
 
-		public long Offset { get; protected set; }
+		public long Index { get; protected set; }
 
 		public int Length { get; protected set; }
 
 		public long End
 		{
-			get { return (Length > 0) ? Offset + Length - 1 : Offset; }
+			get { return (Length > 0) ? Index + Length - 1 : Index; }
 		}
 		
 		public string Value
 		{
-			get { return Success ? Scanner.SubString(Offset, Length) : null; }
+			get { return Success ? Scanner.SubString(Index, Length) : null; }
 		}
 		
 		public bool Success
@@ -34,7 +34,7 @@ namespace Eto.Parse
 		public ParseMatch(Scanner scanner, long offset, int length)
 		{
 			this.Scanner = scanner;
-			this.Offset = offset;
+			this.Index = offset;
 			this.Length = length;
 		}
 		
@@ -47,7 +47,7 @@ namespace Eto.Parse
 
 			if (!left.Success || !right.Success) throw new ArgumentException("Can only merge successful matches", "match");
 			
-			long start = Math.Min(left.Offset, right.Offset);
+			long start = Math.Min(left.Index, right.Index);
 			long end = Math.Max(left.End, right.End);
 			return new ParseMatch(left.Scanner, start, (int)(end - start + 1));
 		}

@@ -35,7 +35,7 @@ namespace Eto.Parse
 
 		internal void Set(ParseMatch inner)
 		{
-			this.Offset = inner.Offset;
+			this.Index = inner.Index;
 			this.Length = inner.Length;
 		}
 	}

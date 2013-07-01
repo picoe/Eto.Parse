@@ -36,7 +36,7 @@ namespace Eto.Parse
 		public virtual ParseMatch NoMatch()
 		{
 			ParseMatch match = new ParseMatch(this, Math.Max(0, this.Offset), -1);
-			if (lastError == null || lastError.Offset < match.Offset)
+			if (lastError == null || lastError.Index < match.Index)
 				lastError = match;
 			return match;
 		}

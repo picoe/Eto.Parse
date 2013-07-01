@@ -46,7 +46,7 @@ namespace Eto.Parse
 			var top = Parse(args);
 			var matches = args.Pop(top.Success);
 
-			var containerMatch = new ContainerMatch(scanner, top.Offset, top.Length, matches);
+			var containerMatch = new ContainerMatch(scanner, top.Index, top.Length, matches);
 			containerMatch.Error = top.Success ? null : args.Error;
 			if (match)
 			{
@@ -61,7 +61,7 @@ namespace Eto.Parse
 			var match = InnerParse(args);
 			if (match.Success)
 				OnSucceeded(match);
-			else if (args.Error == null || match.Offset > args.Error.Offset)
+			else if (args.Error == null || match.Index > args.Error.Index)
 			{
 				args.Error = match;
 			}
