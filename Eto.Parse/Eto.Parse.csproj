@@ -55,14 +55,6 @@
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-      <HintPath>\System.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.Xml</Name>
-      <HintPath>\System.Xml.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
