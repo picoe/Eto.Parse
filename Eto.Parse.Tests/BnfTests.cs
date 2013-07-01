@@ -5,7 +5,7 @@ using Eto.Parse;
 namespace Eto.Parse.Tests
 {
 	[TestFixture]
-	public class BnfTest
+	public class BnfTests
 	{
 		const string address = @"Joe Smith
 123 Elm Street
@@ -34,7 +34,7 @@ Vancouver, BC V5V5V5";
 ";
 
 		[Test]
-		public void TestBnfParser()
+		public void BnfParser()
 		{
 			var bnfParser = new BnfParser();
 			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
@@ -42,7 +42,7 @@ Vancouver, BC V5V5V5";
 		}
 
 		[Test]
-		public void TestBnfToCode()
+		public void BnfToCode()
 		{
 			// roundtrip to generated code then back again
 			var bnfParser = new BnfParser();
@@ -58,6 +58,7 @@ Vancouver, BC V5V5V5";
 		void TestAddress(Parser addressParser)
 		{
 			var match = addressParser.Match(address);
+			Assert.IsTrue(match.Success);
 			Assert.AreEqual("Joe", match["first-name"].Value);
 			Assert.AreEqual("Smith", match["last-name"].Value);
 			Assert.AreEqual("123", match["house-num"].Value);

@@ -35,9 +35,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BnfTest.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="FluentTest.cs" />
+    <Compile Include="FluentTests.cs" />
+    <Compile Include="BnfTests.cs" />
+    <Compile Include="ShorthandTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

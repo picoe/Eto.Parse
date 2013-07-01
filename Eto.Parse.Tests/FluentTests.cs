@@ -5,10 +5,10 @@ using Eto.Parse;
 namespace Eto.Parse.Tests
 {
 	[TestFixture]
-	public class FluentTest
+	public class FluentTests
 	{
 		[Test]
-		public void TestFluent()
+		public void Simple()
 		{
 			var input = "  hello (parsing world)  ";
 
@@ -31,6 +31,7 @@ namespace Eto.Parse.Tests
 				.Then(Terminals.End);
 
 			var match = parser.Match(input);
+			Assert.IsTrue(match.Success);
 			Assert.AreEqual("hello", match["first"]["value"].Value);
 			Assert.AreEqual("parsing world", match["second"]["value"].Value);
 		}
