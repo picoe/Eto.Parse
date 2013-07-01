@@ -10,21 +10,17 @@ namespace Eto.Parse.Parsers
 			: base(other)
 		{
 		}
-		
+
 		public EndParser()
 		{
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.Scanner.IsEnd) return args.EmptyMatch;
-
-			long offset = args.Offset;
-			
-			if (!args.Scanner.Read()) return args.EmptyMatch;
-			
-			args.Offset = offset;
-			return args.NoMatch;
+			if (args.Scanner.IsEnd)
+				return args.EmptyMatch;
+			else
+				return args.NoMatch;
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)
