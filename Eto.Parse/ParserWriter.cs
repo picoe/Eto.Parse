@@ -10,6 +10,18 @@ namespace Eto.Parse
 		string WriteParser(ParserWriterArgs args, Parser parser);
 	}
 
+	public class ParserWriter : ParserWriter<ParserWriterArgs>
+	{
+		public ParserWriter(IDictionary<Type, IParserWriterHandler<ParserWriterArgs>> writers)
+			: base(writers)
+		{
+		}
+
+		public ParserWriter()
+		{
+		}
+	}
+
 	public class ParserWriter<T_Args> : IParserWriter
 		where T_Args: ParserWriterArgs
 	{
