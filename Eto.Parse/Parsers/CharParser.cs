@@ -29,19 +29,14 @@ namespace Eto.Parse.Parsers
 			if (scanner.IsEnd || Tester == null)
 				return null;
 	
-			long offset = scanner.Offset;
-			
-			if (!scanner.Read())
+			bool matched = Tester.Test(scanner.Peek);
+			if (matched == Negative)
 				return null;
 
-			bool matched = Tester.Test(scanner.Current);
-			if (matched == Negative)
-			{
-				scanner.Offset = offset;
-				return null;
-			}
-			
-			return args.Match(scanner.Offset, 1);
+			var offset = scanner.Offset;
+			scanner.Read();
+
+			return args.Match(offset, 1);
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)

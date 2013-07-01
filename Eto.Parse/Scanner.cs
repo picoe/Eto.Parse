@@ -10,9 +10,9 @@ namespace Eto.Parse
 
 		public abstract bool IsEnd { get; }
 
-		public abstract char Current { get; }
+		public abstract char Peek { get; }
 
-		public abstract bool Read();
+		public abstract void Read();
 
 		public abstract string SubString(long offset, int length);
 

@@ -10,11 +10,11 @@ namespace Eto.Parse.Tests
 	{
 		const int speedIterations = 500;
 
-		const string address = @"Joe Smith
+		public const string Address = @"Joe Smith
 123 Elm Street
 Vancouver, BC V5V5V5";
 
-		const string addressMissingZipPart = @"Joe Smith
+		public const string AddressMissingZipPart = @"Joe Smith
 123 Elm Street";
 
 		const string postalAddressBnf = @"
@@ -39,12 +39,16 @@ Vancouver, BC V5V5V5";
 <apt-num> ::= ('Apt'|'Suite') ['#'] {<digit>}
 ";
 
+		public static Parser GetAddressParser()
+		{
+			var bnfParser = new BnfParser();
+			return bnfParser.Build(postalAddressBnf, "postal-address");
+		}
+
 		[Test]
 		public void BnfParser()
 		{
-			var bnfParser = new BnfParser();
-			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
-			TestAddress(addressParser);
+			TestAddress(GetAddressParser());
 		}
 
 		[Test]
@@ -57,9 +61,8 @@ Vancouver, BC V5V5V5";
 		[Test]
 		public void AddressParsingSpeed()
 		{
-			var bnfParser = new BnfParser();
-			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
-			Helper.TestSpeed(addressParser, address, speedIterations);
+			var addressParser = GetAddressParser();
+			Helper.TestSpeed(addressParser, Address, speedIterations);
 		}
 
 		[Test]
@@ -81,15 +84,14 @@ Vancouver, BC V5V5V5";
 		{
 			var bnfParser = new BnfParser();
 			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
-			var match = addressParser.Match(addressMissingZipPart);
+			var match = addressParser.Match(AddressMissingZipPart);
 			Assert.IsFalse(match.Success);
 			Assert.That(match.Error != null, "Error was not specified");
-			Assert.That(match.Error.Index == addressMissingZipPart.Length, "Error should be where the zip code is specified");
+			Assert.That(match.Error.Index == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
-		void TestAddress(Parser addressParser)
+		public static void TestAddress(ContainerMatch match)
 		{
-			var match = addressParser.Match(address);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("Joe", match["first-name"].Value);
 			Assert.AreEqual("Smith", match["last-name"].Value);
@@ -100,6 +102,11 @@ Vancouver, BC V5V5V5";
 			Assert.AreEqual("Vancouver", match["town-name"].Value);
 			Assert.AreEqual("BC", match["state-code"].Value);
 			Assert.AreEqual("V5V5V5", match["zip-code"].Value);
+		}
+
+		public static void TestAddress(Parser addressParser)
+		{
+			TestAddress(addressParser.Match(Address));
 		}
 	}
 }

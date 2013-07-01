@@ -4,7 +4,7 @@ namespace Eto.Parse.Scanners
 {
 	public class StringScanner : Scanner
 	{
-		long offset = -1;
+		long offset = 0;
 		string value;
 		
 		public override long Offset
@@ -18,24 +18,23 @@ namespace Eto.Parse.Scanners
 			get { return offset == value.Length; }
 		}
 		
-		public override char Current
+		public override char Peek
 		{
 			get { return value[(int)offset]; }
 		}
-		
+
 		public StringScanner(string value)
 		{
 			this.value = value;
 		}
 		
-		public override bool Read()
+		public override void Read()
 		{
-			if (IsEnd) return false;
-			offset++;
-			return !IsEnd;
+			if (offset < value.Length)
+				offset++;
 		}
 
-		public override String SubString(long offset, int length)
+		public override string SubString(long offset, int length)
 		{
 			return value.Substring((int)offset, length);
 		}

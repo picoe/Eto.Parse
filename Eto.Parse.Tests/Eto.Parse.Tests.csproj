@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EE26FDF9-63E3-4620-9210-ABF1517AE055}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Eto.TextParser.Tests</RootNamespace>
+    <RootNamespace>Eto.Parse.Tests</RootNamespace>
     <AssemblyName>Eto.Parse.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

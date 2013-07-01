@@ -37,13 +37,14 @@ namespace Eto.Parse.Parsers
 			long offset = scanner.Offset;
 			for (int i = 0; i < val.Length; i++)
 			{
-				if (!scanner.Read() || scanner.Current != val[i])
+				if (scanner.IsEnd || scanner.Peek != val[i])
 				{
 					scanner.Offset = offset;
 					return null;
 				}
+				scanner.Read();
 			}
-			return args.Match(offset + 1, val.Length);
+			return args.Match(offset, val.Length);
 		}
 
 		public override Parser Clone()
