@@ -2,9 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class PunctuationTester : CharTester
+	public class PunctuationTester : ICharTester
 	{
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return Char.IsPunctuation(ch);
 		}

@@ -10,7 +10,7 @@ namespace Eto.Parse
 
 		public ParseMatch Error { get; set; }
 
-		public ContainerMatch(Scanner scanner, long offset, int length, NamedMatchCollection matches = null)
+		public ContainerMatch(IScanner scanner, long offset, int length, NamedMatchCollection matches = null)
 			: base(scanner, offset, length)
 		{
 			this.Matches = matches ?? new NamedMatchCollection();

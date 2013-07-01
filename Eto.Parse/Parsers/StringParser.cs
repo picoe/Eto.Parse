@@ -33,7 +33,7 @@ namespace Eto.Parse.Parsers
 			var val = Value;
 			if (val == null)
 				return args.EmptyMatch;
-			Scanner scanner = args.Scanner;
+			IScanner scanner = args.Scanner;
 			long offset = scanner.Offset;
 			for (int i = 0; i < val.Length; i++)
 			{

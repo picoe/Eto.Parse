@@ -2,10 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class DigitTester : CharTester
+	public class DigitTester : ICharTester
 	{
-		
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return Char.IsDigit(ch);
 		}

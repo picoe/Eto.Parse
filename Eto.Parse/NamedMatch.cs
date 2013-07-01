@@ -10,7 +10,7 @@ namespace Eto.Parse
 
 		public object Context { get; set; }
 
-		public NamedMatch(NamedParser parser, Scanner scanner)
+		public NamedMatch(NamedParser parser, IScanner scanner)
 			: base(scanner, -1, -1)
 		{
 			this.Parser = parser;

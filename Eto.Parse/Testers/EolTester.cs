@@ -2,9 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class EolTester : CharTester
+	public class EolTester : ICharTester
 	{
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return ch == '\n' || ch == '\r';
 		}

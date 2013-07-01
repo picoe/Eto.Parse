@@ -2,9 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class HexDigitTester : CharTester
+	public class HexDigitTester : ICharTester
 	{
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return Char.IsDigit(ch)
 				|| (ch >= 'A' && ch <= 'F')

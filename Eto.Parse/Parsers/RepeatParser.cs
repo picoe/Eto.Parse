@@ -37,7 +37,7 @@ namespace Eto.Parse.Parsers
 			if (!args.Push(this))
 				return null;
 			
-			Scanner scanner = args.Scanner;
+			IScanner scanner = args.Scanner;
 			int count = 0;
 			ParseMatch match = null;
 

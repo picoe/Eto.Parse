@@ -63,9 +63,6 @@
     <Compile Include="BinaryParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CharTester.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="NegatableParser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -73,9 +70,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Parser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scanner.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UnaryParser.cs">
@@ -185,6 +179,12 @@
     <Compile Include="ParserWriterArgs.cs" />
     <Compile Include="TextParserWriter.cs" />
     <Compile Include="TextParserWriterArgs.cs" />
+    <Compile Include="ICharTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IScanner.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

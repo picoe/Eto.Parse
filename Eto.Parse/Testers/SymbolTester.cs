@@ -2,9 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class SymbolTester : CharTester
+	public class SymbolTester : ICharTester
 	{
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return Char.IsSymbol(ch);
 		}

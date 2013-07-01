@@ -5,7 +5,7 @@ namespace Eto.Parse
 {
 	public class ParseMatch
 	{
-		public Scanner Scanner { get; private set; }
+		public IScanner Scanner { get; private set; }
 
 		public long Index { get; protected set; }
 
@@ -31,7 +31,7 @@ namespace Eto.Parse
 			get { return Length == 0; }
 		}
 		
-		public ParseMatch(Scanner scanner, long offset, int length)
+		public ParseMatch(IScanner scanner, long offset, int length)
 		{
 			this.Scanner = scanner;
 			this.Index = offset;

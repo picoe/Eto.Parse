@@ -2,19 +2,19 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class ExcludeTester : CharTester
+	public class ExcludeTester : ICharTester
 	{
-		public CharTester Include { get; set; }
+		public ICharTester Include { get; set; }
 
-		public CharTester Exclude { get; set; }
+		public ICharTester Exclude { get; set; }
 
-		public ExcludeTester(CharTester include, CharTester exclude)
+		public ExcludeTester(ICharTester include, ICharTester exclude)
 		{
 			Include = include;
 			Exclude = exclude;
 		}
 
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return Include.Test(ch) && !Exclude.Test(ch);
 		}

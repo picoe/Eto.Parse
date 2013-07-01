@@ -6,7 +6,7 @@ namespace Eto.Parse.Parsers
 {
 	public class CharParser : NegatableParser
 	{
-		public CharTester Tester { get; set; }
+		public ICharTester Tester { get; set; }
 
 		protected CharParser(CharParser other)
 			: base(other)
@@ -18,7 +18,7 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		public CharParser(CharTester tester)
+		public CharParser(ICharTester tester)
 		{
 			this.Tester = tester;
 		}

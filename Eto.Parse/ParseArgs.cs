@@ -7,7 +7,7 @@ namespace Eto.Parse
 	{
 		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
 
-		public Scanner Scanner { get; private set; }
+		public IScanner Scanner { get; private set; }
 
 		public NamedMatchCollection Matches
 		{
@@ -17,7 +17,7 @@ namespace Eto.Parse
 			}
 		}
 
-		public ParseArgs(Scanner scanner)
+		public ParseArgs(IScanner scanner)
 		{
 			Scanner = scanner;
 		}
@@ -29,7 +29,7 @@ namespace Eto.Parse
 
 		public ParseMatch EmptyMatch
 		{
-			get { return Scanner.EmptyMatch; }
+			get { return new ParseMatch(Scanner, Scanner.Offset, 0); }
 		}
 
 		public ParseMatch Error { get; set; }

@@ -2,10 +2,9 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class SingleLineWhiteSpaceTester : CharTester
+	public class SingleLineWhiteSpaceTester : ICharTester
 	{
-		
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			if (ch == '\n' || ch == '\r')
 				return false;

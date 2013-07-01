@@ -2,19 +2,19 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class IncludeTester : CharTester
+	public class IncludeTester : ICharTester
 	{
-		public CharTester First { get; set; }
+		public ICharTester First { get; set; }
 
-		public CharTester Second { get; set; }
+		public ICharTester Second { get; set; }
 
-		public IncludeTester(CharTester first, CharTester second)
+		public IncludeTester(ICharTester first, ICharTester second)
 		{
 			First = first;
 			Second = second;
 		}
 
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			return First.Test(ch) && !Second.Test(ch);
 		}

@@ -2,7 +2,7 @@ using System;
 
 namespace Eto.Parse.Testers
 {
-	public class CharSetTester : CharTester
+	public class CharSetTester : ICharTester
 	{
 		public char[] CharSet { get; set; }
 
@@ -11,7 +11,7 @@ namespace Eto.Parse.Testers
 			this.CharSet = (char[])chars.Clone();
 		}
 		
-		public override bool Test(char ch)
+		public bool Test(char ch)
 		{
 			for (int i = 0; i < CharSet.Length; i++)
 			{

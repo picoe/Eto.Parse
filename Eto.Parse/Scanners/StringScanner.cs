@@ -2,23 +2,23 @@ using System;
 
 namespace Eto.Parse.Scanners
 {
-	public class StringScanner : Scanner
+	public class StringScanner : IScanner
 	{
 		long offset = 0;
 		string value;
 		
-		public override long Offset
+		public long Offset
 		{
 			get { return offset; }
 			set { offset = value; }
 		}
 
-		public override bool IsEnd
+		public bool IsEnd
 		{
 			get { return offset == value.Length; }
 		}
 		
-		public override char Peek
+		public char Peek
 		{
 			get { return value[(int)offset]; }
 		}
@@ -28,13 +28,13 @@ namespace Eto.Parse.Scanners
 			this.value = value;
 		}
 		
-		public override void Read()
+		public void Read()
 		{
 			if (offset < value.Length)
 				offset++;
 		}
 
-		public override string SubString(long offset, int length)
+		public string SubString(long offset, int length)
 		{
 			return value.Substring((int)offset, length);
 		}

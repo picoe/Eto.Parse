@@ -37,7 +37,7 @@ namespace Eto.Parse
 			return Match(new StringScanner(value), match);
 		}
 
-		public ContainerMatch Match(Scanner scanner, bool match = true)
+		public ContainerMatch Match(IScanner scanner, bool match = true)
 		{
 			if (scanner == null)
 				throw new ArgumentNullException("scanner");
