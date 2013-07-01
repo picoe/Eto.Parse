@@ -53,5 +53,35 @@ namespace Eto.Parse.Parsers
 		{
 			return new CharParser(this);
 		}
+
+		public static CharParser operator +(CharParser parser, CharParser include)
+		{
+			return new CharParser(new IncludeTester(parser.Tester, include.Tester)) { Reusable = true };
+		}
+
+		public static CharParser operator +(CharParser parser, char[] chars)
+		{
+			return new CharParser(new IncludeTester(parser.Tester, new CharSetTester(chars))) { Reusable = true };
+		}
+
+		public static CharParser operator +(CharParser parser, char ch)
+		{
+			return new CharParser(new IncludeTester(parser.Tester, new CharSetTester(ch))) { Reusable = true };
+		}
+
+		public static CharParser operator -(CharParser include, CharParser exclude)
+		{
+			return new CharParser(new ExcludeTester(include.Tester, exclude.Tester)) { Reusable = true };
+		}
+
+		public static CharParser operator -(CharParser include, char[] chars)
+		{
+			return new CharParser(new ExcludeTester(include.Tester, new CharSetTester(chars))) { Reusable = true };
+		}
+
+		public static CharParser operator -(CharParser include, char ch)
+		{
+			return new CharParser(new ExcludeTester(include.Tester, new CharSetTester(ch))) { Reusable = true };
+		}
 	}
 }

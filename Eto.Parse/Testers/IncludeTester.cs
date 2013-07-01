@@ -8,10 +8,10 @@ namespace Eto.Parse.Testers
 
 		public CharTester Second { get; set; }
 
-		public IncludeTester(CharTester include, CharTester exclude)
+		public IncludeTester(CharTester first, CharTester second)
 		{
-			First = include;
-			Second = exclude;
+			First = first;
+			Second = second;
 		}
 
 		public override bool Test(char ch)
