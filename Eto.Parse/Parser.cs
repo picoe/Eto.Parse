@@ -44,10 +44,17 @@ namespace Eto.Parse
 			var args = new ParseArgs(scanner);
 			args.Push((Parser)null);
 			var top = Parse(args);
-			var matches = args.Pop(top.Success);
+			ContainerMatch containerMatch;
+			if (top != null)
+			{
+				var matches = args.Pop(top.Success);
+				containerMatch = new ContainerMatch(scanner, top.Index, top.Length, matches);
+			}
+			else {
+				containerMatch = new ContainerMatch(scanner, -1, -1);
+				containerMatch.Error = args.Error;
+			}
 
-			var containerMatch = new ContainerMatch(scanner, top.Index, top.Length, matches);
-			containerMatch.Error = top.Success ? null : args.Error;
 			if (match)
 			{
 				containerMatch.PreMatch();
