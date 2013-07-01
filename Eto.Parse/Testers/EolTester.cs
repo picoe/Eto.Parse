@@ -6,7 +6,7 @@ namespace Eto.Parse.Testers
 	{
 		public override bool Test(char ch)
 		{
-			return ch == '\n';
+			return ch == '\n' || ch == '\r';
 		}
 	}
 }

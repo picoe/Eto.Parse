@@ -35,43 +35,28 @@ namespace Eto.Parse.Parsers
 			Scanner scanner = args.Scanner;
 			int count = 0;
 			ParseMatch match = null;
-			while (count < Minimum)
-			{
-				var pos = scanner.Offset;
-				ParseMatch match2 = Inner.Parse(args);
 
-				if (!match2.Success || scanner.IsEnd || scanner.Offset == pos)
-				{
-					args.Pop(false);
-					return args.NoMatch;
-				}
-				
-				match = ParseMatch.Merge(match, match2);
-				count++;
-			}
-			
 			// retrieve up to the maximum number
 			while (count < Maximum)
 			{
-				var pos = scanner.Offset;
-				ParseMatch match2 = Inner.Parse(args);
-				if (!match2.Success || scanner.IsEnd || scanner.Offset == pos)
+				ParseMatch childMatch = Inner.Parse(args);
+				if (!childMatch.Success || childMatch.Empty)
 				{
-					if (match == null)
-						match = match2;
+					if (count < Minimum)
+					{
+						args.Pop(false);
+						return args.NoMatch;
+					}
 					break;
 				}
 
-				match = ParseMatch.Merge(match, match2);
+				match = ParseMatch.Merge(match, childMatch);
 				count++;
 			}
 			
 			args.Pop(true);
 
-			if (!match.Success && count >= Minimum && count <= Maximum)
-				return args.EmptyMatch;
-
-			return match;
+			return match ?? args.EmptyMatch;
 		}
 
 		public override Parser Clone()

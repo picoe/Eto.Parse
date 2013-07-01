@@ -17,7 +17,7 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.Scanner.Offset == -1)
+			if (args.Scanner.Offset <= 0)
 				return args.EmptyMatch;
 			else
 				return args.NoMatch;
