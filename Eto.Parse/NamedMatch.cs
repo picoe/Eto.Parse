@@ -42,5 +42,18 @@ namespace Eto.Parse
 
 	public class NamedMatchCollection : List<NamedMatch>
 	{
+		public virtual IEnumerable<NamedMatch> Find(string id, bool deep = false)
+		{
+			var matches = this.Where(r => r.Parser.Id == id);
+			if (deep | !matches.Any())
+				return matches.Concat(this.SelectMany(r => r.Find(id)));
+			else
+				return matches;
+		}
+
+		public virtual NamedMatch this[string id]
+		{
+			get { return Find(id).FirstOrDefault() ?? new NamedMatch(null, null); }
+		}
 	}
 }
