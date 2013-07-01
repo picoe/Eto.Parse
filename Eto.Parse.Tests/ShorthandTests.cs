@@ -10,13 +10,13 @@ namespace Eto.Parse.Tests
 		[Test]
 		public void Simple()
 		{
-			var input = "  hello (parsing world)  ";
+			var input = "  hello ( parsing world )  ";
 
-			// repeating whitespace
-			var ws = +Terminals.WhiteSpace;
+			// optional repeating whitespace
+			var ws = -Terminals.WhiteSpace;
 
 			// parse a value with or without brackets
-			Parser valueParser = ('(' & (+!(Parser)')').Named("value") & ')')
+			Parser valueParser = ('(' & ws & (+(!(Parser)')') - (ws & ')')).Named("value") & ws & ')')
 				| (+!Terminals.WhiteSpace).Named("value");
 
 			// top level

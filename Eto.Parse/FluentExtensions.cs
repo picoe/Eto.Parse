@@ -32,9 +32,15 @@ namespace Eto.Parse
 			return new SequenceParser(parser, new NotParser(inner));
 		}
 
-		public static Parser Repeat(this Parser parser, int minimum = 1, int maximum = Int32.MaxValue)
+		public static RepeatParser Repeat(this Parser parser, int minimum = 1, int maximum = Int32.MaxValue)
 		{
 			return new RepeatParser(parser, minimum, maximum);
+		}
+
+		public static RepeatParser Until(this RepeatParser parser, Parser until)
+		{
+			parser.Until = until;
+			return parser;
 		}
 
 		public static Parser Optional(this Parser parser)
