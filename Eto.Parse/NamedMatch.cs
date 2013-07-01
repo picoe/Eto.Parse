@@ -8,11 +8,6 @@ namespace Eto.Parse
 	{
 		public NamedParser Parser { get; private set; }
 
-		public bool Success
-		{
-			get { return Parser != null; }
-		}
-
 		public object Context { get; set; }
 
 		public NamedMatch(NamedParser parser, Scanner scanner)

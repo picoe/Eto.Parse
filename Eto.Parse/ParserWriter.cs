@@ -46,7 +46,6 @@ namespace Eto.Parse
 				if (Writers.TryGetValue(type, out handler))
 				{
 					return handler.Write(args, parser);
-					break;
 				}
 				type = type.BaseType;
 			}

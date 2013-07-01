@@ -16,7 +16,7 @@ namespace Eto.Parse
 			set { Output.Indent = value; }
 		}
 
-		public TextParserWriter Writer
+		public new TextParserWriter Writer
 		{ 
 			get { return (TextParserWriter)base.Writer; }
 			set { base.Writer = (ParserWriter<TextParserWriterArgs>)value; } 
