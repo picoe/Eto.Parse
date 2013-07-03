@@ -33,6 +33,16 @@ namespace Eto.Parse
 			this.Index = inner.Index;
 			this.Length = inner.Length;
 		}
+
+		public static bool operator true(NamedMatch namedMatch)
+		{
+			return namedMatch.Success;
+		}
+
+		public static bool operator false(NamedMatch namedMatch)
+		{
+			return !namedMatch.Success;
+		}
 	}
 
 	public class NamedMatchCollection : List<NamedMatch>
@@ -40,15 +50,15 @@ namespace Eto.Parse
 		public virtual IEnumerable<NamedMatch> Find(string id, bool deep = false)
 		{
 			var matches = this.Where(r => r.Parser.Id == id);
-			if (deep | !matches.Any())
-				return matches.Concat(this.SelectMany(r => r.Find(id)));
+			if (deep && !matches.Any())
+				return matches.Concat(this.SelectMany(r => r.Find(id, deep)));
 			else
 				return matches;
 		}
 
-		public virtual NamedMatch this[string id]
+		public virtual NamedMatch this[string id, bool deep = false]
 		{
-			get { return Find(id).FirstOrDefault() ?? new NamedMatch(null, null); }
+			get { return Find(id, deep).FirstOrDefault() ?? new NamedMatch(null, null); }
 		}
 	}
 }

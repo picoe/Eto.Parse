@@ -5,6 +5,8 @@ namespace Eto.Parse.Parsers
 {
 	public class RepeatParser : UnaryParser
 	{
+		public Parser Separator { get; set; }
+
 		public int Minimum { get; set; }
 		public int Maximum { get; set; }
 
@@ -17,11 +19,13 @@ namespace Eto.Parse.Parsers
 			Maximum = other.Maximum;
 			if (other.Until != null)
 				Until = other.Until.Clone();
+			Separator = DefaultSeparator;
 		}
 
 		public RepeatParser()
 		{
 			Maximum = Int32.MaxValue;
+			Separator = DefaultSeparator;
 		}
 
 		public RepeatParser(Parser inner, int minimum = 1, int maximum = Int32.MaxValue, Parser until = null)
@@ -30,6 +34,7 @@ namespace Eto.Parse.Parsers
 			this.Minimum = minimum;
 			this.Maximum = maximum;
 			this.Until = until;
+			Separator = DefaultSeparator;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -46,28 +51,41 @@ namespace Eto.Parse.Parsers
 			{
 				if (Until != null && count >= Minimum)
 				{
-					var offset = scanner.Offset;
+					var offset = scanner.Position;
 					var stopMatch = Until.Parse(args);
 					if (stopMatch != null) {
-						scanner.Offset = offset;
+						scanner.Position = offset;
 						break;
 					}
 				}
+
 				if (Inner != null)
 				{
+					ParseMatch sepMatch = null;
+					if (count > 0 && Separator != null)
+					{
+						sepMatch = Separator.Parse(args);
+						if (sepMatch == null)
+							break;
+					}
+
 					var childMatch = Inner.Parse(args);
 					if (childMatch == null || childMatch.Empty)
 					{
+						if (sepMatch != null)
+							scanner.Position = sepMatch.Index;
 						break;
 					}
+					if (sepMatch != null)
+						match = ParseMatch.Merge(match, sepMatch);
 					match = ParseMatch.Merge(match, childMatch);
 				}
 				else
 				{
 					if (scanner.IsEnd)
 						break;
-					var childMatch = new ParseMatch(scanner, scanner.Offset, 1);
-					scanner.Offset++;
+					var childMatch = new ParseMatch(scanner, scanner.Position, 1);
+					scanner.Position++;
 					match = ParseMatch.Merge(match, childMatch);
 				}
 

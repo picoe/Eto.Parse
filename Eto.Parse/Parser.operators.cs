@@ -36,12 +36,12 @@ namespace Eto.Parse
 				alternative.Items.Add(right);
 				return alternative;
 			}
-			alternative = right as AlternativeParser;
+			/*alternative = right as AlternativeParser;
 			if (alternative != null && alternative.Reusable)
 			{
 				alternative.Items.Insert(0, left);
 				return alternative;
-			}
+			}*/
 
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
@@ -78,12 +78,12 @@ namespace Eto.Parse
 				sequence.Items.Add(right);
 				return sequence;
 			}
-			sequence = right as SequenceParser;
+			/*sequence = right as SequenceParser;
 			if (sequence != null && sequence.Reusable)
 			{
 				sequence.Items.Insert(0, left);
 				return sequence;
-			}
+			}*/
 			return new SequenceParser(left, right) { Reusable = true };
 		}
 	}

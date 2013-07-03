@@ -20,6 +20,7 @@ namespace Eto.Parse.Writers.Code
 
 		public override void WriteObject(TextParserWriterArgs args, NamedParser parser, string name)
 		{
+			args.Output.WriteLine();
 			base.WriteObject(args, parser, name);
 			args.Output.WriteLine("{0}.Id = \"{1}\";", name, parser.Id);
 		}

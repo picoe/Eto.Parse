@@ -11,8 +11,10 @@ namespace Eto.Parse.Writers.Code
 		public override void WriteObject(TextParserWriterArgs args, CharParser parser, string name)
 		{
 			base.WriteObject(args, parser, name);
-			var testerType = parser.Tester.GetType();
-			args.Output.WriteLine("{0}.Tester = new {1}.{2}();", name, testerType.Namespace, testerType.Name);
+			if (parser.Tester != null)
+			{
+				args.Output.WriteLine("{0}.Tester = {1};", name, args.Write(parser.Tester));
+			}
 		}
 	}
 	

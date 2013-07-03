@@ -9,11 +9,40 @@ namespace Eto.Parse
 {
 	public abstract partial class Parser : ICloneable
 	{
+		public static Parser DefaultSeparator { get; set; }
+
 		internal bool Reusable { get; set; }
 
 		public object Context { get; set; }
 
 		public event Action<ParseMatch> Succeeded;
+
+		public virtual string GetErrorMessage()
+		{
+			return string.Format("Expected {0}", GetDescriptiveName());
+		}
+
+		public string GetDescriptiveName(HashSet<Parser> parents = null)
+		{
+			parents = new HashSet<Parser>();
+			if (!parents.Contains(this))
+			{
+				parents.Add(this);
+				var name = GetDescriptiveNameInternal(parents);
+				parents.Remove(this);
+				return name;
+			}
+			return "(recursive)";
+		}
+
+		protected virtual string GetDescriptiveNameInternal(HashSet<Parser> parents)
+		{
+			var type = GetType();
+			var name = type.Name;
+			if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
+				name = name.Substring(0, name.LastIndexOf("Parser"));
+			return name;
+		}
 
 		protected virtual void OnSucceeded(ParseMatch parseMatch)
 		{
@@ -68,9 +97,15 @@ namespace Eto.Parse
 			var match = InnerParse(args);
 			if (match != null)
 				OnSucceeded(match);
-			else if (args.Error == null || args.Scanner.Offset > args.Error.Index)
+			else
 			{
-				args.Error = new ParseMatch(args.Scanner, args.Scanner.Offset, -1);
+				var nodePosition = args.NodePosition;
+				if (args.Error == null)
+					args.Error = new ParseError(args.Scanner, nodePosition);
+				else if (nodePosition > args.Error.Index)
+					args.Error.Reset(nodePosition);
+				if (nodePosition == args.Error.Index)
+					args.Error.AddError(this);
 			}
 
 			return match;

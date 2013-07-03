@@ -6,7 +6,7 @@ using System.IO;
 namespace Eto.Parse.Writers.Display
 {
 
-	public class ParserWriter<T> : IParserWriterHandler<TextParserWriterArgs>
+	public class ParserWriter<T> : TextParserWriter.IParserWriterHandler
 		where T: Parser
 	{
 		public virtual string GetName(ParserWriterArgs args, T parser)
@@ -29,7 +29,7 @@ namespace Eto.Parse.Writers.Display
 		{
 		}
 
-		string IParserWriterHandler<TextParserWriterArgs>.Write(TextParserWriterArgs args, Parser parser)
+		string TextParserWriter.IParserWriterHandler.Write(TextParserWriterArgs args, Parser parser)
 		{
 			var name = GetName(args, (T)parser);
 			WriteObject(args, (T)parser, name);

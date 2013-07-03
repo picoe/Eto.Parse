@@ -10,12 +10,8 @@ namespace Eto.Parse
 	{
 		public string Indent { get; set; }
 
-		public TextParserWriter(IDictionary<Type, IParserWriterHandler<TextParserWriterArgs>> writers)
-			: base(writers)
-		{
-		}
-
-		public TextParserWriter()
+		public TextParserWriter(ParserDictionary writers = null, TesterDictionary testers = null)
+			: base(writers, testers)
 		{
 		}
 

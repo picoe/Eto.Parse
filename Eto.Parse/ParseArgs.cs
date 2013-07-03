@@ -17,6 +17,14 @@ namespace Eto.Parse
 			}
 		}
 
+		public long NodePosition
+		{
+			get { 
+				var last = nodes.Last;
+				return (last != null) ? last.Value.Position : -1;
+			}
+		}
+
 		public ParseArgs(IScanner scanner)
 		{
 			Scanner = scanner;
@@ -29,16 +37,16 @@ namespace Eto.Parse
 
 		public ParseMatch EmptyMatch
 		{
-			get { return new ParseMatch(Scanner, Scanner.Offset, 0); }
+			get { return new ParseMatch(Scanner, Scanner.Position, 0); }
 		}
 
-		public ParseMatch Error { get; set; }
+		public ParseError Error { get; set; }
 
 		public bool Push(Parser parser, NamedMatchCollection matches = null)
 		{
 			if (IsRecursive(parser))
 				return false;
-			nodes.AddLast(new ParseNode(parser, Scanner.Offset, matches ?? Matches ?? new NamedMatchCollection()));
+			nodes.AddLast(new ParseNode(parser, Scanner.Position, matches ?? Matches ?? new NamedMatchCollection()));
 			return true;
 		}
 
@@ -51,7 +59,7 @@ namespace Eto.Parse
 			while (node != null)
 			{
 				ParseNode parseNode = node.Value;
-				if (parseNode.Offset < Scanner.Offset)
+				if (parseNode.Position < Scanner.Position)
 					return false;
 				if (object.ReferenceEquals(parseNode.Parser, parser))
 				{
@@ -80,7 +88,7 @@ namespace Eto.Parse
 			nodes.RemoveLast();
 
 			if (!success)
-				Scanner.Offset = last.Offset;
+				Scanner.Position = last.Position;
 
 			return last.Matches;
 		}
@@ -95,18 +103,18 @@ namespace Eto.Parse
 	{
 		NamedMatchCollection matches;
 		Parser parser;
-		long offset;
+		long position;
 
 		public NamedMatchCollection Matches { get { return matches; } }
 
 		public Parser Parser { get { return parser; } }
 
-		public long Offset { get { return offset; } }
+		public long Position { get { return position; } }
 
-		public ParseNode(Parser parser, long offset, NamedMatchCollection matches)
+		public ParseNode(Parser parser, long position, NamedMatchCollection matches)
 		{
 			this.parser = parser;
-			this.offset = offset;
+			this.position = position;
 			this.matches = matches;
 		}
 	}

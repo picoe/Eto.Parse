@@ -8,7 +8,7 @@ namespace Eto.Parse
 	{
 		public NamedMatchCollection Matches { get; private set; }
 
-		public ParseMatch Error { get; set; }
+		public ParseError Error { get; set; }
 
 		public ContainerMatch(IScanner scanner, long offset, int length, NamedMatchCollection matches = null)
 			: base(scanner, offset, length)
@@ -21,9 +21,9 @@ namespace Eto.Parse
 			return Matches.Find(id, deep);
 		}
 
-		public virtual NamedMatch this[string id]
+		public virtual NamedMatch this[string id, bool deep = false]
 		{
-			get { return Matches[id]; }
+			get { return Matches[id, deep]; }
 		}
 
 		public virtual void PreMatch()

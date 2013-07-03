@@ -17,8 +17,21 @@ namespace Eto.Parse
 		Parser ws = Terminals.WhiteSpace.Repeat(0);
 		Parser sq = Terminals.Set('\'');
 		Parser dq = Terminals.Set('"');
+		StringParser ruleSeparator = new StringParser("::=");
 
-		public BnfParser()
+		protected string RuleSeparator { get { return ruleSeparator.Value; } set { ruleSeparator.Value = value; } }
+
+		protected AlternativeParser RuleParser { get; private set; }
+
+		protected AlternativeParser TermParser { get; private set; }
+
+		protected AlternativeParser Expresssions { get; private set; }
+
+		protected SequenceParser RuleNameParser { get; private set; }
+
+		public Dictionary<string, Parser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
+
+		public BnfParser(bool enhanced = true)
 		{
 			foreach (var property in typeof(Terminals).GetProperties())
 			{
@@ -36,28 +49,32 @@ namespace Eto.Parse
 				| (dq & (+!dq).Named("value").Optional() & dq)
 			).Named("parser", m => m.Context = new StringParser(m["value"].Value));
 
-			Parser ruleName = "<" & Terminals.Set('>').Inverse().Repeat().Named("name") & ">";
+			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().Named("name") & ">";
 
-			var expression = new AlternativeParser(); // defined later 
-			var term = new AlternativeParser();
-			term.Items.Add(literal);
-			term.Items.Add(ruleName.Named("parser", m => {
+			RuleParser = new AlternativeParser(); // defined later 
+
+			TermParser = new AlternativeParser();
+			TermParser.Items.Add(literal);
+			TermParser.Items.Add(RuleNameParser.Named("parser", m => {
 				Parser parser;
 				var name = m["name"].Value;
 				if (!parserLookup.TryGetValue(name, out parser) && !baseLookup.TryGetValue(name, out parser))
 					parser = Terminals.LetterOrDigit.Repeat().Named(name);
 				m.Context = parser;
 			}));
-			term.Items.Add('(' & sws & expression & sws & ')');
-			term.Items.Add(('{' & sws & expression & sws & '}').Named("parser", m => {
-				m.Context = new RepeatParser((Parser)m["parser"].Context);
-			}));
-			term.Items.Add(('[' & sws & expression & sws & ']').Named("parser", m => {
-				m.Context = new OptionalParser((Parser)m["parser"].Context);
-			}));
+			if (enhanced)
+			{
+				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
+				TermParser.Items.Add(('{' & sws & RuleParser & sws & '}').Named("parser", m => {
+					m.Context = new RepeatParser((Parser)m["parser"].Context);
+				}));
+				TermParser.Items.Add(('[' & sws & RuleParser & sws & ']').Named("parser", m => {
+					m.Context = new OptionalParser((Parser)m["parser"].Context);
+				}));
+			}
 
 
-			var list = new SequenceParser(term.Named("term"), -(sws.Named("ws") & term.Named("term")))
+			var list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term")))
 			.Named("parser", m => {
 				if (m.Matches.Count > 1)
 				{
@@ -77,7 +94,7 @@ namespace Eto.Parse
 				}
 			});
 
-			expression.Items.Add((list.Named("list") & ws & '|' & sws & expression.Named("expression"))
+			RuleParser.Items.Add((list.Named("list") & ws & '|' & sws & RuleParser.Named("expression"))
 			                     .Named("parser", m => {
 				// collapse alternatives to one alternative parser
 				var parser = (Parser)m["expression"]["parser"].Context;
@@ -85,9 +102,9 @@ namespace Eto.Parse
 				alt.Items.Insert(0, (Parser)m["list"]["parser"].Context);
 				m.Context = alt;
 			}));
-			expression.Items.Add(list);
+			RuleParser.Items.Add(list);
 
-			var rule = (~lineEnd & sws & ruleName.Named("ruleName") & ws & "::=" & sws & expression & lineEnd)
+			var rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd)
 					.Named("parser", 
 			         matched: m => {
 				var parser = (NamedParser)m.Context;
@@ -99,8 +116,10 @@ namespace Eto.Parse
 				m.Context = parser;
 				parserLookup[parser.Id] = parser;
 			});
+			Expresssions = new AlternativeParser();
+			Expresssions.Items.Add(rule);
 
-			this.Items.Add((rule & this) | rule);
+			this.Items.Add((Expresssions & this) | Expresssions);
 		}
 
 		Parser LineEnd()
@@ -168,8 +187,7 @@ namespace Eto.Parse
 				iw.WriteLine("{");
 				iw.Indent ++;
 			}
-			var parserWriter = new CodeParserWriter();
-			parserWriter.Write(parser, iw);
+			WriteCode(parser, iw);
 			if (includeWrapperClass)
 			{
 				iw.WriteLine("return {0};", Writers.Code.NamedWriter.GetIdentifier(startParserName));
@@ -178,6 +196,12 @@ namespace Eto.Parse
 				iw.Indent --;
 				iw.WriteLine("}");
 			}
+		}
+
+		protected virtual void WriteCode(Parser parser, IndentedTextWriter writer)
+		{
+			var parserWriter = new CodeParserWriter();
+			parserWriter.Write(parser, writer);
 		}
 	}
 }

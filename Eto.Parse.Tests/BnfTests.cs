@@ -93,15 +93,15 @@ Vancouver, BC V5V5V5";
 		public static void TestAddress(ContainerMatch match)
 		{
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("Joe", match["first-name"].Value);
-			Assert.AreEqual("Smith", match["last-name"].Value);
-			Assert.AreEqual("123", match["house-num"].Value);
-			Assert.AreEqual("Elm Street", match["street"].Value);
-			Assert.AreEqual("Elm", match["street-name"].Value);
-			Assert.AreEqual("Street", match["street-type"].Value);
-			Assert.AreEqual("Vancouver", match["town-name"].Value);
-			Assert.AreEqual("BC", match["state-code"].Value);
-			Assert.AreEqual("V5V5V5", match["zip-code"].Value);
+			Assert.AreEqual("Joe", match["first-name", true].Value);
+			Assert.AreEqual("Smith", match["last-name", true].Value);
+			Assert.AreEqual("123", match["house-num", true].Value);
+			Assert.AreEqual("Elm Street", match["street", true].Value);
+			Assert.AreEqual("Elm", match["street-name", true].Value);
+			Assert.AreEqual("Street", match["street-type", true].Value);
+			Assert.AreEqual("Vancouver", match["town-name", true].Value);
+			Assert.AreEqual("BC", match["state-code", true].Value);
+			Assert.AreEqual("V5V5V5", match["zip-code", true].Value);
 		}
 
 		public static void TestAddress(Parser addressParser)

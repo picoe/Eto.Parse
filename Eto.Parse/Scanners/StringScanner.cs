@@ -7,7 +7,7 @@ namespace Eto.Parse.Scanners
 		long offset = 0;
 		string value;
 		
-		public long Offset
+		public long Position
 		{
 			get { return offset; }
 			set { offset = value; }

@@ -65,7 +65,7 @@ namespace Eto.Parse
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
 
-		public static Parser Named(this Parser parser, string id, Action<NamedMatch> matched = null, Action<NamedMatch> preMatch = null)
+		public static NamedParser Named(this Parser parser, string id, Action<NamedMatch> matched = null, Action<NamedMatch> preMatch = null)
 		{
 			var namedParser = new NamedParser(id ?? Guid.NewGuid().ToString(), parser);
 			if (matched != null)
@@ -81,22 +81,29 @@ namespace Eto.Parse
 
 		public static CharParser Include(this CharParser parser, CharParser include)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, include.Tester));
+			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, include.Tester, include.Negative));
 		}
 
 		public static CharParser Include(this CharParser parser, params char[] include)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, new CharSetTester(include)));
+			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, new CharSetTester(include), false));
 		}
 
 		public static CharParser Exclude(this CharParser include, CharParser exclude)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, exclude.Tester));
+			return new CharParser(new ExcludeTester(include.Tester, include.Negative, exclude.Tester, exclude.Negative));
 		}
 
 		public static CharParser Exclude(this CharParser include, params char[] exclude)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, new CharSetTester(exclude)));
+			return new CharParser(new ExcludeTester(include.Tester, include.Negative, new CharSetTester(exclude), false));
+		}
+
+		public static T Separate<T>(this T parser)
+			where T: Parser
+		{
+			parser.Reusable = false;
+			return parser;
 		}
 	}
 }

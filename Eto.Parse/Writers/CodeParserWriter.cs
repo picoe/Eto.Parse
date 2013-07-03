@@ -2,13 +2,14 @@ using System;
 using Eto.Parse.Parsers;
 using System.Collections.Generic;
 using System.IO;
+using Eto.Parse.Testers;
 
 namespace Eto.Parse.Writers
 {
 	public class CodeParserWriter : TextParserWriter
 	{
 		public CodeParserWriter()
-			: base(new Dictionary<Type, IParserWriterHandler<TextParserWriterArgs>>
+			: base(new ParserDictionary
 			{
 				{ typeof(Parser), new Code.ParserWriter<Parser>() },
 				{ typeof(NamedParser), new Code.NamedWriter() },
@@ -17,6 +18,13 @@ namespace Eto.Parse.Writers
 				{ typeof(CharParser), new Code.CharWriter() },
 				{ typeof(StringParser), new Code.StringWriter() },
 				{ typeof(RepeatParser), new Code.RepeatWriter() }
+			}, 
+			new TesterDictionary
+			{
+				{ typeof(ICharTester), new Code.TesterWriter<ICharTester>() },
+				{ typeof(IncludeTester), new Code.IncludeTesterWriter() },
+				{ typeof(ExcludeTester), new Code.ExcludeTesterWriter() },
+				{ typeof(RangeTester), new Code.RangeTesterWriter() },
 			})
 		{
 		}

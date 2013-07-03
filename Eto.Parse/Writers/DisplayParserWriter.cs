@@ -8,7 +8,7 @@ namespace Eto.Parse.Writers
 	public class DisplayParserWriter : TextParserWriter
 	{
 		public DisplayParserWriter()
-			: base(new Dictionary<Type, IParserWriterHandler<TextParserWriterArgs>>
+			: base(new ParserDictionary
 			{
 				{ typeof(Parser), new Display.ParserWriter<Parser>() },
 				{ typeof(NamedParser), new Display.NamedWriter() },

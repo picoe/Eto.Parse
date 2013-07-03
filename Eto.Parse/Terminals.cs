@@ -1,6 +1,7 @@
 using System;
 using Eto.Parse.Parsers;
 using Eto.Parse.Testers;
+using System.Linq;
 
 namespace Eto.Parse
 {
@@ -17,7 +18,12 @@ namespace Eto.Parse
 		public static CharParser ControlCodes { get { return new CharParser(new ControlTester()); } }
 		public static CharParser Symbol { get { return new CharParser(new SymbolTester()); } }
 		public static CharParser Eol { get { return new CharParser(new EolTester()); } }
+		public static CharParser Set(params int[] chars) { return new CharParser(new CharSetTester(chars.Select(r => (char)r).ToArray())); }
 		public static CharParser Set(params char[] chars) { return new CharParser(new CharSetTester(chars)); }
+		public static CharParser Set(string chars) { return new CharParser(new CharSetTester(chars.ToCharArray())); }
+		public static CharParser Range(char start, char end) { return new CharParser(new RangeTester(start, end)); }
+		public static CharParser Range(int start, int end) { return new CharParser(new RangeTester((char)start, (char)end)); }
+		public static CharParser Printable { get { return new CharParser(new ControlTester()) { Negative = true }; } }
 
 		public static StartParser Start { get { return new StartParser(); } }
 		public static EndParser End { get { return new EndParser(); } }

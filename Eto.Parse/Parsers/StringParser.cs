@@ -34,12 +34,12 @@ namespace Eto.Parse.Parsers
 			if (val == null)
 				return args.EmptyMatch;
 			IScanner scanner = args.Scanner;
-			long offset = scanner.Offset;
+			long offset = scanner.Position;
 			for (int i = 0; i < val.Length; i++)
 			{
 				if (scanner.IsEnd || scanner.Peek != val[i])
 				{
-					scanner.Offset = offset;
+					scanner.Position = offset;
 					return null;
 				}
 				scanner.Read();

@@ -4,7 +4,7 @@ namespace Eto.Parse
 {
 	public interface IScanner
 	{
-		long Offset { get; set; }
+		long Position { get; set; }
 
 		bool IsEnd { get; }
 
@@ -12,6 +12,6 @@ namespace Eto.Parse
 
 		void Read();
 
-		string SubString(long offset, int length);
+		string SubString(long index, int length);
 	}
 }

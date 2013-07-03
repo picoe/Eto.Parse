@@ -185,6 +185,15 @@
     <Compile Include="IScanner.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GoldParser.cs" />
+    <Compile Include="ParseError.cs" />
+    <Compile Include="Testers\RangeTester.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Writers\Code\TesterWriter.cs" />
+    <Compile Include="Writers\Code\IncludeTesterWriter.cs" />
+    <Compile Include="Writers\Code\ExcludeTesterWriter.cs" />
+    <Compile Include="Writers\Code\RangeTesterWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

@@ -6,7 +6,15 @@ namespace Eto.Parse.Testers
 	{
 		public ICharTester Include { get; set; }
 
+		public bool IncludeNegative { get; set; }
+
 		public ICharTester Exclude { get; set; }
+
+		public bool ExcludeNegative { get; set; }
+
+		public ExcludeTester()
+		{
+		}
 
 		public ExcludeTester(ICharTester include, ICharTester exclude)
 		{
@@ -14,9 +22,17 @@ namespace Eto.Parse.Testers
 			Exclude = exclude;
 		}
 
+		public ExcludeTester(ICharTester include, bool includeNegative, ICharTester exclude, bool excludeNegative)
+		{
+			Include = include;
+			IncludeNegative = includeNegative;
+			Exclude = exclude;
+			ExcludeNegative = excludeNegative;
+		}
+
 		public bool Test(char ch)
 		{
-			return Include.Test(ch) && !Exclude.Test(ch);
+			return Include.Test(ch) != IncludeNegative && Exclude.Test(ch) == ExcludeNegative;
 		}
 	}
 }

@@ -5,9 +5,4 @@ using System.IO;
 
 namespace Eto.Parse
 {
-	public interface IParserWriterHandler<T>
-		where T: ParserWriterArgs
-	{
-		string Write(T args, Parser parser);
-	}
 }

@@ -33,12 +33,14 @@
     <Reference Include="nunit.framework">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
     <Compile Include="FluentTests.cs" />
     <Compile Include="BnfTests.cs" />
     <Compile Include="ShorthandTests.cs" />
+    <Compile Include="GoldParserTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

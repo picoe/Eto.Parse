@@ -32,7 +32,7 @@ namespace Eto.Parse.Parsers
 				if (!args.Push(this))
 					return null;
 				var parser = Items[i];
-				var match = parser.Parse(args);
+				var match = parser != null ? parser.Parse(args) : args.EmptyMatch;
 				if (match != null)
 				{
 					args.Pop(true);

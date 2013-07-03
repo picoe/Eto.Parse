@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Diagnostics;
+using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Tests
 {
@@ -17,6 +19,11 @@ namespace Eto.Parse.Tests
 					parameters.ReferencedAssemblies.AddRange(referencedAssemblies);
 
 				var res = csharp.CompileAssemblyFromSource(parameters, code);
+				if (res.Errors.HasErrors)
+				{
+					var errors = string.Join("\n", res.Errors.OfType<CompilerError>().Select(r => r.ToString()));
+					throw new Exception(string.Format("Error compiling:\n{0}", errors));
+				}
 
 				var type = res.CompiledAssembly.GetType(className);
 				var method = type.GetMethod(methodName);

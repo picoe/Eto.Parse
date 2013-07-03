@@ -8,6 +8,11 @@ namespace Eto.Parse
 	{
 		public Parser Inner { get; set; }
 
+		protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
+		{
+			return string.Format("{0}, Inner: {1}", base.GetDescriptiveNameInternal(parents), Inner != null ? Inner.GetDescriptiveName(parents): null);
+		}
+
 		protected UnaryParser(UnaryParser other)
 			: base(other)
 		{

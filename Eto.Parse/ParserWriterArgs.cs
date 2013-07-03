@@ -33,16 +33,30 @@ namespace Eto.Parse
 			Level -= 1;
 		}
 
-		public string Write(Parser inner)
+		public string Write(Parser parser)
 		{
-			return Writer.WriteParser(this, inner);
+			return Writer.WriteParser(this, parser);
+		}
+
+		public string Write(ICharTester tester)
+		{
+			return Writer.WriteTester(this, tester);
+		}
+
+		public string GenerateName(ICharTester tester)
+		{
+			return GenerateName(tester.GetType());
 		}
 
 		public string GenerateName(Parser parser)
 		{
+			return GenerateName(parser.GetType());
+		}
+
+		public string GenerateName(Type type)
+		{
 			if (names == null)
 				names = new Dictionary<Type, int>();
-			var type = parser.GetType();
 			int val;
 			if (!names.TryGetValue(type, out val))
 				val = 0;
