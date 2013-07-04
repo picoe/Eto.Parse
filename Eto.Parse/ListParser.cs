@@ -8,6 +8,11 @@ namespace Eto.Parse
 	{
 		public List<Parser> Items { get; private set; }
 
+		protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
+		{
+			return null; // show only the contained items in the list, not the list itself
+		}
+
 		protected ListParser (ListParser other)
 		{
 			Items = new List<Parser>(other.Items.Select(r => r.Clone()));
@@ -23,7 +28,7 @@ namespace Eto.Parse
 			Items = sequence.ToList();
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NonTerminalParser> Find(string parserId)
 		{
 			return Items.SelectMany(r => r.Find(parserId));
 		}

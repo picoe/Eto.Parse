@@ -23,7 +23,7 @@ namespace Eto.Parse.Parsers
 			this.Value = value;
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NonTerminalParser> Find(string parserId)
 		{
 			yield break;
 		}

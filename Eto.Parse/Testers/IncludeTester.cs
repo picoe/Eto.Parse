@@ -6,22 +6,22 @@ namespace Eto.Parse.Testers
 	{
 		public ICharTester First { get; set; }
 
-		public bool FirstNegative { get; set; }
+		public bool FirstInverse { get; set; }
 
 		public ICharTester Second { get; set; }
 
-		public bool SecondNegative { get; set; }
+		public bool SecondInverse { get; set; }
 
 		public IncludeTester()
 		{
 		}
 
-		public IncludeTester(ICharTester first, bool firstNegative, ICharTester second, bool secondNegative)
+		public IncludeTester(ICharTester first, bool firstInverse, ICharTester second, bool secondInverse)
 		{
 			First = first;
-			FirstNegative = firstNegative;
+			FirstInverse = firstInverse;
 			Second = second;
-			SecondNegative = secondNegative;
+			SecondInverse = secondInverse;
 		}
 
 		public IncludeTester(ICharTester first, ICharTester second)
@@ -32,7 +32,7 @@ namespace Eto.Parse.Testers
 
 		public bool Test(char ch)
 		{
-			return First.Test(ch) != FirstNegative || Second.Test(ch) != SecondNegative;
+			return First.Test(ch) != FirstInverse || Second.Test(ch) != SecondInverse;
 		}
 	}
 }

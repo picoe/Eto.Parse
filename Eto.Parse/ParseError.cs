@@ -7,13 +7,17 @@ namespace Eto.Parse
 	public struct ParseErrorMessage
 	{
 		Parser parser;
+		ParseError error;
 		public Parser Parser { get { return parser; } }
 
 		public string Message { get { return Parser.GetErrorMessage(); } }
 
-		public ParseErrorMessage(Parser parser)
+		public ParseError Error { get { return error; } }
+
+		public ParseErrorMessage(Parser parser, ParseError error)
 		{
 			this.parser = parser;
+			this.error = error;
 		}
 	}
 
@@ -25,6 +29,8 @@ namespace Eto.Parse
 
 		public IEnumerable<ParseErrorMessage> Errors { get { return errors; } }
 
+		public ParseError Parent { get; private set; }
+
 		public IEnumerable<string> Messages
 		{
 			get { return Errors.Select(r => r.Message); }
@@ -32,15 +38,37 @@ namespace Eto.Parse
 
 		public long Index { get; set; }
 
+		public ParseError LastError
+		{
+			get
+			{
+				if (errors.Count > 0)
+				{
+					var children = errors.Select(r => r.Error).Where(r => r != null);
+					if (children.Any())
+					{
+						return children.Select(r => r.LastError).MaxBy(r => r.Index);
+					}
+				}
+				return this;
+			}
+		}
+
 		public ParseError(IScanner scanner, long index)
 		{
 			Scanner = scanner;
 			Reset(index);
 		}
 
-		public void AddError(Parser parser)
+		public void AddError(Parser parser, ParseError error)
 		{
-			errors.Add(new ParseErrorMessage(parser));
+			if (error != null && error.Parent == null)
+			{
+				error.Parent = this;
+				errors.Add(new ParseErrorMessage(parser, error));
+			}
+			else
+				errors.Add(new ParseErrorMessage(parser, null));
 		}
 
 		public void Reset(long index)
@@ -61,8 +89,8 @@ namespace Eto.Parse
 		public override string ToString()
 		{
 			var context = GetStringBefore(10) + ">>>" + GetStringAfter(10);
-			var messages = string.Join("\n", Messages);
-			return string.Format("Index={0}, Context=\"{1}\", Messages={2}", Index, context, messages);
+			var messages = string.Join("\n", Messages.Where(r => r != null));
+			return string.Format("Index={0}, Context=\"{1}\", Expected one of:\n{2}", Index, context, messages);
 		}
 	}
 }

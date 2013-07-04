@@ -36,6 +36,8 @@ namespace Eto.Parse.Scanners
 
 		public string SubString(long offset, int length)
 		{
+			if (offset >= value.Length)
+				return null;
 			return value.Substring((int)offset, length);
 		}
 		

@@ -6,22 +6,22 @@ namespace Eto.Parse
 {
 	public class ContainerMatch : ParseMatch
 	{
-		public NamedMatchCollection Matches { get; private set; }
+		public NonTerminalMatchCollection Matches { get; private set; }
 
 		public ParseError Error { get; set; }
 
-		public ContainerMatch(IScanner scanner, long offset, int length, NamedMatchCollection matches = null)
-			: base(scanner, offset, length)
+		public ContainerMatch(long offset, int length, NonTerminalMatchCollection matches = null)
+			: base(offset, length)
 		{
-			this.Matches = matches ?? new NamedMatchCollection();
+			this.Matches = matches ?? new NonTerminalMatchCollection();
 		}
 
-		public virtual IEnumerable<NamedMatch> Find(string id, bool deep = false)
+		public virtual IEnumerable<NonTerminalMatch> Find(string id, bool deep = false)
 		{
 			return Matches.Find(id, deep);
 		}
 
-		public virtual NamedMatch this[string id, bool deep = false]
+		public virtual NonTerminalMatch this[string id, bool deep = false]
 		{
 			get { return Matches[id, deep]; }
 		}

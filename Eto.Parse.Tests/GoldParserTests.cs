@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Eto.Parse.Grammars;
 
 namespace Eto.Parse.Tests
 {
@@ -7,6 +8,7 @@ namespace Eto.Parse.Tests
 	public class GoldParserTests
 	{
 		const string goldBnf = @"
+
 !-----------------------------------------------------------------------------------
 ! GOLD Meta-Language
 !
@@ -194,7 +196,9 @@ Comment End   = '*!'
 			var generatedGoldParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
 
 			// match using generated parser
-			var match = generatedGoldParser.Match(goldBnf);
+			var match = generatedGoldParser.NonTerminal("gold").Match(goldBnf);
+
+			Assert.IsTrue(match.Success, "Error: {0}", match.Error.LastError);
 		}
 	}
 }

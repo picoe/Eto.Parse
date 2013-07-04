@@ -19,7 +19,7 @@ namespace Eto.Parse
 
 		public virtual string GetErrorMessage()
 		{
-			return string.Format("Expected {0}", GetDescriptiveName());
+			return GetDescriptiveName();
 		}
 
 		public string GetDescriptiveName(HashSet<Parser> parents = null)
@@ -59,39 +59,6 @@ namespace Eto.Parse
 			Context = other.Context;
 		}
 
-		public ContainerMatch Match(string value, bool match = true)
-		{
-			if (value == null)
-				throw new ArgumentNullException("value");
-			return Match(new StringScanner(value), match);
-		}
-
-		public ContainerMatch Match(IScanner scanner, bool match = true)
-		{
-			if (scanner == null)
-				throw new ArgumentNullException("scanner");
-			var args = new ParseArgs(scanner);
-			args.Push((Parser)null);
-			var top = Parse(args);
-			ContainerMatch containerMatch;
-			if (top != null)
-			{
-				var matches = args.Pop(top.Success);
-				containerMatch = new ContainerMatch(scanner, top.Index, top.Length, matches);
-			}
-			else {
-				containerMatch = new ContainerMatch(scanner, -1, -1);
-				containerMatch.Error = args.Error;
-			}
-
-			if (match)
-			{
-				containerMatch.PreMatch();
-				containerMatch.Match();
-			}
-			return containerMatch;
-		}
-
 		public ParseMatch Parse(ParseArgs args)
 		{
 			var match = InnerParse(args);
@@ -99,21 +66,15 @@ namespace Eto.Parse
 				OnSucceeded(match);
 			else
 			{
-				var nodePosition = args.NodePosition;
-				if (args.Error == null)
-					args.Error = new ParseError(args.Scanner, nodePosition);
-				else if (nodePosition > args.Error.Index)
-					args.Error.Reset(nodePosition);
-				if (nodePosition == args.Error.Index)
-					args.Error.AddError(this);
+				//args.AddError(this);
 			}
 
 			return match;
 		}
 
-		public abstract IEnumerable<NamedParser> Find(string parserId);
+		public abstract IEnumerable<NonTerminalParser> Find(string parserId);
 
-		public NamedParser this [string parserId]
+		public NonTerminalParser this [string parserId]
 		{
 			get { return Find(parserId).FirstOrDefault(); }
 		}

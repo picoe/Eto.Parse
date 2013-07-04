@@ -10,8 +10,8 @@ namespace Eto.Parse.Writers.Code
 			base.WriteContents(args, tester, name);
 			args.Output.WriteLine("{0}.Include = {1};", name, args.Write(tester.Include));
 			args.Output.WriteLine("{0}.Exclude = {1};", name, args.Write(tester.Exclude));
-			args.Output.WriteLine("{0}.IncludeNegative = {1};", name, tester.IncludeNegative.ToString().ToLowerInvariant());
-			args.Output.WriteLine("{0}.ExcludeNegative = {1};", name, tester.ExcludeNegative.ToString().ToLowerInvariant());
+			args.Output.WriteLine("{0}.IncludeInverse = {1};", name, tester.IncludeInverse.ToString().ToLowerInvariant());
+			args.Output.WriteLine("{0}.ExcludeInverse = {1};", name, tester.ExcludeInverse.ToString().ToLowerInvariant());
 		}
 	}
 }

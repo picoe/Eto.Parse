@@ -31,7 +31,7 @@ namespace Eto.Parse.Tests
 			}
 		}
 
-		public static void TestSpeed(Parser parser, string input, int iterations)
+		public static void TestSpeed(NonTerminalParser parser, string input, int iterations)
 		{
 			var sw = new Stopwatch();
 			sw.Start();

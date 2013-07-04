@@ -16,20 +16,21 @@ namespace Eto.Parse
 			return sequence;
 		}
 
-		public static NegatableParser Inverse(this NegatableParser parser)
+		public static T Inverse<T>(this T parser)
+			where T: Parser, IInverseParser
 		{
-			parser.Negative = !parser.Negative;
+			parser.Inverse = !parser.Inverse;
 			return parser;
 		}
 
 		public static Parser Not(this Parser parser)
 		{
-			return new NotParser(parser);
+			return new LookAheadParser(parser);
 		}
 
 		public static Parser Not(this Parser parser, Parser inner)
 		{
-			return new SequenceParser(parser, new NotParser(inner));
+			return new SequenceParser(parser, new LookAheadParser(inner));
 		}
 
 		public static RepeatParser Repeat(this Parser parser, int minimum = 1, int maximum = Int32.MaxValue)
@@ -65,9 +66,9 @@ namespace Eto.Parse
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
 
-		public static NamedParser Named(this Parser parser, string id, Action<NamedMatch> matched = null, Action<NamedMatch> preMatch = null)
+		public static NonTerminalParser NonTerminal(this Parser parser, string id, Action<NonTerminalMatch> matched = null, Action<NonTerminalMatch> preMatch = null)
 		{
-			var namedParser = new NamedParser(id ?? Guid.NewGuid().ToString(), parser);
+			var namedParser = new NonTerminalParser(id ?? Guid.NewGuid().ToString(), parser);
 			if (matched != null)
 				namedParser.Matched += match => {
 					matched(match);
@@ -81,22 +82,22 @@ namespace Eto.Parse
 
 		public static CharParser Include(this CharParser parser, CharParser include)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, include.Tester, include.Negative));
+			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, include.Tester, include.Inverse));
 		}
 
 		public static CharParser Include(this CharParser parser, params char[] include)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, new CharSetTester(include), false));
+			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, new CharSetTester(include), false));
 		}
 
 		public static CharParser Exclude(this CharParser include, CharParser exclude)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Negative, exclude.Tester, exclude.Negative));
+			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, exclude.Tester, exclude.Inverse));
 		}
 
 		public static CharParser Exclude(this CharParser include, params char[] exclude)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Negative, new CharSetTester(exclude), false));
+			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, new CharSetTester(exclude), false));
 		}
 
 		public static T Separate<T>(this T parser)

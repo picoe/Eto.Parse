@@ -7,15 +7,18 @@ namespace Eto.Parse
 	{
 		public static Parser operator !(Parser parser)
 		{
-			var negatable = parser as NegatableParser;
-			if (negatable != null)
+			var inverse = parser as IInverseParser;
+			if (inverse != null)
 			{
-				if (!negatable.Reusable)
-					negatable = negatable.Clone() as NegatableParser;
-				negatable.Negative = !negatable.Negative;
-				return negatable;
+				if (!parser.Reusable)
+				{
+					parser = parser.Clone();
+					inverse = parser as IInverseParser;
+				}
+				inverse.Inverse = !inverse.Inverse;
+				return parser;
 			}
-			return new NotParser(parser) { Reusable = true };
+			return new LookAheadParser(parser) { Reusable = true };
 		}
 
 		public static RepeatParser operator +(Parser parser)
@@ -86,6 +89,7 @@ namespace Eto.Parse
 			}*/
 			return new SequenceParser(left, right) { Reusable = true };
 		}
+
 	}
 }
 

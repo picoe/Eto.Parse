@@ -5,7 +5,7 @@ namespace Eto.Parse
 {
 	public class ParseMatch
 	{
-		public IScanner Scanner { get; private set; }
+
 
 		public long Index { get; protected set; }
 
@@ -14,11 +14,6 @@ namespace Eto.Parse
 		public long End
 		{
 			get { return (Length > 0) ? Index + Length - 1 : Index; }
-		}
-		
-		public string Value
-		{
-			get { return Success ? Scanner.SubString(Index, Length) : null; }
 		}
 		
 		public bool Success
@@ -31,9 +26,8 @@ namespace Eto.Parse
 			get { return Length == 0; }
 		}
 		
-		public ParseMatch(IScanner scanner, long offset, int length)
+		public ParseMatch(long offset, int length)
 		{
-			this.Scanner = scanner;
 			this.Index = offset;
 			this.Length = length;
 		}
@@ -49,12 +43,17 @@ namespace Eto.Parse
 			
 			long start = Math.Min(left.Index, right.Index);
 			long end = Math.Max(left.End, right.End);
-			return new ParseMatch(left.Scanner, start, (int)(end - start + 1));
+			return new ParseMatch(start, (int)(end - start + 1));
 		}
 
-		public override string ToString()
+		public static bool operator true(ParseMatch match)
 		{
-			return Value ?? string.Empty;
+			return match.Success;
+		}
+
+		public static bool operator false(ParseMatch match)
+		{
+			return !match.Success;
 		}
 	}
 }

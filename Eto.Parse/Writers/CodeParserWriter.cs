@@ -12,7 +12,7 @@ namespace Eto.Parse.Writers
 			: base(new ParserDictionary
 			{
 				{ typeof(Parser), new Code.ParserWriter<Parser>() },
-				{ typeof(NamedParser), new Code.NamedWriter() },
+				{ typeof(NonTerminalParser), new Code.NamedWriter() },
 				{ typeof(ListParser), new Code.ListWriter() },
 				{ typeof(UnaryParser), new Code.UnaryWriter<UnaryParser>() },
 				{ typeof(CharParser), new Code.CharWriter() },

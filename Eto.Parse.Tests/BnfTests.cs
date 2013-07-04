@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using Eto.Parse;
 using System.Diagnostics;
+using Eto.Parse.Grammars;
 
 namespace Eto.Parse.Tests
 {
@@ -39,7 +40,7 @@ Vancouver, BC V5V5V5";
 <apt-num> ::= ('Apt'|'Suite') ['#'] {<digit>}
 ";
 
-		public static Parser GetAddressParser()
+		public static NonTerminalParser GetAddressParser()
 		{
 			var bnfParser = new BnfParser();
 			return bnfParser.Build(postalAddressBnf, "postal-address");
@@ -76,7 +77,7 @@ Vancouver, BC V5V5V5";
 
 			// execute the code and test
 			var addressParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
-			TestAddress(addressParser);
+			TestAddress(addressParser.NonTerminal("address"));
 		}
 
 		[Test]
@@ -87,7 +88,7 @@ Vancouver, BC V5V5V5";
 			var match = addressParser.Match(AddressMissingZipPart);
 			Assert.IsFalse(match.Success);
 			Assert.That(match.Error != null, "Error was not specified");
-			Assert.That(match.Error.Index == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
+			Assert.That(match.Error.LastError.Index == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
 		public static void TestAddress(ContainerMatch match)
@@ -104,7 +105,7 @@ Vancouver, BC V5V5V5";
 			Assert.AreEqual("V5V5V5", match["zip-code", true].Value);
 		}
 
-		public static void TestAddress(Parser addressParser)
+		public static void TestAddress(NonTerminalParser addressParser)
 		{
 			TestAddress(addressParser.Match(Address));
 		}

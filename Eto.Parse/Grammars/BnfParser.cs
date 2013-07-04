@@ -7,12 +7,12 @@ using Eto.Parse.Writers;
 using System.IO;
 using System.CodeDom.Compiler;
 
-namespace Eto.Parse
+namespace Eto.Parse.Grammars
 {
-	public class BnfParser : SequenceParser
+	public class BnfParser : NonTerminalParser
 	{
-		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
-		Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, NonTerminalParser> parserLookup = new Dictionary<string, NonTerminalParser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, NonTerminalParser> baseLookup = new Dictionary<string, NonTerminalParser>(StringComparer.InvariantCultureIgnoreCase);
 		Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
 		Parser ws = Terminals.WhiteSpace.Repeat(0);
 		Parser sq = Terminals.Set('\'');
@@ -29,53 +29,54 @@ namespace Eto.Parse
 
 		protected SequenceParser RuleNameParser { get; private set; }
 
-		public Dictionary<string, Parser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
+		public Dictionary<string, NonTerminalParser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
 
 		public BnfParser(bool enhanced = true)
+			: base("bnf")
 		{
 			foreach (var property in typeof(Terminals).GetProperties())
 			{
 				if (typeof(Parser).IsAssignableFrom(property.PropertyType))
 				{
 					var parser = property.GetValue(null, null) as Parser;
-					baseLookup[property.Name] = parser;
+					baseLookup[property.Name] = parser.NonTerminal(property.Name);
 				}
 			}
 
 			var lineEnd = LineEnd();
 
 			var literal = (
-				(sq & (+!sq).Named("value").Optional() & sq)
-				| (dq & (+!dq).Named("value").Optional() & dq)
-			).Named("parser", m => m.Context = new StringParser(m["value"].Value));
+				(sq & (+!sq).NonTerminal("value").Optional() & sq)
+				| (dq & (+!dq).NonTerminal("value").Optional() & dq)
+			).NonTerminal("parser", m => m.Context = new StringParser(m["value"].Value));
 
-			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().Named("name") & ">";
+			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().NonTerminal("name") & ">";
 
 			RuleParser = new AlternativeParser(); // defined later 
 
 			TermParser = new AlternativeParser();
 			TermParser.Items.Add(literal);
-			TermParser.Items.Add(RuleNameParser.Named("parser", m => {
-				Parser parser;
+			TermParser.Items.Add(RuleNameParser.NonTerminal("parser", m => {
+				NonTerminalParser parser;
 				var name = m["name"].Value;
 				if (!parserLookup.TryGetValue(name, out parser) && !baseLookup.TryGetValue(name, out parser))
-					parser = Terminals.LetterOrDigit.Repeat().Named(name);
+					parser = Terminals.LetterOrDigit.Repeat().NonTerminal(name);
 				m.Context = parser;
 			}));
 			if (enhanced)
 			{
 				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
-				TermParser.Items.Add(('{' & sws & RuleParser & sws & '}').Named("parser", m => {
+				TermParser.Items.Add(('{' & sws & RuleParser & sws & '}').NonTerminal("parser", m => {
 					m.Context = new RepeatParser((Parser)m["parser"].Context);
 				}));
-				TermParser.Items.Add(('[' & sws & RuleParser & sws & ']').Named("parser", m => {
+				TermParser.Items.Add(('[' & sws & RuleParser & sws & ']').NonTerminal("parser", m => {
 					m.Context = new OptionalParser((Parser)m["parser"].Context);
 				}));
 			}
 
 
-			var list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term")))
-			.Named("parser", m => {
+			var list = new SequenceParser(TermParser.NonTerminal("term"), -(sws.NonTerminal("ws") & TermParser.NonTerminal("term")))
+			.NonTerminal("parser", m => {
 				if (m.Matches.Count > 1)
 				{
 					var parser = new SequenceParser();
@@ -94,8 +95,8 @@ namespace Eto.Parse
 				}
 			});
 
-			RuleParser.Items.Add((list.Named("list") & ws & '|' & sws & RuleParser.Named("expression"))
-			                     .Named("parser", m => {
+			RuleParser.Items.Add((list.NonTerminal("list") & ws & '|' & sws & RuleParser.NonTerminal("expression"))
+			                     .NonTerminal("parser", m => {
 				// collapse alternatives to one alternative parser
 				var parser = (Parser)m["expression"]["parser"].Context;
 				var alt = parser as AlternativeParser ?? new AlternativeParser(parser);
@@ -104,22 +105,22 @@ namespace Eto.Parse
 			}));
 			RuleParser.Items.Add(list);
 
-			var rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd)
-					.Named("parser", 
+			var rule = (~lineEnd & sws & RuleNameParser.NonTerminal("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd)
+					.NonTerminal("parser", 
 			         matched: m => {
-				var parser = (NamedParser)m.Context;
+				var parser = (NonTerminalParser)m.Context;
 				parser.Inner = (Parser)m["parser"].Context;
 				m.Context = parser;
 			},
 			         preMatch: m => {
-				var parser = new NamedParser(m["ruleName"]["name"].Value);
+				var parser = new NonTerminalParser(m["ruleName"]["name"].Value);
 				m.Context = parser;
 				parserLookup[parser.Id] = parser;
 			});
 			Expresssions = new AlternativeParser();
 			Expresssions.Items.Add(rule);
 
-			this.Items.Add((Expresssions & this) | Expresssions);
+			this.Inner = (Expresssions & this) | Expresssions;
 		}
 
 		Parser LineEnd()
@@ -132,11 +133,11 @@ namespace Eto.Parse
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			parserLookup = new Dictionary<string, Parser>();
+			parserLookup = new Dictionary<string, NonTerminalParser>();
 			return base.InnerParse(args);
 		}
 
-		public Dictionary<string, Parser> Build(string bnf)
+		public Dictionary<string, NonTerminalParser> Build(string bnf)
 		{
 			var match = this.Match(new StringScanner(bnf));
 
@@ -147,9 +148,9 @@ namespace Eto.Parse
 			return parserLookup;
 		}
 
-		public Parser Build(string bnf, string startParserName)
+		public NonTerminalParser Build(string bnf, string startParserName)
 		{
-			Parser parser;
+			NonTerminalParser parser;
 			if (!Build(bnf).TryGetValue(startParserName, out parser))
 				throw new ArgumentException("the topParser specified is not found in this bnf");
 			return parser;

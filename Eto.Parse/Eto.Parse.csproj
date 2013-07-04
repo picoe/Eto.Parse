@@ -63,9 +63,6 @@
     <Compile Include="BinaryParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NegatableParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ParseArgs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -120,15 +117,6 @@
     <Compile Include="Testers\WhiteSpaceTester.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Parsers\NotParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NamedParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NamedMatch.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Testers\EolTester.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,7 +124,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ListParser.cs" />
-    <Compile Include="BnfParser.cs" />
     <Compile Include="Parser.operators.cs" />
     <Compile Include="ParseMatch.cs">
       <SubType>Code</SubType>
@@ -185,7 +172,6 @@
     <Compile Include="IScanner.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GoldParser.cs" />
     <Compile Include="ParseError.cs" />
     <Compile Include="Testers\RangeTester.cs">
       <SubType>Code</SubType>
@@ -194,6 +180,23 @@
     <Compile Include="Writers\Code\IncludeTesterWriter.cs" />
     <Compile Include="Writers\Code\ExcludeTesterWriter.cs" />
     <Compile Include="Writers\Code\RangeTesterWriter.cs" />
+    <Compile Include="Parsers\GroupParser.cs" />
+    <Compile Include="InverseParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NonTerminalParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NonTerminalMatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Writers\Code\CharSetTesterWriter.cs" />
+    <Compile Include="Grammars\GoldParser.cs" />
+    <Compile Include="Grammars\BnfParser.cs" />
+    <Compile Include="InternalExtensions.cs" />
+    <Compile Include="Parsers\LookAheadParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
@@ -206,5 +209,6 @@
     <Folder Include="Writers\" />
     <Folder Include="Writers\Code\" />
     <Folder Include="Writers\Display\" />
+    <Folder Include="Grammars\" />
   </ItemGroup>
 </Project>

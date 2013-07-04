@@ -18,19 +18,20 @@ namespace Eto.Parse.Tests
 			// parse a value with or without brackets
 			var valueParser = Terminals.Set('(')
 				.Then(ws)
-				.Then(Terminals.Set(')').Inverse().Repeat().Until(ws.Then(')')).Named("value"))
+				.Then(Terminals.Set(')').Inverse().Repeat().Until(ws.Then(')')).NonTerminal("value"))
 				.Then(ws)
 				.Then(Terminals.Set(')'))
-				.Or(Terminals.WhiteSpace.Inverse().Repeat().Named("value"));
+				.Or(Terminals.WhiteSpace.Inverse().Repeat().NonTerminal("value"));
 
 			// top level
 			var parser =
 				ws
-				.Then(valueParser.Named("first"))
+				.Then(valueParser.NonTerminal("first"))
 				.Then(ws)
-				.Then(valueParser.Named("second"))
+				.Then(valueParser.NonTerminal("second"))
 				.Then(ws)
-				.Then(Terminals.End);
+				.Then(Terminals.End)
+				.NonTerminal("top");
 
 			var match = parser.Match(input);
 			Assert.IsTrue(match.Success);
@@ -47,7 +48,7 @@ namespace Eto.Parse.Tests
 			var ws = Terminals.WhiteSpace.Repeat(0);
 
 			// repeat until we get a digit, and exclude any whitespace inbetween
-			var repeat = Terminals.AnyChar.Repeat().Until(ws.Then(Terminals.Digit));
+			var repeat = Terminals.AnyChar.Repeat().Until(ws.Then(Terminals.Digit)).NonTerminal("top");
 
 			var match = repeat.Match(input);
 			Assert.IsTrue(match.Success);

@@ -5,24 +5,15 @@ namespace Eto.Parse
 {
 	public class ParseArgs : EventArgs
 	{
+		ParseError childError;
 		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
+		LinkedListNode<ParseNode> currentNode;
 
 		public IScanner Scanner { get; private set; }
 
-		public NamedMatchCollection Matches
+		public ParseError ChildError
 		{
-			get { 
-				var last = nodes.Last;
-				return (last != null) ? last.Value.Matches : null;
-			}
-		}
-
-		public long NodePosition
-		{
-			get { 
-				var last = nodes.Last;
-				return (last != null) ? last.Value.Position : -1;
-			}
+			get { return childError; }
 		}
 
 		public ParseArgs(IScanner scanner)
@@ -32,25 +23,40 @@ namespace Eto.Parse
 
 		public ParseMatch Match(long offset, int length)
 		{
-			return new ParseMatch(Scanner, offset, length);
+			return new ParseMatch(offset, length);
 		}
 
 		public ParseMatch EmptyMatch
 		{
-			get { return new ParseMatch(Scanner, Scanner.Position, 0); }
+			get { return new ParseMatch(Scanner.Position, 0); }
 		}
 
-		public ParseError Error { get; set; }
-
-		public bool Push(Parser parser, NamedMatchCollection matches = null)
+		public void Push(Parser parser, NonTerminalMatch match = null)
 		{
-			if (IsRecursive(parser))
-				return false;
-			nodes.AddLast(new ParseNode(parser, Scanner.Position, matches ?? Matches ?? new NamedMatchCollection()));
-			return true;
+			if (match != null)
+				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, new NonTerminalMatchCollection()));
+			else
+				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, currentNode.Value.Match, currentNode.Value.Matches));
 		}
 
-		bool IsRecursive(Parser parser)
+		public void AddError(Parser parser)
+		{
+			var node = currentNode;
+			if (node != null)
+			{
+				var match = node.Value.Match;
+				var pos = node.Value.Position;
+				var error = match.Error;
+				if (error == null)
+					error = match.Error = new ParseError(Scanner, pos);
+				else if (pos > error.Index)
+					error.Reset(pos);
+				if (pos == error.Index)
+					error.AddError(parser, childError);
+			}
+		}
+
+		public bool IsRecursive(Parser parser)
 		{
 			LinkedListNode<ParseNode> node = nodes.Last;
 			if (node != null)
@@ -82,39 +88,59 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public NamedMatchCollection Pop(bool success)
+		public void Pop(bool success)
 		{
-			var last = nodes.Last.Value;
+			var last = nodes.Last;
+			currentNode = last.Previous;
 			nodes.RemoveLast();
 
 			if (!success)
-				Scanner.Position = last.Position;
-
-			return last.Matches;
+				Scanner.Position = last.Value.Position;
 		}
 
-		public void Pop()
+		public bool Pop(NonTerminalMatch match, bool success)
 		{
+			//match.ThrowIfNull("match");
+			var last = nodes.Last;
+			currentNode = last.Previous;
 			nodes.RemoveLast();
+			if (success)
+			{
+				match.Matches.AddRange(last.Value.Matches);
+				var current = nodes.Last;
+				if (current != null)
+					current.Value.Matches.Add(match);
+				childError = null;
+			}
+			else
+			{
+				Scanner.Position = last.Value.Position;
+				childError = match.Error;
+			}
+			return currentNode != null;
 		}
 	}
 
 	struct ParseNode
 	{
-		NamedMatchCollection matches;
+		NonTerminalMatchCollection matches;
+		NonTerminalMatch match;
 		Parser parser;
 		long position;
 
-		public NamedMatchCollection Matches { get { return matches; } }
+		public NonTerminalMatchCollection Matches { get { return matches; } }
+
+		public NonTerminalMatch Match { get { return match; } }
 
 		public Parser Parser { get { return parser; } }
 
 		public long Position { get { return position; } }
 
-		public ParseNode(Parser parser, long position, NamedMatchCollection matches)
+		public ParseNode(Parser parser, long position, NonTerminalMatch match, NonTerminalMatchCollection matches)
 		{
 			this.parser = parser;
 			this.position = position;
+			this.match = match;
 			this.matches = matches;
 		}
 	}

@@ -34,10 +34,9 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this))
-				return null;
 			if (Items.Count == 0)
 				throw new InvalidOperationException("There are no items in this sequence");
+			var pos = args.Scanner.Position;
 			ParseMatch match = null;
 			for (int i = 0; i < Items.Count; i++)
 			{
@@ -47,7 +46,7 @@ namespace Eto.Parse.Parsers
 					sepMatch = Separator.Parse(args);
 					if (sepMatch == null)
 					{
-						args.Pop(false);
+						args.Scanner.Position = pos;
 						return null;
 					}
 				}
@@ -56,7 +55,7 @@ namespace Eto.Parse.Parsers
 				var childMatch = parser.Parse(args);
 				if (childMatch == null)
 				{
-					args.Pop(false);
+					args.Scanner.Position = pos;
 					return null;
 				}
 				if (sepMatch != null && !childMatch.Empty)
@@ -65,7 +64,6 @@ namespace Eto.Parse.Parsers
 				match = ParseMatch.Merge(match, childMatch);
 
 			}
-			args.Pop(true);
 
 			return match;
 		}

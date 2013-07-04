@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
-	public class CharParser : NegatableParser
+	public class CharParser : Parser, IInverseParser
 	{
+		public bool Inverse { get; set; }
+
 		public ICharTester Tester { get; set; }
 
 		protected CharParser(CharParser other)
@@ -36,7 +38,7 @@ namespace Eto.Parse.Parsers
 				return null;
 	
 			bool matched = Tester.Test(scanner.Peek);
-			if (matched == Negative)
+			if (matched == Inverse)
 				return null;
 
 			var offset = scanner.Position;
@@ -45,7 +47,7 @@ namespace Eto.Parse.Parsers
 			return args.Match(offset, 1);
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NonTerminalParser> Find(string parserId)
 		{
 			yield break;
 		}
@@ -57,32 +59,32 @@ namespace Eto.Parse.Parsers
 
 		public static CharParser operator +(CharParser parser, CharParser include)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, include.Tester, include.Negative)) { Reusable = true };
+			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, include.Tester, include.Inverse)) { Reusable = true };
 		}
 
 		public static CharParser operator +(CharParser parser, char[] chars)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, new CharSetTester(chars), false)) { Reusable = true };
+			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, new CharSetTester(chars), false)) { Reusable = true };
 		}
 
 		public static CharParser operator +(CharParser parser, char ch)
 		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Negative, new CharSetTester(ch), false)) { Reusable = true };
+			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, new CharSetTester(ch), false)) { Reusable = true };
 		}
 
 		public static CharParser operator -(CharParser include, CharParser exclude)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Negative, exclude.Tester, exclude.Negative)) { Reusable = true };
+			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, exclude.Tester, exclude.Inverse)) { Reusable = true };
 		}
 
 		public static CharParser operator -(CharParser include, char[] chars)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Negative, new CharSetTester(chars), false)) { Reusable = true };
+			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, new CharSetTester(chars), false)) { Reusable = true };
 		}
 
 		public static CharParser operator -(CharParser include, char ch)
 		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Negative, new CharSetTester(ch), false)) { Reusable = true };
+			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, new CharSetTester(ch), false)) { Reusable = true };
 		}
 	}
 }

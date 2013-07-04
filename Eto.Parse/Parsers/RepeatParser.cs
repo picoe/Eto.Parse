@@ -39,12 +39,13 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this))
+			if (args.IsRecursive(this))
 				return null;
 			
 			IScanner scanner = args.Scanner;
 			int count = 0;
 			ParseMatch match = null;
+			var pos = scanner.Position;
 
 			// retrieve up to the maximum number
 			while (count < Maximum)
@@ -84,7 +85,7 @@ namespace Eto.Parse.Parsers
 				{
 					if (scanner.IsEnd)
 						break;
-					var childMatch = new ParseMatch(scanner, scanner.Position, 1);
+					var childMatch = new ParseMatch(scanner.Position, 1);
 					scanner.Position++;
 					match = ParseMatch.Merge(match, childMatch);
 				}
@@ -94,11 +95,9 @@ namespace Eto.Parse.Parsers
 			
 			if (count < Minimum)
 			{
-				args.Pop(false);
+				scanner.Position = pos;
 				return null;
 			}
-
-			args.Pop(true);
 
 			return match ?? args.EmptyMatch;
 		}

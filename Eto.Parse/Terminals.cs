@@ -23,7 +23,7 @@ namespace Eto.Parse
 		public static CharParser Set(string chars) { return new CharParser(new CharSetTester(chars.ToCharArray())); }
 		public static CharParser Range(char start, char end) { return new CharParser(new RangeTester(start, end)); }
 		public static CharParser Range(int start, int end) { return new CharParser(new RangeTester((char)start, (char)end)); }
-		public static CharParser Printable { get { return new CharParser(new ControlTester()) { Negative = true }; } }
+		public static CharParser Printable { get { return new CharParser(new ControlTester()) { Inverse = true }; } }
 
 		public static StartParser Start { get { return new StartParser(); } }
 		public static EndParser End { get { return new EndParser(); } }

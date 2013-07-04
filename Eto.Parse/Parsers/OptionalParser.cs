@@ -21,8 +21,10 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this)) return null;
-			
+			if (args.IsRecursive(this))
+				return null;
+
+			args.Push(this);
 			ParseMatch match = Inner.Parse(args);
 			args.Pop(true);
 			return match ?? args.EmptyMatch;

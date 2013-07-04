@@ -2,33 +2,34 @@ using System;
 
 namespace Eto.Parse.Parsers
 {
-	public class NotParser : UnaryParser
+	public class LookAheadParser : UnaryParser
 	{
-		protected NotParser(NotParser other)
+		protected LookAheadParser(LookAheadParser other)
 			: base(other)
 		{
 		}
 
-		public NotParser(Parser inner)
+		public LookAheadParser(Parser inner)
 		: base(inner)
 		{
 		}
 		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (!args.Push(this)) return null;
-			
+			var pos = args.Scanner.Position;
 			var match = Inner.Parse(args);
-			args.Pop(true);
 			if (match != null)
+			{
+				args.Scanner.Position = pos;
 				return null;
+			}
 			else
 				return args.EmptyMatch;
 		}
 
 		public override Parser Clone()
 		{
-			return new NotParser(this);
+			return new LookAheadParser(this);
 		}
 	}
 }

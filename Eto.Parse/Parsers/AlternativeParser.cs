@@ -1,11 +1,26 @@
 using System;
 using Eto.Parse;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
 	public class AlternativeParser : ListParser
 	{
+		public static Parser ExcludeNull(params Parser[] parsers)
+		{
+			return ExcludeNull((IEnumerable<Parser>)parsers);
+		}
+
+		public static Parser ExcludeNull(IEnumerable<Parser> parsers)
+		{
+			var p = parsers.Where(r => r != null);
+			if (p.Count() == 1)
+				return p.FirstOrDefault();
+			else
+				return new AlternativeParser(p);
+		}
+
 		protected AlternativeParser(AlternativeParser other)
 			: base(other)
 		{
@@ -27,10 +42,11 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
+			if (args.IsRecursive(this))
+				return null;
 			for (int i = 0; i < Items.Count; i++)
 			{
-				if (!args.Push(this))
-					return null;
+				args.Push(this);
 				var parser = Items[i];
 				var match = parser != null ? parser.Parse(args) : args.EmptyMatch;
 				if (match != null)
