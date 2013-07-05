@@ -66,9 +66,9 @@ namespace Eto.Parse
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
 
-		public static NonTerminalParser NonTerminal(this Parser parser, string id, Action<NonTerminalMatch> matched = null, Action<NonTerminalMatch> preMatch = null)
+		public static NamedParser Named(this Parser parser, string name, Action<NamedMatch> matched = null, Action<NamedMatch> preMatch = null)
 		{
-			var namedParser = new NonTerminalParser(id ?? Guid.NewGuid().ToString(), parser);
+			var namedParser = new NamedParser(name ?? Guid.NewGuid().ToString(), parser);
 			if (matched != null)
 				namedParser.Matched += match => {
 					matched(match);

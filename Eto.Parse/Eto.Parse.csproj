@@ -141,7 +141,6 @@
     <Compile Include="Parsers\StartParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ContainerMatch.cs" />
     <Compile Include="FluentExtensions.cs" />
     <Compile Include="Testers\IncludeTester.cs" />
     <Compile Include="Testers\ExcludeTester.cs" />
@@ -184,17 +183,17 @@
     <Compile Include="InverseParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NonTerminalParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NonTerminalMatch.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Writers\Code\CharSetTesterWriter.cs" />
     <Compile Include="Grammars\GoldParser.cs" />
     <Compile Include="Grammars\BnfParser.cs" />
     <Compile Include="InternalExtensions.cs" />
     <Compile Include="Parsers\LookAheadParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamedParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamedMatch.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

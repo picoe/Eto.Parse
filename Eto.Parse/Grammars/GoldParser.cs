@@ -17,7 +17,7 @@ namespace Eto.Parse.Grammars
 
 		public Dictionary<string, Parser> Terminals { get; private set; }
 
-		public Dictionary<string, NonTerminalParser> Rules { get; private set; }
+		public Dictionary<string, NamedParser> Rules { get; private set; }
 
 		public Parser Comment { get { return Terminals.ContainsKey("Comment") ? Terminals["Comment"] : null; } }
 
@@ -31,7 +31,7 @@ namespace Eto.Parse.Grammars
 			}
 		}
 
-		public NonTerminalParser StartSymbol { get; set; }
+		public NamedParser StartSymbol { get; set; }
 
 		public GoldDefinition()
 		{
@@ -61,22 +61,22 @@ namespace Eto.Parse.Grammars
 			{
 				{ "Whitespace", +Sets["Whitespace"] }
 			};
-			Rules = new Dictionary<string, NonTerminalParser>(StringComparer.InvariantCultureIgnoreCase);
+			Rules = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
 		}
 	}
 
-	public class GoldParser : NonTerminalParser
+	public class GoldParser : NamedParser
 	{
 		GoldDefinition definition;
-		NonTerminalParser parameter;
-		NonTerminalParser ruleDecl;
-		NonTerminalParser handle;
-		NonTerminalParser symbol;
-		NonTerminalParser terminalDecl;
-		NonTerminalParser setDecl;
+		NamedParser parameter;
+		NamedParser ruleDecl;
+		NamedParser handle;
+		NamedParser symbol;
+		NamedParser terminalDecl;
+		NamedParser setDecl;
 		Parser whitespace;
-		NonTerminalParser regExpItem;
-		NonTerminalParser regExp;
+		NamedParser regExpItem;
+		NamedParser regExp;
 
 		public GoldParser()
 			: base("gold")
@@ -91,11 +91,11 @@ namespace Eto.Parse.Grammars
 			var setLiteralCh = Terminals.Printable - Terminals.Set("[]'");
 			var setNameCh = Terminals.Printable - Terminals.Set("{}");
 
-			var parameterName = ('"' & (+parameterCh).NonTerminal("value") & '"').Separate();
-			var nonterminal = ('<' & (+nonterminalCh).NonTerminal("value") & '>').Separate();
-			var terminal = ((+terminalCh).NonTerminal("terminal") | ('\'' & (-literalCh).NonTerminal("literal") & '\'')).Separate();
-			var setLiteral = ('[' & +(setLiteralCh.NonTerminal("ch") | '\'' & (-literalCh).NonTerminal("ch") & '\'') & ']').NonTerminal("setLiteral");
-			var setName = ('{' & (+setNameCh).NonTerminal("value") & '}').NonTerminal("setName");
+			var parameterName = ('"' & (+parameterCh).Named("value") & '"').Separate();
+			var nonterminal = ('<' & (+nonterminalCh).Named("value") & '>').Separate();
+			var terminal = ((+terminalCh).Named("terminal") | ('\'' & (-literalCh).Named("literal") & '\'')).Separate();
+			var setLiteral = ('[' & +(setLiteralCh.Named("ch") | '\'' & (-literalCh).Named("ch") & '\'') & ']').Named("setLiteral");
+			var setName = ('{' & (+setNameCh).Named("value") & '}').Named("setName");
 
 			// Line-Based Grammar Declarations
 
@@ -114,47 +114,47 @@ namespace Eto.Parse.Grammars
 
 			var parameterBody = parameterItems & -(nlOpt & '|' & parameterItems);
 
-			parameter = (parameterName.NonTerminal("name") & nlOpt & '=' & parameterBody.NonTerminal("body") & nl).NonTerminal("parameter");
+			parameter = (parameterName.Named("name") & nlOpt & '=' & parameterBody.Named("body") & nl).Named("parameter");
 
 			// Set Definition
 
 			var setItem = setLiteral | setName;
 
-			var setExp = new NonTerminalParser("setExp");
-			setExp.Inner = (setItem & nlOpt & '+' & setExp).NonTerminal("add")
-				| (setItem & nlOpt & '-' & setExp).NonTerminal("sub")
+			var setExp = new NamedParser("setExp");
+			setExp.Inner = (setItem & nlOpt & '+' & setExp).Named("add")
+				| (setItem & nlOpt & '-' & setExp).Named("sub")
 				| setItem;
 
-			setDecl = (setName & nlOpt & '=' & setExp & nl).NonTerminal("setDecl");
+			setDecl = (setName & nlOpt & '=' & setExp & nl).Named("setDecl");
 
 			//  Terminal Definition
 
 			var regExp2 = new SequenceParser();
 
-			var kleeneOpt = (~((Parser)'+' | '?' | '*')).NonTerminal("kleene");
+			var kleeneOpt = (~((Parser)'+' | '?' | '*')).Named("kleene");
 
 			regExpItem = ((setLiteral & kleeneOpt)
 				| (setName & kleeneOpt)
-				| (terminal.NonTerminal("terminal") & kleeneOpt)
-				| ('(' & regExp2.NonTerminal("regExp2") & ')' & kleeneOpt)).NonTerminal("regExpItem");
+				| (terminal.Named("terminal") & kleeneOpt)
+				| ('(' & regExp2.Named("regExp2") & ')' & kleeneOpt)).Named("regExpItem");
 
-			var regExpSeq = (+regExpItem).NonTerminal("regExpSeq");
+			var regExpSeq = (+regExpItem).Named("regExpSeq");
 
 			regExp2.Items.Add(regExpSeq);
 			regExp2.Items.Add(-('|' & regExpSeq));
 
-			regExp = (regExpSeq & -(nlOpt & '|' & regExpSeq)).NonTerminal("regExp");
+			regExp = (regExpSeq & -(nlOpt & '|' & regExpSeq)).Named("regExp");
 
 			var terminalName = terminal & -(terminal);
 
-			terminalDecl = (terminalName.NonTerminal("name") & nlOpt & '=' & regExp & nl).NonTerminal("terminalDecl");
+			terminalDecl = (terminalName.Named("name") & nlOpt & '=' & regExp & nl).Named("terminalDecl");
 
 			// Rule Definition
-			symbol = (terminal.NonTerminal("terminal") | nonterminal.NonTerminal("nonterminal")).NonTerminal("symbol");
+			symbol = (terminal.Named("terminal") | nonterminal.Named("nonterminal")).Named("symbol");
 
-			handle = (-symbol).NonTerminal("handle");
+			handle = (-symbol).Named("handle");
 			var handles = handle & -(nlOpt & '|' & handle);
-			ruleDecl = (nonterminal.NonTerminal("name") & nlOpt & "::=" & handles & nl).NonTerminal("ruleDecl");
+			ruleDecl = (nonterminal.Named("name") & nlOpt & "::=" & handles & nl).Named("ruleDecl");
 
 			// Rules
 
@@ -183,13 +183,13 @@ namespace Eto.Parse.Grammars
 			};
 			ruleDecl.PreMatch += m => {
 				var name = m["name"]["value"].Value;
-				var parser = new NonTerminalParser(name);
-				definition.Rules.Add(parser.Id, parser);
+				var parser = new NamedParser(name);
+				definition.Rules.Add(parser.Name, parser);
 			};
 
 			terminalDecl.Matched += m => {
 				var inner = Sequence(m, "regExp", r => RegExp(r));
-				var parser = m.Context as NonTerminalParser;
+				var parser = m.Context as NamedParser;
 				if (parser != null)
 					parser.Inner = inner;
 				var group = m.Context as GroupParser;
@@ -211,7 +211,7 @@ namespace Eto.Parse.Grammars
 				if (name.EndsWith(" Start") || name.EndsWith(" End") || name.EndsWith(" Line"))
 					parser = new GroupParser();
 				else
-					parser = new NonTerminalParser(name);
+					parser = new NamedParser(name);
 				definition.Terminals[name] = parser;
 				m.Context = parser;
 			};
@@ -228,7 +228,7 @@ namespace Eto.Parse.Grammars
 			};
 		}
 
-		Parser Alternative(NonTerminalMatch m, string innerName, Func<NonTerminalMatch, Parser> inner)
+		Parser Alternative(NamedMatch m, string innerName, Func<NamedMatch, Parser> inner)
 		{
 			var parsers = m.Find(innerName).Select(r => inner(r));
 			if (parsers.Count() > 1)
@@ -237,7 +237,7 @@ namespace Eto.Parse.Grammars
 				return parsers.FirstOrDefault();
 		}
 
-		Parser Sequence(NonTerminalMatch m, string innerName, Func<NonTerminalMatch, Parser> inner)
+		Parser Sequence(NamedMatch m, string innerName, Func<NamedMatch, Parser> inner)
 		{
 			var parsers = m.Find(innerName).Select(r => inner(r));
 			if (parsers.Count() > 1)
@@ -246,13 +246,13 @@ namespace Eto.Parse.Grammars
 				return parsers.FirstOrDefault();
 		}
 
-		Parser Symbol(NonTerminalMatch m)
+		Parser Symbol(NamedMatch m)
 		{
 			var child = m["nonterminal"];
 			if (child.Success)
 			{
 				var name = child["value"].Value;
-				NonTerminalParser parser;
+				NamedParser parser;
 				if (!definition.Rules.TryGetValue(name, out parser))
 					throw new FormatException(string.Format("Nonterminal '{0}' not found", name));
 
@@ -264,7 +264,7 @@ namespace Eto.Parse.Grammars
 			throw new FormatException("Invalid symbol");
 		}
 
-		Parser Terminal(NonTerminalMatch m)
+		Parser Terminal(NamedMatch m)
 		{
 			if (!m.Success)
 				return null;
@@ -279,19 +279,19 @@ namespace Eto.Parse.Grammars
 			throw new FormatException("Invalid terminal");
 		}
 
-		Parser RegExp(NonTerminalMatch m)
+		Parser RegExp(NamedMatch m)
 		{
 			return Alternative(m, "regExpSeq", r => Sequence(r, "regExpItem", cm => RegExpItem(cm)));
 		}
 
-		Parser RegExpItem(NonTerminalMatch m)
+		Parser RegExpItem(NamedMatch m)
 		{
 			if (!m.Success)
 				return null;
 			return RegExp(m["regExp2"]) ?? SetLiteralOrName(m, false) ?? Terminal(m["terminal"]);
 		}
 
-		CharParser SetLiteralOrName(NonTerminalMatch m, bool error = true)
+		CharParser SetLiteralOrName(NamedMatch m, bool error = true)
 		{
 			var literal = m["setLiteral"];
 			if (literal.Success)
@@ -308,7 +308,7 @@ namespace Eto.Parse.Grammars
 			return null;
 		}
 
-		CharParser SetMatch(NonTerminalMatch m)
+		CharParser SetMatch(NamedMatch m)
 		{
 			var addMatch = m["add"];
 			if (addMatch)
@@ -375,7 +375,7 @@ namespace Eto.Parse.Grammars
 			parserWriter.Write(definition.StartSymbol, iw);
 			if (includeWrapperClass)
 			{
-				iw.WriteLine("return {0};", Writers.Code.NamedWriter.GetIdentifier(definition.StartSymbol.Id));
+				iw.WriteLine("return {0};", Writers.Code.NamedWriter.GetIdentifier(definition.StartSymbol.Name));
 				iw.Indent --;
 				iw.WriteLine("}");
 				iw.Indent --;

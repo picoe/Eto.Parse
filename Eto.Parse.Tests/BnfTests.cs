@@ -9,7 +9,7 @@ namespace Eto.Parse.Tests
 	[TestFixture]
 	public class BnfTests
 	{
-		const int speedIterations = 500;
+		const int speedIterations = 1000;
 
 		public const string Address = @"Joe Smith
 123 Elm Street
@@ -40,7 +40,7 @@ Vancouver, BC V5V5V5";
 <apt-num> ::= ('Apt'|'Suite') ['#'] {<digit>}
 ";
 
-		public static NonTerminalParser GetAddressParser()
+		public static NamedParser GetAddressParser()
 		{
 			var bnfParser = new BnfParser();
 			return bnfParser.Build(postalAddressBnf, "postal-address");
@@ -77,21 +77,20 @@ Vancouver, BC V5V5V5";
 
 			// execute the code and test
 			var addressParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
-			TestAddress(addressParser.NonTerminal("address"));
+			TestAddress(addressParser.Named("address"));
 		}
 
 		[Test]
 		public void FailedMatch()
 		{
-			var bnfParser = new BnfParser();
-			var addressParser = bnfParser.Build(postalAddressBnf, "postal-address");
+			var addressParser = GetAddressParser();
 			var match = addressParser.Match(AddressMissingZipPart);
 			Assert.IsFalse(match.Success);
 			Assert.That(match.Error != null, "Error was not specified");
 			Assert.That(match.Error.LastError.Index == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
-		public static void TestAddress(ContainerMatch match)
+		public static void TestAddress(NamedMatch match)
 		{
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("Joe", match["first-name", true].Value);
@@ -105,7 +104,7 @@ Vancouver, BC V5V5V5";
 			Assert.AreEqual("V5V5V5", match["zip-code", true].Value);
 		}
 
-		public static void TestAddress(NonTerminalParser addressParser)
+		public static void TestAddress(NamedParser addressParser)
 		{
 			TestAddress(addressParser.Match(Address));
 		}

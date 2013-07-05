@@ -21,7 +21,7 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			yield break;
 		}
@@ -85,7 +85,7 @@ namespace Eto.Parse.Parsers
 		{
 			if (group != null)
 				return group.Parse(args);
-			return null;
+			return args.NoMatch;
 		}
 
 		public override Parser Clone()

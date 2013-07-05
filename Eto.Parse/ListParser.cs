@@ -28,7 +28,7 @@ namespace Eto.Parse
 			Items = sequence.ToList();
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			return Items.SelectMany(r => r.Find(parserId));
 		}

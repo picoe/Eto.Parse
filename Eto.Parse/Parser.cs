@@ -62,7 +62,7 @@ namespace Eto.Parse
 		public ParseMatch Parse(ParseArgs args)
 		{
 			var match = InnerParse(args);
-			if (match != null)
+			if (match.Success)
 				OnSucceeded(match);
 			else
 			{
@@ -72,9 +72,9 @@ namespace Eto.Parse
 			return match;
 		}
 
-		public abstract IEnumerable<NonTerminalParser> Find(string parserId);
+		public abstract IEnumerable<NamedParser> Find(string parserId);
 
-		public NonTerminalParser this [string parserId]
+		public NamedParser this [string parserId]
 		{
 			get { return Find(parserId).FirstOrDefault(); }
 		}

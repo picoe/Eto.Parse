@@ -29,12 +29,12 @@ namespace Eto.Parse
 			this.Inner = inner;
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			if (Inner != null)
 				return Inner.Find(parserId);
 			else
-				return Enumerable.Empty<NonTerminalParser>();
+				return Enumerable.Empty<NamedParser>();
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

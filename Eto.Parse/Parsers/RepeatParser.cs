@@ -40,11 +40,11 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (args.IsRecursive(this))
-				return null;
+				return args.NoMatch;
 			
 			IScanner scanner = args.Scanner;
 			int count = 0;
-			ParseMatch match = null;
+			ParseMatch match = args.NoMatch;
 			var pos = scanner.Position;
 
 			// retrieve up to the maximum number
@@ -54,7 +54,7 @@ namespace Eto.Parse.Parsers
 				{
 					var offset = scanner.Position;
 					var stopMatch = Until.Parse(args);
-					if (stopMatch != null) {
+					if (stopMatch.Success) {
 						scanner.Position = offset;
 						break;
 					}
@@ -62,22 +62,22 @@ namespace Eto.Parse.Parsers
 
 				if (Inner != null)
 				{
-					ParseMatch sepMatch = null;
+					ParseMatch sepMatch = args.NoMatch;
 					if (count > 0 && Separator != null)
 					{
 						sepMatch = Separator.Parse(args);
-						if (sepMatch == null)
+						if (!sepMatch.Success)
 							break;
 					}
 
 					var childMatch = Inner.Parse(args);
-					if (childMatch == null || childMatch.Empty)
+					if (childMatch.FailedOrEmpty)
 					{
-						if (sepMatch != null)
+						if (sepMatch.Success)
 							scanner.Position = sepMatch.Index;
 						break;
 					}
-					if (sepMatch != null)
+					if (sepMatch.Success)
 						match = ParseMatch.Merge(match, sepMatch);
 					match = ParseMatch.Merge(match, childMatch);
 				}
@@ -96,10 +96,13 @@ namespace Eto.Parse.Parsers
 			if (count < Minimum)
 			{
 				scanner.Position = pos;
-				return null;
+				return args.NoMatch;
 			}
 
-			return match ?? args.EmptyMatch;
+			if (match.Success)
+				return match;
+			else
+				return args.EmptyMatch;
 		}
 
 		public override Parser Clone()

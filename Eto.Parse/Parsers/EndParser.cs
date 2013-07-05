@@ -20,10 +20,10 @@ namespace Eto.Parse.Parsers
 			if (args.Scanner.IsEnd)
 				return args.EmptyMatch;
 			else
-				return null;
+				return args.NoMatch;
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			yield break;
 		}

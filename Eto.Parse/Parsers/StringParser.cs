@@ -23,7 +23,7 @@ namespace Eto.Parse.Parsers
 			this.Value = value;
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			yield break;
 		}
@@ -40,7 +40,7 @@ namespace Eto.Parse.Parsers
 				if (scanner.IsEnd || scanner.Peek != val[i])
 				{
 					scanner.Position = offset;
-					return null;
+					return args.NoMatch;
 				}
 				scanner.Read();
 			}

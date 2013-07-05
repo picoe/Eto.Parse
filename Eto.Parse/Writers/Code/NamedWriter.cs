@@ -6,23 +6,23 @@ using System.IO;
 namespace Eto.Parse.Writers.Code
 {
 
-	public class NamedWriter : UnaryWriter<NonTerminalParser>
+	public class NamedWriter : UnaryWriter<NamedParser>
 	{
 		public static string GetIdentifier(string parserId)
 		{
 			return parserId.Replace(' ', '_').Replace('-', '_');
 		}
 
-		public override string GetName(TextParserWriterArgs args, NonTerminalParser parser)
+		public override string GetName(TextParserWriterArgs args, NamedParser parser)
 		{
-			return GetIdentifier(parser.Id);
+			return GetIdentifier(parser.Name);
 		}
 
-		public override void WriteObject(TextParserWriterArgs args, NonTerminalParser parser, string name)
+		public override void WriteObject(TextParserWriterArgs args, NamedParser parser, string name)
 		{
 			args.Output.WriteLine();
 			base.WriteObject(args, parser, name);
-			args.Output.WriteLine("{0}.Id = \"{1}\";", name, parser.Id);
+			args.Output.WriteLine("{0}.Name = \"{1}\";", name, parser.Name);
 		}
 	}
 	

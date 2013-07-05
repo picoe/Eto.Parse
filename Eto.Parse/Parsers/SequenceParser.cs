@@ -37,28 +37,28 @@ namespace Eto.Parse.Parsers
 			if (Items.Count == 0)
 				throw new InvalidOperationException("There are no items in this sequence");
 			var pos = args.Scanner.Position;
-			ParseMatch match = null;
+			ParseMatch match = args.NoMatch;
 			for (int i = 0; i < Items.Count; i++)
 			{
-				ParseMatch sepMatch = null;
+				ParseMatch sepMatch = args.NoMatch;
 				if (i > 0 && Separator != null)
 				{
 					sepMatch = Separator.Parse(args);
-					if (sepMatch == null)
+					if (!sepMatch.Success)
 					{
 						args.Scanner.Position = pos;
-						return null;
+						return sepMatch;
 					}
 				}
 
 				var parser = Items[i];
 				var childMatch = parser.Parse(args);
-				if (childMatch == null)
+				if (!childMatch.Success)
 				{
 					args.Scanner.Position = pos;
-					return null;
+					return childMatch;
 				}
-				if (sepMatch != null && !childMatch.Empty)
+				if (sepMatch.Success && !childMatch.Empty)
 					match = ParseMatch.Merge(match, sepMatch);
 
 				match = ParseMatch.Merge(match, childMatch);

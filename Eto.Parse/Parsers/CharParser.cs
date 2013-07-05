@@ -35,11 +35,11 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			if (scanner.IsEnd || Tester == null)
-				return null;
+				return args.NoMatch;
 	
 			bool matched = Tester.Test(scanner.Peek);
 			if (matched == Inverse)
-				return null;
+				return args.NoMatch;
 
 			var offset = scanner.Position;
 			scanner.Read();
@@ -47,7 +47,7 @@ namespace Eto.Parse.Parsers
 			return args.Match(offset, 1);
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			yield break;
 		}

@@ -20,7 +20,7 @@ namespace Eto.Parse
 			this.Second = second;
 		}
 
-		public override IEnumerable<NonTerminalParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(string parserId)
 		{
 			if (First != null && Second != null)
 				return First.Find(parserId).Concat(Second.Find(parserId));
@@ -29,7 +29,7 @@ namespace Eto.Parse
 			else if (Second != null)
 				return Second.Find(parserId);
 			else
-				return Enumerable.Empty<NonTerminalParser>();
+				return Enumerable.Empty<NamedParser>();
 
 		}
 	}

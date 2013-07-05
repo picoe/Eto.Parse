@@ -18,10 +18,10 @@ namespace Eto.Parse.Parsers
 		{
 			var pos = args.Scanner.Position;
 			var match = Inner.Parse(args);
-			if (match != null)
+			if (match.Success)
 			{
 				args.Scanner.Position = pos;
-				return null;
+				return args.NoMatch;
 			}
 			else
 				return args.EmptyMatch;

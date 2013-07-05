@@ -9,6 +9,8 @@ namespace Eto.Parse
 		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
 		LinkedListNode<ParseNode> currentNode;
 
+		public NamedMatch Top { get; private set; }
+
 		public IScanner Scanner { get; private set; }
 
 		public ParseError ChildError
@@ -31,10 +33,15 @@ namespace Eto.Parse
 			get { return new ParseMatch(Scanner.Position, 0); }
 		}
 
-		public void Push(Parser parser, NonTerminalMatch match = null)
+		public ParseMatch NoMatch
+		{
+			get { return new ParseMatch(Scanner.Position, -1); }
+		}
+
+		public void Push(Parser parser, NamedMatch match = null)
 		{
 			if (match != null)
-				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, new NonTerminalMatchCollection()));
+				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, new NamedMatchCollection()));
 			else
 				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, currentNode.Value.Match, currentNode.Value.Matches));
 		}
@@ -98,18 +105,17 @@ namespace Eto.Parse
 				Scanner.Position = last.Value.Position;
 		}
 
-		public bool Pop(NonTerminalMatch match, bool success)
+		public bool Pop(NamedMatch match, bool success)
 		{
 			//match.ThrowIfNull("match");
 			var last = nodes.Last;
-			currentNode = last.Previous;
 			nodes.RemoveLast();
+			currentNode = nodes.Last;
 			if (success)
 			{
 				match.Matches.AddRange(last.Value.Matches);
-				var current = nodes.Last;
-				if (current != null)
-					current.Value.Matches.Add(match);
+				if (currentNode != null)
+					currentNode.Value.Matches.Add(match);
 				childError = null;
 			}
 			else
@@ -117,26 +123,28 @@ namespace Eto.Parse
 				Scanner.Position = last.Value.Position;
 				childError = match.Error;
 			}
+			if (currentNode == null)
+				Top = match;
 			return currentNode != null;
 		}
 	}
 
 	struct ParseNode
 	{
-		NonTerminalMatchCollection matches;
-		NonTerminalMatch match;
+		NamedMatchCollection matches;
+		NamedMatch match;
 		Parser parser;
 		long position;
 
-		public NonTerminalMatchCollection Matches { get { return matches; } }
+		public NamedMatchCollection Matches { get { return matches; } }
 
-		public NonTerminalMatch Match { get { return match; } }
+		public NamedMatch Match { get { return match; } }
 
 		public Parser Parser { get { return parser; } }
 
 		public long Position { get { return position; } }
 
-		public ParseNode(Parser parser, long position, NonTerminalMatch match, NonTerminalMatchCollection matches)
+		public ParseNode(Parser parser, long position, NamedMatch match, NamedMatchCollection matches)
 		{
 			this.parser = parser;
 			this.position = position;

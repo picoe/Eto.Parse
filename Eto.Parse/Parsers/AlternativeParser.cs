@@ -43,20 +43,20 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (args.IsRecursive(this))
-				return null;
+				return args.NoMatch;
 			for (int i = 0; i < Items.Count; i++)
 			{
 				args.Push(this);
 				var parser = Items[i];
 				var match = parser != null ? parser.Parse(args) : args.EmptyMatch;
-				if (match != null)
+				if (match.Success)
 				{
 					args.Pop(true);
 					return match;
 				}
 				args.Pop(false);
 			}
-			return null;
+			return args.NoMatch;
 		}
 
 		public override Parser Clone()

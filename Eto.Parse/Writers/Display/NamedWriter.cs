@@ -6,11 +6,11 @@ using System.IO;
 namespace Eto.Parse.Writers.Display
 {
 
-	public class NamedWriter : UnaryWriter<NonTerminalParser>
+	public class NamedWriter : UnaryWriter<NamedParser>
 	{
-		public override string GetName(ParserWriterArgs args, NonTerminalParser parser)
+		public override string GetName(ParserWriterArgs args, NamedParser parser)
 		{
-			return string.Format("{0} [Name: {1}]", base.GetName(args, parser), parser.Id);
+			return string.Format("{0} [Name: {1}]", base.GetName(args, parser), parser.Name);
 		}
 	}
 	
