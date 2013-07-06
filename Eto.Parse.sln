@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse.Tests", "Eto.Pars
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse.TestSpeed", "Eto.Parse.TestSpeed\Eto.Parse.TestSpeed.csproj", "{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse.Samples", "Eto.Parse.Samples\Eto.Parse.Samples.csproj", "{EE5E310D-5E44-44B3-8634-D680A566F38F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|Any CPU = Release|Any CPU
@@ -25,8 +27,12 @@ Global
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Eto.Parse.Tests\Eto.Parse.Tests.csproj
+		StartupItem = Eto.Parse.TestSpeed\Eto.Parse.TestSpeed.csproj
 	EndGlobalSection
 EndGlobal

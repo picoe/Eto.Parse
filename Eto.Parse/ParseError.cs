@@ -73,7 +73,7 @@ namespace Eto.Parse
 
 		public void Reset(long index)
 		{
-			errors = new List<ParseErrorMessage>(10);
+			errors = new List<ParseErrorMessage>();
 			Index = index;
 		}
 

@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Eto.Parse.TestSpeed</RootNamespace>
-    <AssemblyName>Eto.Parse.TestSpeed</AssemblyName>
+    <ProjectGuid>{EE5E310D-5E44-44B3-8634-D680A566F38F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Eto.Parse.Samples</RootNamespace>
+    <AssemblyName>Eto.Parse.Samples</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,7 +18,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -26,38 +26,20 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Irony">
-      <HintPath>..\..\..\Downloads\Irony_2013_03_10\Irony\bin\Release\Irony.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IronyJsonParser.cs" />
+    <Compile Include="JsonGrammar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Eto.Parse.Tests\Eto.Parse.Tests.csproj">
-      <Project>{EE26FDF9-63E3-4620-9210-ABF1517AE055}</Project>
-      <Name>Eto.Parse.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj">
       <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
       <Name>Eto.Parse</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj">
-      <Project>{EE5E310D-5E44-44B3-8634-D680A566F38F}</Project>
-      <Name>Eto.Parse.Samples</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="sample.json" />
   </ItemGroup>
 </Project>

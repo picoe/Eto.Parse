@@ -88,8 +88,7 @@ namespace Eto.Parse
 
 		public NamedMatch Match(IScanner scanner, bool match = true)
 		{
-			if (scanner == null)
-				throw new ArgumentNullException("scanner");
+			scanner.ThrowIfNull("scanner");
 			var args = new ParseArgs(scanner);
 			Parse(args);
 			var topMatch = args.Top;

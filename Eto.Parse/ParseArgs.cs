@@ -8,6 +8,7 @@ namespace Eto.Parse
 		ParseError childError;
 		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
 		LinkedListNode<ParseNode> currentNode;
+		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>();
 
 		public NamedMatch Top { get; private set; }
 
@@ -41,9 +42,17 @@ namespace Eto.Parse
 		public void Push(Parser parser, NamedMatch match = null)
 		{
 			if (match != null)
-				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, new NamedMatchCollection()));
+				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, CreateTempMatchCollection()));
 			else
 				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, currentNode.Value.Match, currentNode.Value.Matches));
+		}
+
+		NamedMatchCollection CreateTempMatchCollection()
+		{
+			if (reusableMatches.Count > 0)
+				return reusableMatches.Pop();
+			else
+				return new NamedMatchCollection();
 		}
 
 		public void AddError(Parser parser)
@@ -109,11 +118,12 @@ namespace Eto.Parse
 		{
 			//match.ThrowIfNull("match");
 			var last = nodes.Last;
+			var lastMatches = last.Value.Matches;
 			nodes.RemoveLast();
 			currentNode = nodes.Last;
 			if (success)
 			{
-				match.Matches.AddRange(last.Value.Matches);
+				match.Matches.AddRange(lastMatches);
 				if (currentNode != null)
 					currentNode.Value.Matches.Add(match);
 				childError = null;
@@ -123,6 +133,8 @@ namespace Eto.Parse
 				Scanner.Position = last.Value.Position;
 				childError = match.Error;
 			}
+			lastMatches.Clear();
+			reusableMatches.Push(lastMatches);
 			if (currentNode == null)
 				Top = match;
 			return currentNode != null;
