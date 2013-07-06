@@ -6,25 +6,19 @@ namespace Eto.Parse
 	public class ParseArgs : EventArgs
 	{
 		ParseError childError;
-		LinkedList<ParseNode> nodes = new LinkedList<ParseNode>();
-		LinkedListNode<ParseNode> currentNode;
+		List<ParseNode> nodes = new List<ParseNode>(100);
 		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>();
 
 		public NamedMatch Top { get; private set; }
 
 		public IScanner Scanner { get; private set; }
 
-		public ParseError ChildError
-		{
-			get { return childError; }
-		}
-
 		public ParseArgs(IScanner scanner)
 		{
 			Scanner = scanner;
 		}
 
-		public ParseMatch Match(long offset, int length)
+		public ParseMatch Match(int offset, int length)
 		{
 			return new ParseMatch(offset, length);
 		}
@@ -36,15 +30,18 @@ namespace Eto.Parse
 
 		public ParseMatch NoMatch
 		{
-			get { return new ParseMatch(Scanner.Position, -1); }
+			get { return new ParseMatch(-1, -1); }
 		}
 
 		public void Push(Parser parser, NamedMatch match = null)
 		{
 			if (match != null)
-				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, match, CreateTempMatchCollection()));
+				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, match, CreateTempMatchCollection()));
 			else
-				currentNode = nodes.AddLast(new ParseNode(parser, Scanner.Position, currentNode.Value.Match, currentNode.Value.Matches));
+			{
+				var current = Last();
+				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, current.Match, current.Matches));
+			}
 		}
 
 		NamedMatchCollection CreateTempMatchCollection()
@@ -57,11 +54,11 @@ namespace Eto.Parse
 
 		public void AddError(Parser parser)
 		{
-			var node = currentNode;
-			if (node != null)
+			if (nodes.Count > 0)
 			{
-				var match = node.Value.Match;
-				var pos = node.Value.Position;
+				var node = Last();
+				var match = node.Match;
+				var pos = node.Position;
 				var error = match.Error;
 				if (error == null)
 					error = match.Error = new ParseError(Scanner, pos);
@@ -72,15 +69,24 @@ namespace Eto.Parse
 			}
 		}
 
+		ParseNode Last()
+		{
+			return nodes[nodes.Count - 1];
+		}
+
+		void RemoveLast()
+		{
+			nodes.RemoveAt(nodes.Count - 1);
+		}
+
 		public bool IsRecursive(Parser parser)
 		{
-			LinkedListNode<ParseNode> node = nodes.Last;
-			if (node != null)
-				node = node.Previous;
-			
-			while (node != null)
+			if (nodes.Count <= 1)
+				return false;
+
+			for (int i = nodes.Count - 2; i >= 0; i--)
 			{
-				ParseNode parseNode = node.Value;
+				var parseNode = nodes[i];
 				if (parseNode.Position < Scanner.Position)
 					return false;
 				if (object.ReferenceEquals(parseNode.Parser, parser))
@@ -88,56 +94,56 @@ namespace Eto.Parse
 					// check to see if we have recursed through the same path already
 					// going through different paths are okay!
 					// e.g. A->B->A->C->B[->A]
-					var recurseNode = nodes.Last;
-					var prevNode = node.Previous;
-					while (recurseNode != null && prevNode != null && recurseNode != node)
+					var count = Math.Min(i, nodes.Count - i);
+					var recursePos = nodes.Count - 2;
+					var prevPos = i;
+					for (int j = 0; j < count; j ++)
 					{
-						if (prevNode.Value.Parser != recurseNode.Value.Parser) return false;
-						prevNode = prevNode.Previous;
-						recurseNode = recurseNode.Previous;
+						var recurseNode = nodes[recursePos];
+						var prevNode = nodes[prevPos];
+						if (prevNode.Parser != recurseNode.Parser) return false;
+						prevPos--;
+						recursePos--;
 					}
-					
+
 					return true;
 				}
-				node = node.Previous;
 			}
 			return false;
 		}
 
 		public void Pop(bool success)
 		{
-			var last = nodes.Last;
-			currentNode = last.Previous;
-			nodes.RemoveLast();
+			var last = Last();
+			RemoveLast();
 
 			if (!success)
-				Scanner.Position = last.Value.Position;
+				Scanner.Position = last.Position;
 		}
 
 		public bool Pop(NamedMatch match, bool success)
 		{
 			//match.ThrowIfNull("match");
-			var last = nodes.Last;
-			var lastMatches = last.Value.Matches;
-			nodes.RemoveLast();
-			currentNode = nodes.Last;
+			var last = Last();
+			var lastMatches = last.Matches;
+			RemoveLast();
 			if (success)
 			{
 				match.Matches.AddRange(lastMatches);
-				if (currentNode != null)
-					currentNode.Value.Matches.Add(match);
+				if (nodes.Count > 0)
+					Last().Matches.Add(match);
 				childError = null;
 			}
 			else
 			{
-				Scanner.Position = last.Value.Position;
+				Scanner.Position = last.Position;
 				childError = match.Error;
 			}
 			lastMatches.Clear();
 			reusableMatches.Push(lastMatches);
-			if (currentNode == null)
+			if (nodes.Count == 0)
 				Top = match;
-			return currentNode != null;
+			return nodes.Count > 0;
 		}
 	}
 
@@ -146,7 +152,7 @@ namespace Eto.Parse
 		NamedMatchCollection matches;
 		NamedMatch match;
 		Parser parser;
-		long position;
+		int position;
 
 		public NamedMatchCollection Matches { get { return matches; } }
 
@@ -154,9 +160,9 @@ namespace Eto.Parse
 
 		public Parser Parser { get { return parser; } }
 
-		public long Position { get { return position; } }
+		public int Position { get { return position; } }
 
-		public ParseNode(Parser parser, long position, NamedMatch match, NamedMatchCollection matches)
+		public ParseNode(Parser parser, int position, NamedMatch match, NamedMatchCollection matches)
 		{
 			this.parser = parser;
 			this.position = position;

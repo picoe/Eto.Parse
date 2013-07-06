@@ -20,8 +20,8 @@ namespace Eto.Parse.Tests
 				| (+!Terminals.WhiteSpace).Named("value");
 
 			// top level
-			var parser = ws & valueParser.Named("first") & ws & valueParser.Named("second") & ws & Terminals.End;
-			var match = parser.Named("top").Match(input);
+			var parser = new Grammar(ws & valueParser.Named("first") & ws & valueParser.Named("second") & ws & Terminals.End);
+			var match = parser.Match(input);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("hello", match["first"]["value"].Value);
 			Assert.AreEqual("parsing world", match["second"]["value"].Value);
@@ -38,7 +38,7 @@ namespace Eto.Parse.Tests
 			// repeat until we get a digit, and exclude any whitespace inbetween
 			var repeat = +Terminals.AnyChar - (ws & Terminals.Digit);
 
-			var match = repeat.Named("top").Match(input);
+			var match = new Grammar(repeat).Match(input);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("abc def", match.Value);
 		}

@@ -66,7 +66,7 @@ namespace Eto.Parse
 				OnSucceeded(match);
 			else
 			{
-				//args.AddError(this);
+				args.AddError(this);
 			}
 
 			return match;

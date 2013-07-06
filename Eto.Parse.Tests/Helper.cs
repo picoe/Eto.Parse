@@ -7,7 +7,7 @@ namespace Eto.Parse.Tests
 {
 	public static class Helper
 	{
-		public static T Execute<T>(string code, string className, string methodName, params string[] referencedAssemblies)
+		public static T Create<T>(string code, string className, params string[] referencedAssemblies)
 		{
 			using (var csharp = new Microsoft.CSharp.CSharpCodeProvider())
 			{
@@ -25,19 +25,17 @@ namespace Eto.Parse.Tests
 					throw new Exception(string.Format("Error compiling:\n{0}", errors));
 				}
 
-				var type = res.CompiledAssembly.GetType(className);
-				var method = type.GetMethod(methodName);
-				return (T)method.Invoke(null, null);
+				return (T)res.CompiledAssembly.CreateInstance(className);
 			}
 		}
 
-		public static void TestSpeed(NamedParser parser, string input, int iterations)
+		public static void TestSpeed(Grammar grammar, string input, int iterations)
 		{
 			var sw = new Stopwatch();
 			sw.Start();
 			for (int i = 0; i < iterations; i++)
 			{
-				parser.Match(input);
+				grammar.Match(input);
 			}
 			sw.Stop();
 			Console.WriteLine("{0} seconds for {1} iterations", sw.Elapsed.TotalSeconds, iterations);

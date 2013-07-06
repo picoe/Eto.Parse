@@ -36,7 +36,7 @@ namespace Eto.Parse
 			get { return Errors.Select(r => r.Message); }
 		}
 
-		public long Index { get; set; }
+		public int Index { get; set; }
 
 		public ParseError LastError
 		{
@@ -54,7 +54,7 @@ namespace Eto.Parse
 			}
 		}
 
-		public ParseError(IScanner scanner, long index)
+		public ParseError(IScanner scanner, int index)
 		{
 			Scanner = scanner;
 			Reset(index);
@@ -71,7 +71,7 @@ namespace Eto.Parse
 				errors.Add(new ParseErrorMessage(parser, null));
 		}
 
-		public void Reset(long index)
+		public void Reset(int index)
 		{
 			errors = new List<ParseErrorMessage>();
 			Index = index;

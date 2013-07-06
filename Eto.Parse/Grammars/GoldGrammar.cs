@@ -31,7 +31,29 @@ namespace Eto.Parse.Grammars
 			}
 		}
 
-		public NamedParser StartSymbol { get; set; }
+		internal string StartSymbolName
+		{
+			get {
+				string name;
+				if (Properties.TryGetValue("Start Symbol", out name))
+					return name.TrimStart('<').TrimEnd('>');
+				else
+					return null;
+			}
+		}
+
+		public Grammar StartSymbol
+		{ 
+			get
+			{
+				NamedParser parser;
+				var symbol = StartSymbolName;
+				if (!string.IsNullOrEmpty(symbol) && Rules.TryGetValue(symbol, out parser))
+					return parser as Grammar;
+				else
+					return null;
+			}
+		}
 
 		public GoldDefinition()
 		{
@@ -65,7 +87,7 @@ namespace Eto.Parse.Grammars
 		}
 	}
 
-	public class GoldParser : NamedParser
+	public class GoldGrammar : Grammar
 	{
 		GoldDefinition definition;
 		NamedParser parameter;
@@ -78,7 +100,7 @@ namespace Eto.Parse.Grammars
 		NamedParser regExpItem;
 		NamedParser regExp;
 
-		public GoldParser()
+		public GoldGrammar()
 			: base("gold")
 		{
 			var oldSeparator = Parser.DefaultSeparator;
@@ -171,7 +193,7 @@ namespace Eto.Parse.Grammars
 		void AttachEvents()
 		{
 			// attach logic to parsers
-			parameter.Matched += m => {
+			parameter.PreMatch += m => {
 				var name = m["name"]["value"].Value;
 				definition.Properties[name] = m["body"].Value;
 			};
@@ -183,7 +205,11 @@ namespace Eto.Parse.Grammars
 			};
 			ruleDecl.PreMatch += m => {
 				var name = m["name"]["value"].Value;
-				var parser = new NamedParser(name);
+				NamedParser parser;
+				if (name == definition.StartSymbolName)
+					parser = new Grammar(name);
+				else
+					parser = new NamedParser(name);
 				definition.Rules.Add(parser.Name, parser);
 			};
 
@@ -331,56 +357,35 @@ namespace Eto.Parse.Grammars
 			if (!match.Success)
 				throw new FormatException(string.Format("Error parsing gold grammar: {0}", match.Error));
 			string val;
-			if (definition.Properties.TryGetValue("Start Symbol", out val))
-			{
-				var name = val.TrimStart('<').TrimEnd('>');
-				definition.StartSymbol = definition.Rules[name];
-			}
 			return definition;
 		}
 
-		public string ToCode(string grammar, bool includeWrapperClass = true)
+		public string ToCode(string grammar, string grammarClassName = "GeneratedGrammar")
 		{
 			using (var writer = new StringWriter())
 			{
-				ToCode(grammar, writer);
+				ToCode(grammar, writer, grammarClassName);
 				return writer.ToString();
 			}
 		}
 
-		public void ToCode(string grammar, TextWriter writer, bool includeWrapperClass = true)
+		public void ToCode(string grammar, TextWriter writer, string grammarClassName = "GeneratedGrammar")
 		{
 			var definition = Build(grammar);
 			var iw = new IndentedTextWriter(writer, "    ");
 
-			if (includeWrapperClass)
-			{
-				iw.WriteLine("public static class GeneratedParser");
-				iw.WriteLine("{");
-				iw.Indent ++;
-			}
 			iw.WriteLine("/* Date Created: {0}, Source:", DateTime.Now);
 			iw.Indent ++;
 			foreach (var line in grammar.Split('\n'))
 				iw.WriteLine(line);
 			iw.Indent --;
 			iw.WriteLine("*/");
-			if (includeWrapperClass)
+
+			var parserWriter = new CodeParserWriter
 			{
-				iw.WriteLine("public static Eto.Parse.Parser GetParser()");
-				iw.WriteLine("{");
-				iw.Indent ++;
-			}
-			var parserWriter = new CodeParserWriter();
-			parserWriter.Write(definition.StartSymbol, iw);
-			if (includeWrapperClass)
-			{
-				iw.WriteLine("return {0};", Writers.Code.NamedWriter.GetIdentifier(definition.StartSymbol.Name));
-				iw.Indent --;
-				iw.WriteLine("}");
-				iw.Indent --;
-				iw.WriteLine("}");
-			}
+				GrammarName = grammarClassName
+			};
+			parserWriter.Write(definition.StartSymbol, writer);
 		}
 	}
 }

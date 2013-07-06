@@ -9,6 +9,8 @@ namespace Eto.Parse.Writers.Code
 	public class ParserWriter<T> : TextParserWriter.IParserWriterHandler
 		where T: Parser
 	{
+		protected virtual bool WriteNewObject { get { return true; } }
+
 		public virtual string GetName(TextParserWriterArgs args, T parser)
 		{
 			return args.GenerateName(parser);
@@ -17,7 +19,8 @@ namespace Eto.Parse.Writers.Code
 		public virtual void WriteObject(TextParserWriterArgs args, T parser, string name)
 		{
 			var type = parser.GetType();
-			args.Output.WriteLine("var {0} = new {1}.{2}();", name, type.Namespace, type.Name);
+			if (WriteNewObject)
+				args.Output.WriteLine("var {0} = new {1}.{2}();", name, type.Namespace, type.Name);
 		}
 
 		public virtual void WriteContents(TextParserWriterArgs args, T parser, string name)

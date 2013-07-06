@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,12 +27,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_OPTIONS" value="--gc=sgen" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Irony">
       <HintPath>..\..\..\Downloads\Irony_2013_03_10\Irony\bin\Release\Irony.dll</HintPath>
     </Reference>

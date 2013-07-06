@@ -4,10 +4,11 @@ namespace Eto.Parse.Scanners
 {
 	public class StringScanner : IScanner
 	{
-		long offset = 0;
+		int offset;
 		string value;
+		int line;
 		
-		public long Position
+		public int Position
 		{
 			get { return offset; }
 			set { offset = value; }
@@ -34,11 +35,11 @@ namespace Eto.Parse.Scanners
 				offset++;
 		}
 
-		public string SubString(long offset, int length)
+		public string SubString(int offset, int length)
 		{
 			if (offset >= value.Length)
 				return null;
-			return value.Substring((int)offset, length);
+			return value.Substring(offset, length);
 		}
 		
 	}

@@ -9,13 +9,14 @@ namespace Eto.Parse.TestSpeed
 		public static void Main(string[] args)
 		{
 			var json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.sample.json")).ReadToEnd();
-			var sw = new Stopwatch();
 			var iters = 100;
-			/**
 			Console.WriteLine("Json for {0} iterations:", iters);
+
+			/**/
 			{
 				var g = new Irony.Samples.Json.JsonGrammar();
 				var p = new Irony.Parsing.Parser(g);
+				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
@@ -30,17 +31,18 @@ namespace Eto.Parse.TestSpeed
 				sw.Stop();
 				Console.WriteLine("Irony: {0} seconds", sw.Elapsed.TotalSeconds);
 			}
-
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 			/**/
 			{
-				var g = new Eto.Parse.Samples.JsonGrammar();
-				sw = new Stopwatch();
+				var g = new Eto.Parse.Samples.JsonGrammar { EnableEvents = false };
+				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
-					var m = g.Match(json, false);
+					var m = g.Match(json);
 					if (!m.Success)
-						Console.WriteLine("Error: {0}", m.Error);
+						Console.WriteLine("Error: {0}", m.Error.LastError);
 				}
 				sw.Stop();
 				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);

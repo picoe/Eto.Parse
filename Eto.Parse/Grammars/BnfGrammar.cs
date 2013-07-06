@@ -9,7 +9,7 @@ using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Grammars
 {
-	public class BnfParser : NamedParser
+	public class BnfGrammar : Grammar
 	{
 		Dictionary<string, NamedParser> parserLookup = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
 		Dictionary<string, NamedParser> baseLookup = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
@@ -18,6 +18,15 @@ namespace Eto.Parse.Grammars
 		Parser sq = Terminals.Set('\'');
 		Parser dq = Terminals.Set('"');
 		StringParser ruleSeparator = new StringParser("::=");
+		string startParserName;
+		NamedParser rule;
+		NamedParser listRepeat;
+		NamedParser list;
+		NamedParser repeatRule;
+		NamedParser optionalRule;
+		NamedParser literal;
+		NamedParser ruleName;
+
 
 		protected string RuleSeparator { get { return ruleSeparator.Value; } set { ruleSeparator.Value = value; } }
 
@@ -31,7 +40,7 @@ namespace Eto.Parse.Grammars
 
 		public Dictionary<string, NamedParser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
 
-		public BnfParser(bool enhanced = true)
+		public BnfGrammar(bool enhanced = true)
 			: base("bnf")
 		{
 			foreach (var property in typeof(Terminals).GetProperties())
@@ -45,38 +54,54 @@ namespace Eto.Parse.Grammars
 
 			var lineEnd = LineEnd();
 
-			var literal = (
+			literal = (
 				(sq & (+!sq).Named("value").Optional() & sq)
 				| (dq & (+!dq).Named("value").Optional() & dq)
-			).Named("parser", m => m.Context = new StringParser(m["value"].Value));
+			).Named("parser");
+
 
 			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().Named("name") & ">";
 
 			RuleParser = new AlternativeParser(); // defined later 
 
-			TermParser = new AlternativeParser();
-			TermParser.Items.Add(literal);
-			TermParser.Items.Add(RuleNameParser.Named("parser", m => {
+			TermParser = literal | (ruleName = RuleNameParser.Named("parser"));
+			if (enhanced)
+			{
+				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
+				TermParser.Items.Add(repeatRule = ('{' & sws & RuleParser & sws & '}').Named("parser"));
+				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').Named("parser"));
+			}
+
+
+			list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term"))).Named("parser");
+
+			listRepeat = (list.Named("list") & ws & '|' & sws & RuleParser.Named("expression")).Named("parser");
+			RuleParser.Items.Add(listRepeat);
+			RuleParser.Items.Add(list);
+
+			rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd).Named("parser");
+			Expresssions = new AlternativeParser();
+			Expresssions.Items.Add(rule);
+
+			this.Inner = (Expresssions & this) | Expresssions;
+
+			AttachEvents();
+		}
+
+		void AttachEvents()
+		{
+			ruleName.Matched += m => {
 				NamedParser parser;
 				var name = m["name"].Value;
 				if (!parserLookup.TryGetValue(name, out parser) && !baseLookup.TryGetValue(name, out parser))
 					parser = Terminals.LetterOrDigit.Repeat().Named(name);
 				m.Context = parser;
-			}));
-			if (enhanced)
-			{
-				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
-				TermParser.Items.Add(('{' & sws & RuleParser & sws & '}').Named("parser", m => {
-					m.Context = new RepeatParser((Parser)m["parser"].Context);
-				}));
-				TermParser.Items.Add(('[' & sws & RuleParser & sws & ']').Named("parser", m => {
-					m.Context = new OptionalParser((Parser)m["parser"].Context);
-				}));
-			}
+			};
 
-
-			var list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term")))
-			.Named("parser", m => {
+			literal.Matched += m => m.Context = new StringParser(m["value"].Value);
+			optionalRule.Matched += m => m.Context = new OptionalParser((Parser)m["parser"].Context);
+			repeatRule.Matched += m => m.Context = new RepeatParser((Parser)m["parser"].Context);
+			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{
 					var parser = new SequenceParser();
@@ -93,34 +118,31 @@ namespace Eto.Parse.Grammars
 				{
 					m.Context = m["parser"].Context;
 				}
-			});
+			};
 
-			RuleParser.Items.Add((list.Named("list") & ws & '|' & sws & RuleParser.Named("expression"))
-			                     .Named("parser", m => {
+			listRepeat.Matched += m => {
 				// collapse alternatives to one alternative parser
 				var parser = (Parser)m["expression"]["parser"].Context;
 				var alt = parser as AlternativeParser ?? new AlternativeParser(parser);
 				alt.Items.Insert(0, (Parser)m["list"]["parser"].Context);
 				m.Context = alt;
-			}));
-			RuleParser.Items.Add(list);
+			};
 
-			var rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd)
-					.Named("parser", 
-			         matched: m => {
+			rule.Matched += m => {
 				var parser = (NamedParser)m.Context;
 				parser.Inner = (Parser)m["parser"].Context;
 				m.Context = parser;
-			},
-			         preMatch: m => {
-				var parser = new NamedParser(m["ruleName"]["name"].Value);
+			};
+			rule.PreMatch += m => {
+				var name = m["ruleName"]["name"].Value;
+				NamedParser parser;
+				if (name == startParserName)
+					parser = new Grammar(name);
+				else
+					parser = new NamedParser(name);
 				m.Context = parser;
 				parserLookup[parser.Name] = parser;
-			});
-			Expresssions = new AlternativeParser();
-			Expresssions.Items.Add(rule);
-
-			this.Inner = (Expresssions & this) | Expresssions;
+			};
 		}
 
 		Parser LineEnd()
@@ -137,71 +159,46 @@ namespace Eto.Parse.Grammars
 			return base.InnerParse(args);
 		}
 
-		public Dictionary<string, NamedParser> Build(string bnf)
+		public Grammar Build(string bnf, string startParserName)
 		{
+			this.startParserName = startParserName;
+			NamedParser parser;
 			var match = this.Match(new StringScanner(bnf));
 
 			if (match.Error != null)
 			{
 				throw new FormatException(string.Format("Error parsing bnf starting at: \n{0}", bnf.Substring((int)match.Error.Index)));
 			}
-			return parserLookup;
-		}
-
-		public NamedParser Build(string bnf, string startParserName)
-		{
-			NamedParser parser;
-			if (!Build(bnf).TryGetValue(startParserName, out parser))
+			if (!parserLookup.TryGetValue(startParserName, out parser))
 				throw new ArgumentException("the topParser specified is not found in this bnf");
-			return parser;
+			return parser as Grammar;
 		}
 
-		public string ToCode(string bnf, string startParserName, bool includeWrapperClass = true)
+		public string ToCode(string bnf, string startParserName, string grammarClassName = "GeneratedGrammar")
 		{
 			using (var writer = new StringWriter())
 			{
-				ToCode(bnf, startParserName, writer);
+				ToCode(bnf, startParserName, writer, grammarClassName);
 				return writer.ToString();
 			}
 		}
 
-		public void ToCode(string bnf, string startParserName, TextWriter writer, bool includeWrapperClass = true)
+		public void ToCode(string bnf, string startParserName, TextWriter writer, string grammarClassName = "GeneratedGrammar")
 		{
 			var parser = Build(bnf, startParserName);
 			var iw = new IndentedTextWriter(writer, "    ");
 
-			if (includeWrapperClass)
-			{
-				iw.WriteLine("public static class GeneratedParser");
-				iw.WriteLine("{");
-				iw.Indent ++;
-			}
 			iw.WriteLine("/* Date Created: {0}, Source BNF:", DateTime.Now);
 			iw.Indent ++;
 			foreach (var line in bnf.Split('\n'))
 				iw.WriteLine(line);
 			iw.Indent --;
 			iw.WriteLine("*/");
-			if (includeWrapperClass)
-			{
-				iw.WriteLine("public static Eto.Parse.Parser GetParser()");
-				iw.WriteLine("{");
-				iw.Indent ++;
-			}
-			WriteCode(parser, iw);
-			if (includeWrapperClass)
-			{
-				iw.WriteLine("return {0};", Writers.Code.NamedWriter.GetIdentifier(startParserName));
-				iw.Indent --;
-				iw.WriteLine("}");
-				iw.Indent --;
-				iw.WriteLine("}");
-			}
-		}
 
-		protected virtual void WriteCode(Parser parser, IndentedTextWriter writer)
-		{
-			var parserWriter = new CodeParserWriter();
+			var parserWriter = new CodeParserWriter
+			{
+				GrammarName = grammarClassName
+			};
 			parserWriter.Write(parser, writer);
 		}
 	}

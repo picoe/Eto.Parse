@@ -78,11 +78,11 @@ namespace Eto.Parse
 			return Value ?? string.Empty;
 		}
 
-		public long Index { get; private set; }
+		public int Index { get; private set; }
 
 		public int Length { get; private set; }
 
-		public long End
+		public int End
 		{
 			get { return (Length > 0) ? Index + Length - 1 : Index; }
 		}

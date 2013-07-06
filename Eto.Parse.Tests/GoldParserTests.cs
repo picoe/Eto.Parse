@@ -178,7 +178,7 @@ Comment End   = '*!'
 		[Test]
 		public void TestParsing()
 		{
-			var goldParser = new GoldParser();
+			var goldParser = new GoldGrammar();
 			var definition = goldParser.Build(goldBnf);
 			CollectionAssert.AreEquivalent(definition.Rules.Keys, new string[]
 			{
@@ -190,13 +190,13 @@ Comment End   = '*!'
 		public void ToCode()
 		{
 			// test a round trip to code
-			var code = new GoldParser().ToCode(goldBnf);
+			var code = new GoldGrammar().ToCode(goldBnf, "MyGoldGrammar");
 
 			// execute generated code
-			var generatedGoldParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
+			var generatedGoldParser = Helper.Create<Grammar>(code, "MyGoldGrammar", "Eto.Parse");
 
 			// match using generated parser
-			var match = generatedGoldParser.Named("gold").Match(goldBnf);
+			var match = generatedGoldParser.Match(goldBnf);
 
 			Assert.IsTrue(match.Success, "Error: {0}", match.Error.LastError);
 		}

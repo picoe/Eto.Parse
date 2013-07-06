@@ -74,32 +74,9 @@ namespace Eto.Parse
 			}
 			else
 			{
-				args.AddError(this);
 				args.Pop(namedMatch, false);
 				return args.NoMatch;
 			}
 		}
-
-		public NamedMatch Match(string value, bool match = true)
-		{
-			value.ThrowIfNull("value");
-			return Match(new StringScanner(value), match);
-		}
-
-		public NamedMatch Match(IScanner scanner, bool match = true)
-		{
-			scanner.ThrowIfNull("scanner");
-			var args = new ParseArgs(scanner);
-			Parse(args);
-			var topMatch = args.Top;
-
-			if (match)
-			{
-				topMatch.PreMatch();
-				topMatch.Match();
-			}
-			return topMatch;
-		}
-
 	}
 }

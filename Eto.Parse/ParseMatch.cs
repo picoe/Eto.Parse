@@ -5,14 +5,14 @@ namespace Eto.Parse
 {
 	public struct ParseMatch
 	{
-		long index;
+		int index;
 		int length;
 
-		public long Index { get { return index; } }
+		public int Index { get { return index; } }
 
 		public int Length { get { return length; } }
 
-		public long End
+		public int End
 		{
 			get { return (Length > 0) ? Index + Length - 1 : Index; }
 		}
@@ -37,7 +37,7 @@ namespace Eto.Parse
 			get { return Length <= 0; }
 		}
 
-		public ParseMatch(long offset, int length)
+		public ParseMatch(int offset, int length)
 		{
 			this.index = offset;
 			this.length = length;
@@ -52,9 +52,9 @@ namespace Eto.Parse
 
 			if (!left.Success || !right.Success) throw new ArgumentException("Can only merge successful matches", "match");
 			
-			long start = Math.Min(left.Index, right.Index);
-			long end = Math.Max(left.End, right.End);
-			return new ParseMatch(start, (int)(end - start + 1));
+			int start = Math.Min(left.Index, right.Index);
+			int end = Math.Max(left.End, right.End);
+			return new ParseMatch(start, end - start + 1);
 		}
 	}
 }

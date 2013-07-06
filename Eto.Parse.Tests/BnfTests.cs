@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Eto.Parse;
 using System.Diagnostics;
 using Eto.Parse.Grammars;
+using System.Linq;
 
 namespace Eto.Parse.Tests
 {
@@ -40,9 +41,9 @@ Vancouver, BC V5V5V5";
 <apt-num> ::= ('Apt'|'Suite') ['#'] {<digit>}
 ";
 
-		public static NamedParser GetAddressParser()
+		public static Grammar GetAddressParser()
 		{
-			var bnfParser = new BnfParser();
+			var bnfParser = new BnfGrammar();
 			return bnfParser.Build(postalAddressBnf, "postal-address");
 		}
 
@@ -55,7 +56,7 @@ Vancouver, BC V5V5V5";
 		[Test]
 		public void BnfParsingSpeed()
 		{
-			var bnfParser = new BnfParser();
+			var bnfParser = new BnfGrammar();
 			Helper.TestSpeed(bnfParser, postalAddressBnf, speedIterations);
 		}
 
@@ -70,14 +71,14 @@ Vancouver, BC V5V5V5";
 		public void BnfToCode()
 		{
 			// roundtrip to generated code then back again
-			var bnfParser = new BnfParser();
+			var bnfParser = new BnfGrammar();
 
 			// generate code from bnf
-			var code = bnfParser.ToCode(postalAddressBnf, "postal-address");
+			var code = bnfParser.ToCode(postalAddressBnf, "postal-address", "PostalGrammar");
 
 			// execute the code and test
-			var addressParser = Helper.Execute<Parser>(code, "GeneratedParser", "GetParser", "Eto.Parse");
-			TestAddress(addressParser.Named("address"));
+			var addressParser = Helper.Create<Grammar>(code, "PostalGrammar", "Eto.Parse");
+			TestAddress(addressParser);
 		}
 
 		[Test]
@@ -104,7 +105,7 @@ Vancouver, BC V5V5V5";
 			Assert.AreEqual("V5V5V5", match["zip-code", true].Value);
 		}
 
-		public static void TestAddress(NamedParser addressParser)
+		public static void TestAddress(Grammar addressParser)
 		{
 			TestAddress(addressParser.Match(Address));
 		}

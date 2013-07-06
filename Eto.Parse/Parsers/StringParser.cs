@@ -34,7 +34,7 @@ namespace Eto.Parse.Parsers
 			if (val == null)
 				return args.EmptyMatch;
 			IScanner scanner = args.Scanner;
-			long offset = scanner.Position;
+			int offset = scanner.Position;
 			for (int i = 0; i < val.Length; i++)
 			{
 				if (scanner.IsEnd || scanner.Peek != val[i])

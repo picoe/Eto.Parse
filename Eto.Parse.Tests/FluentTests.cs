@@ -23,17 +23,17 @@ namespace Eto.Parse.Tests
 				.Then(Terminals.Set(')'))
 				.Or(Terminals.WhiteSpace.Inverse().Repeat().Named("value"));
 
-			// top level
-			var parser =
+			// our grammar
+			var grammar = new Grammar(
 				ws
 				.Then(valueParser.Named("first"))
 				.Then(ws)
 				.Then(valueParser.Named("second"))
 				.Then(ws)
 				.Then(Terminals.End)
-				.Named("top");
+			);
 
-			var match = parser.Match(input);
+			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("hello", match["first"]["value"].Value);
 			Assert.AreEqual("parsing world", match["second"]["value"].Value);
@@ -48,7 +48,7 @@ namespace Eto.Parse.Tests
 			var ws = Terminals.WhiteSpace.Repeat(0);
 
 			// repeat until we get a digit, and exclude any whitespace inbetween
-			var repeat = Terminals.AnyChar.Repeat().Until(ws.Then(Terminals.Digit)).Named("top");
+			var repeat = new Grammar(Terminals.AnyChar.Repeat().Until(ws.Then(Terminals.Digit)));
 
 			var match = repeat.Match(input);
 			Assert.IsTrue(match.Success);
