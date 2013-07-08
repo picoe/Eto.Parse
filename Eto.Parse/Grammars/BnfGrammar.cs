@@ -17,7 +17,7 @@ namespace Eto.Parse.Grammars
 		Parser ws = Terminals.WhiteSpace.Repeat(0);
 		Parser sq = Terminals.Set('\'');
 		Parser dq = Terminals.Set('"');
-		StringParser ruleSeparator = new StringParser("::=");
+		LiteralParser ruleSeparator = new LiteralParser("::=");
 		string startParserName;
 		NamedParser rule;
 		NamedParser listRepeat;
@@ -95,12 +95,12 @@ namespace Eto.Parse.Grammars
 				var name = m["name"].Value;
 				if (!parserLookup.TryGetValue(name, out parser) && !baseLookup.TryGetValue(name, out parser))
 					parser = Terminals.LetterOrDigit.Repeat().Named(name);
-				m.Context = parser;
+				m.Tag = parser;
 			};
 
-			literal.Matched += m => m.Context = new StringParser(m["value"].Value);
-			optionalRule.Matched += m => m.Context = new OptionalParser((Parser)m["parser"].Context);
-			repeatRule.Matched += m => m.Context = new RepeatParser((Parser)m["parser"].Context);
+			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
+			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
+			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag);
 			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{
@@ -110,28 +110,28 @@ namespace Eto.Parse.Grammars
 						if (child.Parser.Name == "ws")
 							parser.Items.Add(sws);
 						else if (child.Parser.Name == "term")
-							parser.Items.Add((Parser)child["parser"].Context);
+							parser.Items.Add((Parser)child["parser"].Tag);
 					}
-					m.Context = parser;
+					m.Tag = parser;
 				}
 				else
 				{
-					m.Context = m["parser"].Context;
+					m.Tag = m["parser"].Tag;
 				}
 			};
 
 			listRepeat.Matched += m => {
 				// collapse alternatives to one alternative parser
-				var parser = (Parser)m["expression"]["parser"].Context;
+				var parser = (Parser)m["expression"]["parser"].Tag;
 				var alt = parser as AlternativeParser ?? new AlternativeParser(parser);
-				alt.Items.Insert(0, (Parser)m["list"]["parser"].Context);
-				m.Context = alt;
+				alt.Items.Insert(0, (Parser)m["list"]["parser"].Tag);
+				m.Tag = alt;
 			};
 
 			rule.Matched += m => {
-				var parser = (NamedParser)m.Context;
-				parser.Inner = (Parser)m["parser"].Context;
-				m.Context = parser;
+				var parser = (NamedParser)m.Tag;
+				parser.Inner = (Parser)m["parser"].Tag;
+				m.Tag = parser;
 			};
 			rule.PreMatch += m => {
 				var name = m["ruleName"]["name"].Value;
@@ -140,7 +140,7 @@ namespace Eto.Parse.Grammars
 					parser = new Grammar(name);
 				else
 					parser = new NamedParser(name);
-				m.Context = parser;
+				m.Tag = parser;
 				parserLookup[parser.Name] = parser;
 			};
 		}
@@ -174,16 +174,16 @@ namespace Eto.Parse.Grammars
 			return parser as Grammar;
 		}
 
-		public string ToCode(string bnf, string startParserName, string grammarClassName = "GeneratedGrammar")
+		public string ToCode(string bnf, string startParserName, string className = "GeneratedGrammar")
 		{
 			using (var writer = new StringWriter())
 			{
-				ToCode(bnf, startParserName, writer, grammarClassName);
+				ToCode(bnf, startParserName, writer, className);
 				return writer.ToString();
 			}
 		}
 
-		public void ToCode(string bnf, string startParserName, TextWriter writer, string grammarClassName = "GeneratedGrammar")
+		public void ToCode(string bnf, string startParserName, TextWriter writer, string className = "GeneratedGrammar")
 		{
 			var parser = Build(bnf, startParserName);
 			var iw = new IndentedTextWriter(writer, "    ");
@@ -197,7 +197,7 @@ namespace Eto.Parse.Grammars
 
 			var parserWriter = new CodeParserWriter
 			{
-				GrammarName = grammarClassName
+				ClassName = className
 			};
 			parserWriter.Write(parser, writer);
 		}

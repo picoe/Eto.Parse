@@ -70,7 +70,7 @@ namespace Eto.Parse
 
 		public static implicit operator Parser(string matchString)
 		{
-			return new StringParser(matchString) { Reusable = true };
+			return new LiteralParser(matchString) { Reusable = true };
 		}
 
 		public static SequenceParser operator &(Parser left, Parser right)

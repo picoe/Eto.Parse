@@ -39,6 +39,9 @@
     <Reference Include="Irony">
       <HintPath>..\..\..\Downloads\Irony_2013_03_10\Irony\bin\Release\Irony.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -62,5 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="sample.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

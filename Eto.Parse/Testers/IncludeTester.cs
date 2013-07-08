@@ -30,9 +30,10 @@ namespace Eto.Parse.Testers
 			Second = second;
 		}
 
-		public bool Test(char ch)
+		public bool Test(char ch, bool caseSensitive)
 		{
-			return First.Test(ch) != FirstInverse || Second.Test(ch) != SecondInverse;
+			return First.Test(ch, caseSensitive) != FirstInverse
+				|| Second.Test(ch, caseSensitive) != SecondInverse;
 		}
 	}
 }

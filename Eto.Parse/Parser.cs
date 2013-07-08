@@ -15,39 +15,20 @@ namespace Eto.Parse
 
 		public object Context { get; set; }
 
-		public event Action<ParseMatch> Succeeded;
-
 		public virtual string GetErrorMessage()
 		{
-			return GetDescriptiveName();
+			return DescriptiveName;
 		}
 
-		public string GetDescriptiveName(HashSet<Parser> parents = null)
+		public virtual string DescriptiveName
 		{
-			parents = new HashSet<Parser>();
-			if (!parents.Contains(this))
-			{
-				parents.Add(this);
-				var name = GetDescriptiveNameInternal(parents);
-				parents.Remove(this);
+			get {
+				var type = GetType();
+				var name = type.Name;
+				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
+					name = name.Substring(0, name.LastIndexOf("Parser"));
 				return name;
 			}
-			return "(recursive)";
-		}
-
-		protected virtual string GetDescriptiveNameInternal(HashSet<Parser> parents)
-		{
-			var type = GetType();
-			var name = type.Name;
-			if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
-				name = name.Substring(0, name.LastIndexOf("Parser"));
-			return name;
-		}
-
-		protected virtual void OnSucceeded(ParseMatch parseMatch)
-		{
-			if (Succeeded != null)
-				Succeeded(parseMatch);
 		}
 
 		public Parser()
@@ -61,18 +42,23 @@ namespace Eto.Parse
 
 		public ParseMatch Parse(ParseArgs args)
 		{
+			if (args.Trace)
+				Console.WriteLine(this.DescriptiveName);
 			var match = InnerParse(args);
-			if (match.Success)
-				OnSucceeded(match);
-			else
+			if (!match.Success)
 			{
-				args.AddError(this);
+				if (args.Trace)
+					Console.WriteLine("FAILED: {0}", this.DescriptiveName);
+				//args.AddError(this);
 			}
 
 			return match;
 		}
 
-		public abstract IEnumerable<NamedParser> Find(string parserId);
+		public virtual IEnumerable<NamedParser> Find(string parserId)
+		{
+			yield break;
+		}
 
 		public NamedParser this [string parserId]
 		{

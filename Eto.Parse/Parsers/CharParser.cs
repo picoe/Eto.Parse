@@ -16,10 +16,13 @@ namespace Eto.Parse.Parsers
 			Tester = other.Tester;
 		}
 
-		protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
+		public override string DescriptiveName
 		{
-			var tester = Tester != null ? Tester.GetType().Name : null;
-			return string.Format("{0}, Tester: {1}", base.GetDescriptiveNameInternal(parents), tester);
+			get
+			{
+				var tester = Tester != null ? Tester.GetType().Name : null;
+				return string.Format("{0}, Tester: {1}", base.DescriptiveName, tester);
+			}
 		}
 
 		public CharParser()
@@ -34,17 +37,16 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
-			if (scanner.IsEnd || Tester == null)
-				return args.NoMatch;
-	
-			bool matched = Tester.Test(scanner.Peek);
-			if (matched == Inverse)
-				return args.NoMatch;
-
-			var offset = scanner.Position;
-			scanner.Read();
-
-			return args.Match(offset, 1);
+			char ch;
+			int pos;
+			if (scanner.ReadChar(out ch, out pos))
+			{
+				bool matched = Tester.Test(ch, args.Grammar.CaseSensitive);
+				if (matched != Inverse)
+					return new ParseMatch(pos, 1);
+			}
+			scanner.Position = pos;
+			return args.NoMatch;
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)

@@ -10,22 +10,23 @@ namespace Eto.Parse
 
 		public NamedParser()
 		{
+			this.Name = Guid.NewGuid().ToString();
 		}
 
 		public NamedParser(string name)
 		{
-			this.Name = name;
+			this.Name = name ?? Guid.NewGuid().ToString();
 		}
 
 		public NamedParser(string name, Parser parser)
 			: base(parser)
 		{
-			this.Name = name;
+			this.Name = name ?? Guid.NewGuid().ToString();
 		}
 
-		protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
+		public override string DescriptiveName
 		{
-			return string.Format("{0} \"{1}\"", base.GetDescriptiveNameInternal(parents), this.Name);
+			get { return string.Format("{0} \"{1}\"", base.DescriptiveName, this.Name); }
 		}
 
 		public event Action<NamedMatch> Matched;
@@ -64,7 +65,7 @@ namespace Eto.Parse
 		{
 			var namedMatch = new NamedMatch(this, args.Scanner);
 			args.Push(this, namedMatch);
-			var match = Inner.Parse(args);
+			var match = base.InnerParse(args);
 			if (match.Success)
 			{
 				namedMatch.Set(match);
@@ -75,6 +76,7 @@ namespace Eto.Parse
 			else
 			{
 				args.Pop(namedMatch, false);
+				args.AddError(this);
 				return args.NoMatch;
 			}
 		}

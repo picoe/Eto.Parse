@@ -13,14 +13,14 @@ namespace Eto.Parse
 
 		public IScanner Scanner { get; private set; }
 
-		public ParseArgs(IScanner scanner)
-		{
-			Scanner = scanner;
-		}
+		public Grammar Grammar { get; private set; }
 
-		public ParseMatch Match(int offset, int length)
+		public bool Trace { get; set; }
+
+		public ParseArgs(Grammar grammar, IScanner scanner)
 		{
-			return new ParseMatch(offset, length);
+			Grammar = grammar;
+			Scanner = scanner;
 		}
 
 		public ParseMatch EmptyMatch
@@ -39,7 +39,7 @@ namespace Eto.Parse
 				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, match, CreateTempMatchCollection()));
 			else
 			{
-				var current = Last();
+				var current = Last;
 				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, current.Match, current.Matches));
 			}
 		}
@@ -56,7 +56,7 @@ namespace Eto.Parse
 		{
 			if (nodes.Count > 0)
 			{
-				var node = Last();
+				var node = Last;
 				var match = node.Match;
 				var pos = node.Position;
 				var error = match.Error;
@@ -69,9 +69,9 @@ namespace Eto.Parse
 			}
 		}
 
-		ParseNode Last()
+		ParseNode Last
 		{
-			return nodes[nodes.Count - 1];
+			get { return nodes[nodes.Count - 1]; }
 		}
 
 		void RemoveLast()
@@ -81,13 +81,14 @@ namespace Eto.Parse
 
 		public bool IsRecursive(Parser parser)
 		{
-			if (nodes.Count <= 1)
+			if (nodes.Count < 2)
 				return false;
 
+			var pos = Scanner.Position;
 			for (int i = nodes.Count - 2; i >= 0; i--)
 			{
 				var parseNode = nodes[i];
-				if (parseNode.Position < Scanner.Position)
+				if (parseNode.Position < pos)
 					return false;
 				if (object.ReferenceEquals(parseNode.Parser, parser))
 				{
@@ -114,7 +115,7 @@ namespace Eto.Parse
 
 		public void Pop(bool success)
 		{
-			var last = Last();
+			var last = Last;
 			RemoveLast();
 
 			if (!success)
@@ -124,14 +125,14 @@ namespace Eto.Parse
 		public bool Pop(NamedMatch match, bool success)
 		{
 			//match.ThrowIfNull("match");
-			var last = Last();
+			var last = Last;
 			var lastMatches = last.Matches;
 			RemoveLast();
 			if (success)
 			{
 				match.Matches.AddRange(lastMatches);
 				if (nodes.Count > 0)
-					Last().Matches.Add(match);
+					Last.Matches.Add(match);
 				childError = null;
 			}
 			else

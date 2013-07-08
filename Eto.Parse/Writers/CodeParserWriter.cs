@@ -8,7 +8,7 @@ namespace Eto.Parse.Writers
 {
 	public class CodeParserWriter : TextParserWriter
 	{
-		public string GrammarName { get; set; }
+		public string ClassName { get; set; }
 
 		public CodeParserWriter()
 			: base(new ParserDictionary
@@ -19,7 +19,7 @@ namespace Eto.Parse.Writers
 				{ typeof(ListParser), new Code.ListWriter() },
 				{ typeof(UnaryParser), new Code.UnaryWriter<UnaryParser>() },
 				{ typeof(CharParser), new Code.CharWriter() },
-				{ typeof(StringParser), new Code.StringWriter() },
+				{ typeof(LiteralParser), new Code.LiteralWriter() },
 				{ typeof(RepeatParser), new Code.RepeatWriter() }
 			}, 
 			new TesterDictionary

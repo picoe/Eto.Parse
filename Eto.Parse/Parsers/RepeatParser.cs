@@ -44,28 +44,29 @@ namespace Eto.Parse.Parsers
 			
 			IScanner scanner = args.Scanner;
 			int count = 0;
-			ParseMatch match = args.NoMatch;
 			var pos = scanner.Position;
+			ParseMatch match = new ParseMatch(pos, 0);
 
+			var separator = Separator ?? args.Grammar.Separator;
 			// retrieve up to the maximum number
+			ParseMatch sepMatch = args.NoMatch;
 			while (count < Maximum)
 			{
 				if (Until != null && count >= Minimum)
 				{
-					var offset = scanner.Position;
 					var stopMatch = Until.Parse(args);
-					if (stopMatch.Success) {
-						scanner.Position = offset;
+					if (stopMatch.Success)
+					{
+						scanner.Position = stopMatch.Index;
 						break;
 					}
 				}
 
 				if (Inner != null)
 				{
-					ParseMatch sepMatch = args.NoMatch;
-					if (count > 0 && Separator != null)
+					if (count > 0 && separator != null)
 					{
-						sepMatch = Separator.Parse(args);
+						sepMatch = separator.Parse(args);
 						if (!sepMatch.Success)
 							break;
 					}
@@ -78,31 +79,27 @@ namespace Eto.Parse.Parsers
 						break;
 					}
 					if (sepMatch.Success)
-						match = ParseMatch.Merge(match, sepMatch);
-					match = ParseMatch.Merge(match, childMatch);
+						match.Length += sepMatch.Length;
+					match.Length += childMatch.Length;
 				}
 				else
 				{
-					if (scanner.IsEnd)
+					var ofs = scanner.Advance(1);
+					if (ofs == -1)
 						break;
-					var childMatch = new ParseMatch(scanner.Position, 1);
-					scanner.Position++;
-					match = ParseMatch.Merge(match, childMatch);
+					match.Length += 1;
 				}
 
 				count++;
 			}
-			
+
 			if (count < Minimum)
 			{
 				scanner.Position = pos;
 				return args.NoMatch;
 			}
 
-			if (match.Success)
-				return match;
-			else
-				return args.EmptyMatch;
+			return match;
 		}
 
 		public override Parser Clone()

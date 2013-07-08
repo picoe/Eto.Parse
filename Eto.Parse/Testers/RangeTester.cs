@@ -18,7 +18,7 @@ namespace Eto.Parse.Testers
 			this.End = end;
 		}
 		
-		public bool Test(char ch)
+		public bool Test(char ch, bool caseSensitive)
 		{
 			return ch >= Start && ch <= End;
 		}

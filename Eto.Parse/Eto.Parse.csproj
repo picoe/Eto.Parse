@@ -90,9 +90,6 @@
     <Compile Include="Parsers\SequenceParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Parsers\StringParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Scanners\StringScanner.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -146,14 +143,12 @@
     <Compile Include="Writers\Code\NamedWriter.cs" />
     <Compile Include="Writers\Code\ParserWriter.cs" />
     <Compile Include="Writers\Code\RepeatWriter.cs" />
-    <Compile Include="Writers\Code\StringWriter.cs" />
     <Compile Include="Writers\Code\UnaryWriter.cs" />
     <Compile Include="Writers\Display\CharWriter.cs" />
     <Compile Include="Writers\Display\ListWriter.cs" />
     <Compile Include="Writers\Display\NamedWriter.cs" />
     <Compile Include="Writers\Display\ParserWriter.cs" />
     <Compile Include="Writers\Display\RepeatWriter.cs" />
-    <Compile Include="Writers\Display\StringWriter.cs" />
     <Compile Include="Writers\Display\UnaryWriter.cs" />
     <Compile Include="Writers\CodeParserWriter.cs" />
     <Compile Include="Writers\DisplayParserWriter.cs" />
@@ -198,6 +193,14 @@
     <Compile Include="ParseMatch.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Parsers\NumberParser.cs" />
+    <Compile Include="Parsers\LiteralParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Writers\Code\LiteralWriter.cs" />
+    <Compile Include="Writers\Display\LiteralWriter.cs" />
+    <Compile Include="Parsers\StringParser.cs" />
+    <Compile Include="MatchResults.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

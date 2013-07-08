@@ -6,9 +6,9 @@ using System.IO;
 namespace Eto.Parse.Writers.Code
 {
 
-	public class StringWriter : ParserWriter<StringParser>
+	public class LiteralWriter : ParserWriter<LiteralParser>
 	{
-		public override void WriteObject(TextParserWriterArgs args, StringParser parser, string name)
+		public override void WriteObject(TextParserWriterArgs args, LiteralParser parser, string name)
 		{
 			base.WriteObject(args, parser, name);
 			if (parser.Value != null)

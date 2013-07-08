@@ -215,10 +215,10 @@ namespace Eto.Parse.Grammars
 
 			terminalDecl.Matched += m => {
 				var inner = Sequence(m, "regExp", r => RegExp(r));
-				var parser = m.Context as NamedParser;
+				var parser = m.Tag as NamedParser;
 				if (parser != null)
 					parser.Inner = inner;
-				var group = m.Context as GroupParser;
+				var group = m.Tag as GroupParser;
 				if (group != null)
 				{
 					var name = m["name"].Value;
@@ -239,18 +239,18 @@ namespace Eto.Parse.Grammars
 				else
 					parser = new NamedParser(name);
 				definition.Terminals[name] = parser;
-				m.Context = parser;
+				m.Tag = parser;
 			};
 
 			setDecl.Matched += m => {
-				var parser = m.Context as CharParser;
+				var parser = m.Tag as CharParser;
 				parser.Tester = SetMatch(m["setExp"]).Tester;
 			};
 
 			setDecl.PreMatch += m => {
 				var parser = new CharParser();
 				definition.Sets[m["setName"]["value"].Value] = parser;
-				m.Context = parser;
+				m.Tag = parser;
 			};
 		}
 
@@ -296,7 +296,7 @@ namespace Eto.Parse.Grammars
 				return null;
 			var l = m["literal"];
 			if (l.Success)
-				return new StringParser(l.Value);
+				return new LiteralParser(l.Value);
 
 			var t = m["terminal"];
 			if (t.Success)
@@ -351,25 +351,24 @@ namespace Eto.Parse.Grammars
 			return base.InnerParse(args);
 		}
 
-		public new GoldDefinition Build(string grammar)
+		public GoldDefinition Build(string grammar)
 		{
 			var match = Match(grammar);
 			if (!match.Success)
 				throw new FormatException(string.Format("Error parsing gold grammar: {0}", match.Error));
-			string val;
 			return definition;
 		}
 
-		public string ToCode(string grammar, string grammarClassName = "GeneratedGrammar")
+		public string ToCode(string grammar, string className = "GeneratedGrammar")
 		{
 			using (var writer = new StringWriter())
 			{
-				ToCode(grammar, writer, grammarClassName);
+				ToCode(grammar, writer, className);
 				return writer.ToString();
 			}
 		}
 
-		public void ToCode(string grammar, TextWriter writer, string grammarClassName = "GeneratedGrammar")
+		public void ToCode(string grammar, TextWriter writer, string className = "GeneratedGrammar")
 		{
 			var definition = Build(grammar);
 			var iw = new IndentedTextWriter(writer, "    ");
@@ -383,7 +382,7 @@ namespace Eto.Parse.Grammars
 
 			var parserWriter = new CodeParserWriter
 			{
-				GrammarName = grammarClassName
+				ClassName = className
 			};
 			parserWriter.Write(definition.StartSymbol, writer);
 		}

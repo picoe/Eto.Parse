@@ -30,9 +30,10 @@ namespace Eto.Parse.Testers
 			ExcludeInverse = excludeInverse;
 		}
 
-		public bool Test(char ch)
+		public bool Test(char ch, bool caseSensitive)
 		{
-			return Include.Test(ch) != IncludeInverse && Exclude.Test(ch) == ExcludeInverse;
+			return Include.Test(ch, caseSensitive) != IncludeInverse
+				&& Exclude.Test(ch, caseSensitive) == ExcludeInverse;
 		}
 	}
 }

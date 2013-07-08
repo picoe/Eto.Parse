@@ -1,50 +1,54 @@
 using System;
-using Eto.Parse;
-using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
 	public class StringParser : Parser
 	{
-		public string Value { get; set; }
+		public char[] QuoteCharacters { get; set; }
+
+		public bool AllowEscapeCharacters { get; set; }
+
+		public bool AllowDoubleQuote { get; set; }
+
 
 		protected StringParser(StringParser other)
-			: base(other)
 		{
-			Value = other.Value;
+			this.QuoteCharacters = other.QuoteCharacters != null ? (char[])other.QuoteCharacters.Clone() : null;
+			this.AllowDoubleQuote = other.AllowDoubleQuote;
+			this.AllowEscapeCharacters = other.AllowEscapeCharacters;
 		}
 
 		public StringParser()
 		{
+			QuoteCharacters = "\"\'".ToCharArray();
+			AllowDoubleQuote = true;
 		}
 
-		public StringParser(string value)
-		{
-			this.Value = value;
-		}
-
-		public override IEnumerable<NamedParser> Find(string parserId)
-		{
-			yield break;
-		}
-		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			var val = Value;
-			if (val == null)
-				return args.EmptyMatch;
-			IScanner scanner = args.Scanner;
-			int offset = scanner.Position;
-			for (int i = 0; i < val.Length; i++)
+			var scanner = args.Scanner;
+			if (this.QuoteCharacters != null)
 			{
-				if (scanner.IsEnd || scanner.Peek != val[i])
+				return args.EmptyMatch;
+
+			}
+			else
+			{
+				int length = 0;
+				int pos;
+				char ch;
+				while (scanner.ReadChar(out ch, out pos) && !char.IsWhiteSpace(ch))
 				{
-					scanner.Position = offset;
+					length++;
+				}
+
+				if (length > 0)
+					return new ParseMatch(pos, length);
+				else {
+					scanner.Position = pos;
 					return args.NoMatch;
 				}
-				scanner.Read();
 			}
-			return args.Match(offset, val.Length);
 		}
 
 		public override Parser Clone()
@@ -53,3 +57,4 @@ namespace Eto.Parse.Parsers
 		}
 	}
 }
+

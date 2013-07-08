@@ -73,7 +73,12 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		public GroupParser(Parser start, Parser end, Parser line)
+		public GroupParser(Parser startEnd)
+			: this(startEnd, startEnd, null)
+		{
+		}
+
+		public GroupParser(Parser start, Parser end, Parser line = null)
 		{
 			this.start = start;
 			this.end = end;

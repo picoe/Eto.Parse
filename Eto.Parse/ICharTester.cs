@@ -4,6 +4,6 @@ namespace Eto.Parse
 {
 	public interface ICharTester
 	{
-		bool Test(char ch);
+		bool Test(char ch, bool caseSensitive);
 	}
 }

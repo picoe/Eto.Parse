@@ -8,9 +8,9 @@ namespace Eto.Parse.Samples
 		public JsonGrammar()
 			: base("json")
 		{
-			var jstring = ("\"" & (-Terminals.AnyChar).Until("\"") & "\"").Separate();
-			var jnumber = (~Terminals.Set("+-") & +Terminals.Digit & ~(Terminals.Set('.') & +Terminals.Digit)).Separate();
-			var comma = Terminals.Set(',');
+			var jstring = new GroupParser("\"");
+			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true };
+			var comma = Terminals.String(",");
 
 			//Nonterminals
 			var jobject = new NamedParser("Object"); 
@@ -20,7 +20,7 @@ namespace Eto.Parse.Samples
 			var jvalue = new NamedParser("Value");
 			var jprop = new NamedParser("Property"); 
 
-			var ws = -(Terminals.WhiteSpace + Terminals.Eol);
+			var ws = -(Terminals.Set(" \n\r"));
 			Parser.DefaultSeparator = ws;
 
 			//Rules

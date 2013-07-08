@@ -24,7 +24,7 @@ namespace Eto.Parse.Parsers
 				return args.NoMatch;
 			}
 			else
-				return args.EmptyMatch;
+				return new ParseMatch(pos, 0);
 		}
 
 		public override Parser Clone()

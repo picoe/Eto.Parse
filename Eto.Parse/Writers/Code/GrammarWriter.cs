@@ -14,7 +14,7 @@ namespace Eto.Parse.Writers.Code
 		public override string GetName(TextParserWriterArgs args, Grammar parser)
 		{
 			var writer = args.Writer as CodeParserWriter;
-			if (!string.IsNullOrEmpty(writer.GrammarName))
+			if (!string.IsNullOrEmpty(writer.ClassName))
 				return "this";
 			else
 				return NamedWriter.GetIdentifier(parser.Name);
@@ -23,14 +23,15 @@ namespace Eto.Parse.Writers.Code
 		public override void WriteObject(TextParserWriterArgs args, Grammar parser, string name)
 		{
 			var writer = args.Writer as CodeParserWriter;
-			if (!string.IsNullOrEmpty(writer.GrammarName))
+			if (!string.IsNullOrEmpty(writer.ClassName))
 			{
+				writeNewObject = false;
 				var iw = args.Output;
-				iw.WriteLine("public class {0} : Eto.Parse.Grammar", writer.GrammarName);
+				iw.WriteLine("public class {0} : Eto.Parse.Grammar", writer.ClassName);
 				iw.WriteLine("{");
 				iw.Indent ++;
 
-				iw.WriteLine("public {0}()", writer.GrammarName);
+				iw.WriteLine("public {0}()", writer.ClassName);
 				iw.Indent ++;
 				iw.WriteLine(": base(\"{0}\")", parser.Name.Replace("\"", "\\\""));
 				iw.Indent --;
@@ -41,6 +42,7 @@ namespace Eto.Parse.Writers.Code
 			}
 			else
 			{
+				writeNewObject = true;
 				base.WriteObject(args, parser, name);
 				args.Output.WriteLine("{0}.Name = \"{1}\";", name, parser.Name);
 			}
@@ -50,7 +52,7 @@ namespace Eto.Parse.Writers.Code
 		{
 			base.WriteContents(args, parser, name);
 			var writer = args.Writer as CodeParserWriter;
-			if (!string.IsNullOrEmpty(writer.GrammarName))
+			if (!string.IsNullOrEmpty(writer.ClassName))
 			{
 				var iw = args.Output;
 				iw.Indent --;

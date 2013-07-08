@@ -6,7 +6,7 @@ namespace Eto.Parse
 {
 	public class UnaryParser : Parser
 	{
-		public virtual Parser Inner { get; set; }
+		public Parser Inner { get; set; }
 
 		/*protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
 		{
@@ -41,7 +41,8 @@ namespace Eto.Parse
 		{
 			if (Inner == null)
 				return args.EmptyMatch;
-			return Inner.Parse(args);
+			else
+				return Inner.Parse(args);
 		}
 
 		public override Parser Clone()

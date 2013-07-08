@@ -7,6 +7,12 @@ namespace Eto.Parse
 	public class NamedMatch
 	{
 		NamedMatchCollection matches;
+		static NamedMatch empty;
+
+		public static NamedMatch EmptyMatch
+		{
+			get { return empty ?? (empty = new NamedMatch(null, null)); }
+		}
 
 		public NamedMatchCollection Matches
 		{
@@ -30,7 +36,7 @@ namespace Eto.Parse
 				if (matches != null)
 					return matches[id, deep];
 				else
-					return new NamedMatch(null, null);
+					return NamedMatch.EmptyMatch;
 			}
 		}
 
@@ -43,7 +49,7 @@ namespace Eto.Parse
 
 		public NamedParser Parser { get; private set; }
 
-		public object Context { get; set; }
+		public object Tag { get; set; }
 
 		public NamedMatch(NamedParser parser, IScanner scanner)
 		{
@@ -82,11 +88,6 @@ namespace Eto.Parse
 
 		public int Length { get; private set; }
 
-		public int End
-		{
-			get { return (Length > 0) ? Index + Length - 1 : Index; }
-		}
-
 		public bool Success
 		{
 			get { return Length >= 0; }
@@ -121,7 +122,7 @@ namespace Eto.Parse
 
 		public virtual NamedMatch this [string id, bool deep = false]
 		{
-			get { return Find(id, deep).FirstOrDefault() ?? new NamedMatch(null, null); }
+			get { return Find(id, deep).FirstOrDefault() ?? NamedMatch.EmptyMatch; }
 		}
 	}
 }

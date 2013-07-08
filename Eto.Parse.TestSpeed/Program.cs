@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using Eto.Parse.Writers;
 
 namespace Eto.Parse.TestSpeed
 {
@@ -12,6 +13,22 @@ namespace Eto.Parse.TestSpeed
 			var iters = 100;
 			Console.WriteLine("Json for {0} iterations:", iters);
 
+			/**/
+			{
+				var g = new Eto.Parse.Samples.JsonGrammar { EnableMatchEvents = false };
+				var sw = new Stopwatch();
+				sw.Start();
+				for (int i = 0; i < iters; i++)
+				{
+					var m = g.Match(json);
+					if (!m.Success)
+						Console.WriteLine("Error: {0}", m.Error.LastError);
+				}
+				sw.Stop();
+				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);
+			}
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
 			/**/
 			{
 				var g = new Irony.Samples.Json.JsonGrammar();
@@ -35,14 +52,12 @@ namespace Eto.Parse.TestSpeed
             GC.WaitForPendingFinalizers();
 			/**/
 			{
-				var g = new Eto.Parse.Samples.JsonGrammar { EnableEvents = false };
+				Newtonsoft.Json.JsonConvert.DeserializeObject(json);
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
-					var m = g.Match(json);
-					if (!m.Success)
-						Console.WriteLine("Error: {0}", m.Error.LastError);
+					var m = Newtonsoft.Json.Linq.JObject.Parse(json);
 				}
 				sw.Stop();
 				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);

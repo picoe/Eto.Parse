@@ -14,9 +14,9 @@ namespace Eto.Parse.Parsers
 
 		public static Parser ExcludeNull(IEnumerable<Parser> parsers)
 		{
-			var p = parsers.Where(r => r != null);
-			if (p.Count() == 1)
-				return p.FirstOrDefault();
+			var p = parsers.Where(r => r != null).ToArray();
+			if (p.Length == 1)
+				return p[0];
 			else
 				return new AlternativeParser(p);
 		}

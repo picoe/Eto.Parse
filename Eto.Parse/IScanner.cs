@@ -6,11 +6,15 @@ namespace Eto.Parse
 	{
 		int Position { get; set; }
 
-		bool IsEnd { get; }
+		int Advance(int length);
 
-		char Peek { get; }
+		bool IsEof { get; }
 
-		void Read();
+		bool ReadString(string matchString, bool caseSensitive, out int pos);
+
+		bool ReadChar(out char ch);
+
+		bool ReadChar(out char ch, out int pos);
 
 		string SubString(int index, int length);
 	}

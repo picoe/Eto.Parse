@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Eto.Parse
 {
-	public static class InternalExtensions
+	internal static class InternalExtensions
 	{
 		internal static void ThrowIfNull<T>(this T o, string paramName, string message = null) where T : class
 		{

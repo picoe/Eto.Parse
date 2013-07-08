@@ -17,8 +17,9 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.Scanner.Position <= 0)
-				return args.EmptyMatch;
+			var pos = args.Scanner.Position;
+			if (pos <= 0)
+				return new ParseMatch(pos, 0);
 			else
 				return args.NoMatch;
 		}
