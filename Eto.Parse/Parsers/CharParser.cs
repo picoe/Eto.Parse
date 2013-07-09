@@ -27,9 +27,11 @@ namespace Eto.Parse.Parsers
 
 		public CharParser()
 		{
+			AddError = true;
 		}
 
 		public CharParser(ICharTester tester)
+			: this()
 		{
 			this.Tester = tester;
 		}

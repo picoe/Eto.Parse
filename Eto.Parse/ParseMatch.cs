@@ -27,11 +27,6 @@ namespace Eto.Parse
 			get { return Length <= 0; }
 		}
 
-		public static ParseMatch NoMatch
-		{
-			get { return new ParseMatch(-1, -1); }
-		}
-
 		public ParseMatch(int offset, int length)
 		{
 			this.index = offset;

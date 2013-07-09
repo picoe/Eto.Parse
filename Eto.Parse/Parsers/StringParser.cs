@@ -22,6 +22,7 @@ namespace Eto.Parse.Parsers
 		{
 			QuoteCharacters = "\"\'".ToCharArray();
 			AllowDoubleQuote = true;
+			AddError = true;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

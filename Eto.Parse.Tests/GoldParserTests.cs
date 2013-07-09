@@ -198,7 +198,7 @@ Comment End   = '*!'
 			// match using generated parser
 			var match = generatedGoldParser.Match(goldBnf);
 
-			Assert.IsTrue(match.Success, "Error: {0}", match.Error.LastError);
+			Assert.IsTrue(match.Success, "Error: {0}", match.ErrorMessage);
 		}
 	}
 }

@@ -165,9 +165,9 @@ namespace Eto.Parse.Grammars
 			NamedParser parser;
 			var match = this.Match(new StringScanner(bnf));
 
-			if (match.Error != null)
+			if (!match.Success)
 			{
-				throw new FormatException(string.Format("Error parsing bnf starting at: \n{0}", bnf.Substring((int)match.Error.Index)));
+				throw new FormatException(string.Format("Error parsing bnf: \n{0}", match.Errors));
 			}
 			if (!parserLookup.TryGetValue(startParserName, out parser))
 				throw new ArgumentException("the topParser specified is not found in this bnf");

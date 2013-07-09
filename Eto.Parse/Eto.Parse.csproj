@@ -163,7 +163,6 @@
     <Compile Include="IScanner.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ParseError.cs" />
     <Compile Include="Testers\RangeTester.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -200,7 +199,7 @@
     <Compile Include="Writers\Code\LiteralWriter.cs" />
     <Compile Include="Writers\Display\LiteralWriter.cs" />
     <Compile Include="Parsers\StringParser.cs" />
-    <Compile Include="MatchResults.cs" />
+    <Compile Include="GrammarMatch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

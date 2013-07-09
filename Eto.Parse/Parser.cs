@@ -11,13 +11,15 @@ namespace Eto.Parse
 	{
 		public static Parser DefaultSeparator { get; set; }
 
+		public bool AddError { get; set; }
+
 		internal bool Reusable { get; set; }
 
 		public object Context { get; set; }
 
 		public virtual string GetErrorMessage()
 		{
-			return DescriptiveName;
+			return "Expected " + DescriptiveName;
 		}
 
 		public virtual string DescriptiveName
@@ -38,6 +40,7 @@ namespace Eto.Parse
 		protected Parser(Parser other)
 		{
 			Context = other.Context;
+			AddError = other.AddError;
 		}
 
 		public ParseMatch Parse(ParseArgs args)
@@ -49,7 +52,8 @@ namespace Eto.Parse
 			{
 				if (args.Trace)
 					Console.WriteLine("FAILED: {0}", this.DescriptiveName);
-				//args.AddError(this);
+				if (AddError)
+					args.AddError(this, args.Scanner.Position);
 			}
 
 			return match;

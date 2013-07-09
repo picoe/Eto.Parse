@@ -5,15 +5,19 @@ namespace Eto.Parse
 {
 	public class ParseArgs : EventArgs
 	{
-		ParseError childError;
 		List<ParseNode> nodes = new List<ParseNode>(100);
 		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>();
+		List<Parser> errors = new List<Parser>();
 
-		public NamedMatch Top { get; private set; }
+		public GrammarMatch Root { get; internal set; }
 
 		public IScanner Scanner { get; private set; }
 
 		public Grammar Grammar { get; private set; }
+
+		public int ErrorIndex { get; private set; }
+
+		public List<Parser> Errors { get { return errors; } }
 
 		public bool Trace { get; set; }
 
@@ -21,6 +25,11 @@ namespace Eto.Parse
 		{
 			Grammar = grammar;
 			Scanner = scanner;
+		}
+
+		public bool IsRoot
+		{
+			get { return nodes.Count <= 1; }
 		}
 
 		public ParseMatch EmptyMatch
@@ -33,17 +42,6 @@ namespace Eto.Parse
 			get { return new ParseMatch(-1, -1); }
 		}
 
-		public void Push(Parser parser, NamedMatch match = null)
-		{
-			if (match != null)
-				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, match, CreateTempMatchCollection()));
-			else
-			{
-				var current = Last;
-				nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, current.Match, current.Matches));
-			}
-		}
-
 		NamedMatchCollection CreateTempMatchCollection()
 		{
 			if (reusableMatches.Count > 0)
@@ -52,21 +50,14 @@ namespace Eto.Parse
 				return new NamedMatchCollection();
 		}
 
-		public void AddError(Parser parser)
+		public void AddError(Parser parser, int pos)
 		{
-			if (nodes.Count > 0)
+			if (pos > ErrorIndex)
 			{
-				var node = Last;
-				var match = node.Match;
-				var pos = node.Position;
-				var error = match.Error;
-				if (error == null)
-					error = match.Error = new ParseError(Scanner, pos);
-				else if (pos > error.Index)
-					error.Reset(pos);
-				if (pos == error.Index)
-					error.AddError(parser, childError);
+				ErrorIndex = pos;
+				errors.Clear();
 			}
+			errors.Add(parser);
 		}
 
 		ParseNode Last
@@ -113,6 +104,18 @@ namespace Eto.Parse
 			return false;
 		}
 
+		public NamedMatchCollection Push(Parser parser, bool newMatches = false)
+		{
+			NamedMatchCollection matches;
+			if (newMatches || nodes.Count == 0)
+				matches = CreateTempMatchCollection();
+			else
+				matches = Last.Matches;
+
+			nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, matches));
+			return matches;
+		}
+
 		public void Pop(bool success)
 		{
 			var last = Last;
@@ -122,52 +125,44 @@ namespace Eto.Parse
 				Scanner.Position = last.Position;
 		}
 
-		public bool Pop(NamedMatch match, bool success)
+		public void Pop(NamedMatch match, bool success)
 		{
 			//match.ThrowIfNull("match");
-			var last = Last;
-			var lastMatches = last.Matches;
-			RemoveLast();
-			if (success)
+			if (nodes.Count > 0)
 			{
-				match.Matches.AddRange(lastMatches);
-				if (nodes.Count > 0)
-					Last.Matches.Add(match);
-				childError = null;
+				var last = Last;
+				RemoveLast();
+				if (success)
+				{
+					if (nodes.Count > 0)
+						Last.Matches.Add(match);
+				}
+				else
+				{
+					Scanner.Position = last.Position;
+					last.Matches.Clear();
+					reusableMatches.Push(last.Matches);
+				}
 			}
-			else
-			{
-				Scanner.Position = last.Position;
-				childError = match.Error;
-			}
-			lastMatches.Clear();
-			reusableMatches.Push(lastMatches);
-			if (nodes.Count == 0)
-				Top = match;
-			return nodes.Count > 0;
 		}
 	}
 
 	struct ParseNode
 	{
 		NamedMatchCollection matches;
-		NamedMatch match;
 		Parser parser;
 		int position;
 
 		public NamedMatchCollection Matches { get { return matches; } }
 
-		public NamedMatch Match { get { return match; } }
-
 		public Parser Parser { get { return parser; } }
 
 		public int Position { get { return position; } }
 
-		public ParseNode(Parser parser, int position, NamedMatch match, NamedMatchCollection matches)
+		public ParseNode(Parser parser, int position, NamedMatchCollection matches)
 		{
 			this.parser = parser;
 			this.position = position;
-			this.match = match;
 			this.matches = matches;
 		}
 	}

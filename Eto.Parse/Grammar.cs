@@ -34,25 +34,42 @@ namespace Eto.Parse
 		{
 		}
 
-		public NamedMatch Match(string value)
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			if (args.IsRoot)
+			{
+				var matches = args.Push(this, true);
+				var match = (Inner != null) ? Inner.Parse(args) : args.EmptyMatch;
+				args.Root = new GrammarMatch(this, args.Scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors);
+				args.Pop(match.Success);
+				if (match.Success)
+					return match;
+				else
+					return args.NoMatch;
+			}
+			else
+				return base.InnerParse(args);
+		}
+
+		public GrammarMatch Match(string value)
 		{
 			value.ThrowIfNull("value");
 			return Match(new StringScanner(value));
 		}
 
-		public NamedMatch Match(IScanner scanner)
+		public GrammarMatch Match(IScanner scanner)
 		{
 			scanner.ThrowIfNull("scanner");
 			var args = new ParseArgs(this, scanner);
 			Parse(args);
-			var topMatch = args.Top;
+			var root = args.Root;
 
-			if (topMatch.Success && EnableMatchEvents)
+			if (root.Success && EnableMatchEvents)
 			{
-				topMatch.PreMatch();
-				topMatch.Match();
+				root.PreMatch();
+				root.Match();
 			}
-			return topMatch;
+			return root;
 		}
 
 		public NamedMatchCollection Matches(string value)

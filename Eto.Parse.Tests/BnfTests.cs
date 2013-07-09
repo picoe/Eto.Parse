@@ -87,8 +87,8 @@ Vancouver, BC V5V5V5";
 			var addressParser = GetAddressParser();
 			var match = addressParser.Match(AddressMissingZipPart);
 			Assert.IsFalse(match.Success);
-			Assert.That(match.Error != null, "Error was not specified");
-			Assert.That(match.Error.LastError.Index == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
+			Assert.That(!match.Success, "Error was not specified");
+			Assert.That(match.ErrorIndex == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
 		public static void TestAddress(NamedMatch match)

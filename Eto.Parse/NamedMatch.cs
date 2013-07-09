@@ -11,7 +11,7 @@ namespace Eto.Parse
 
 		public static NamedMatch EmptyMatch
 		{
-			get { return empty ?? (empty = new NamedMatch(null, null)); }
+			get { return empty ?? (empty = new NamedMatch(null, null, -1, -1, new NamedMatchCollection())); }
 		}
 
 		public NamedMatchCollection Matches
@@ -19,9 +19,7 @@ namespace Eto.Parse
 			get { return matches ?? (matches = new NamedMatchCollection()); }
 		}
 
-		public ParseError Error { get; set; }
-
-		public virtual IEnumerable<NamedMatch> Find(string id, bool deep = false)
+		public IEnumerable<NamedMatch> Find(string id, bool deep = false)
 		{
 			if (matches != null)
 				return matches.Find(id, deep);
@@ -29,7 +27,7 @@ namespace Eto.Parse
 				return Enumerable.Empty<NamedMatch>();
 		}
 
-		public virtual NamedMatch this [string id, bool deep = false]
+		public NamedMatch this [string id, bool deep = false]
 		{
 			get
 			{
@@ -51,12 +49,13 @@ namespace Eto.Parse
 
 		public object Tag { get; set; }
 
-		public NamedMatch(NamedParser parser, IScanner scanner)
+		public NamedMatch(NamedParser parser, IScanner scanner, int index, int length, NamedMatchCollection matches)
 		{
 			this.Parser = parser;
 			this.Scanner = scanner;
-			this.Index = -1;
-			this.Length = -1;
+			this.Index = index;
+			this.Length = length;
+			this.matches = matches;
 		}
 
 		public void PreMatch()
@@ -111,7 +110,7 @@ namespace Eto.Parse
 
 	public class NamedMatchCollection : List<NamedMatch>
 	{
-		public virtual IEnumerable<NamedMatch> Find(string id, bool deep = false)
+		public IEnumerable<NamedMatch> Find(string id, bool deep = false)
 		{
 			var matches = this.Where(r => r.Parser.Name == id);
 			if (deep && !matches.Any())
@@ -120,7 +119,7 @@ namespace Eto.Parse
 				return matches;
 		}
 
-		public virtual NamedMatch this [string id, bool deep = false]
+		public NamedMatch this [string id, bool deep = false]
 		{
 			get { return Find(id, deep).FirstOrDefault() ?? NamedMatch.EmptyMatch; }
 		}

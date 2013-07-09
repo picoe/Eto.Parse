@@ -22,14 +22,14 @@ namespace Eto.Parse.TestSpeed
 				{
 					var m = g.Match(json);
 					if (!m.Success)
-						Console.WriteLine("Error: {0}", m.Error.LastError);
+						Console.WriteLine("Error: {0}", m.ErrorMessage);
 				}
 				sw.Stop();
 				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
-			/**/
+			/**
 			{
 				var g = new Irony.Samples.Json.JsonGrammar();
 				var p = new Irony.Parsing.Parser(g);
@@ -50,9 +50,9 @@ namespace Eto.Parse.TestSpeed
 			}
             GC.Collect();
             GC.WaitForPendingFinalizers();
-			/**/
+			/**
 			{
-				Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+				Newtonsoft.Json.Linq.JObject.Parse(json);
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
@@ -64,10 +64,10 @@ namespace Eto.Parse.TestSpeed
 			}
 			/**
 			var test = new Eto.Parse.Tests.BnfTests();
-			test.AddressParsingSpeed();
+			test.BnfParser();
 			/**
-			var test = new Eto.Parse.Tests.BnfTests();
-			test.BnfParsingSpeed();
+			var test = new Eto.Parse.Tests.GoldParserTests();
+			test.ToCode();
 			/**/
 		}
 	}
