@@ -19,7 +19,7 @@ namespace Eto.Parse.Scanners
 			get { return offset >= length; }
 		}
 		
-		public char Peek
+		public char Current
 		{
 			get { return value[offset]; }
 		}

@@ -10,6 +10,8 @@ namespace Eto.Parse
 
 		bool IsEof { get; }
 
+		char Current { get; }
+
 		bool ReadString(string matchString, bool caseSensitive, out int pos);
 
 		bool ReadChar(out char ch);
