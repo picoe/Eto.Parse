@@ -6,14 +6,17 @@ using System.IO;
 namespace Eto.Parse.Writers.Code
 {
 
-	public class ListWriter : ParserWriter<ListParser>
+	public class ListWriter<T> : ParserWriter<T>
+		where T: ListParser
 	{
-		public override void WriteContents(TextParserWriterArgs args, ListParser parser, string name)
+		public override void WriteContents(TextParserWriterArgs args, T parser, string name)
 		{
+			var items = new List<string>();
 			parser.Items.ForEach(r => {
 				var child = r != null ? args.Write(r) : "null";
-				args.Output.WriteLine("{0}.Items.Add({1});", name, child);
+				items.Add(child);
 			});
+			args.Output.WriteLine("{0}.Items.AddRange(new Eto.Parse.Parser[] {{ {1} }});", name, string.Join(", ", items));
 		}
 	}
 	

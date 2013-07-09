@@ -10,8 +10,10 @@ namespace Eto.Parse.Writers.Code
 			base.WriteContents(args, tester, name);
 			args.Output.WriteLine("{0}.First = {1};", name, args.Write(tester.First));
 			args.Output.WriteLine("{0}.Second = {1};", name, args.Write(tester.Second));
-			args.Output.WriteLine("{0}.FirstInverse = {1};", name, tester.FirstInverse.ToString().ToLowerInvariant());
-			args.Output.WriteLine("{0}.SecondInverse = {1};", name, tester.SecondInverse.ToString().ToLowerInvariant());
+			if (tester.FirstInverse)
+				args.Output.WriteLine("{0}.FirstInverse = {1};", name, tester.FirstInverse.ToString().ToLowerInvariant());
+			if (tester.SecondInverse)
+				args.Output.WriteLine("{0}.SecondInverse = {1};", name, tester.SecondInverse.ToString().ToLowerInvariant());
 		}
 	}
 }

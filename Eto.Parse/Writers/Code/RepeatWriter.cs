@@ -14,6 +14,10 @@ namespace Eto.Parse.Writers.Code
 			args.Output.WriteLine("{0}.Minimum = {1};", name, parser.Minimum);
 			if (parser.Maximum != Int32.MaxValue)
 				args.Output.WriteLine("{0}.Maximum = {1};", name, parser.Maximum);
+			if (parser.Until != null)
+				args.Output.WriteLine("{0}.Until = {1};", name, args.Write(parser.Until));
+			if (parser.Separator != null)
+				args.Output.WriteLine("{0}.Separator = {1};", name, args.Write(parser.Separator));
 		}
 	}
 	

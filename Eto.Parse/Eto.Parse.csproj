@@ -200,6 +200,8 @@
     <Compile Include="Writers\Display\LiteralWriter.cs" />
     <Compile Include="Parsers\StringParser.cs" />
     <Compile Include="GrammarMatch.cs" />
+    <Compile Include="Writers\Code\GroupWriter.cs" />
+    <Compile Include="Writers\Code\SequenceWriter.cs" />
     <Compile Include="ParserCloneArgs.cs" />
     <Compile Include="ParserChain.cs" />
     <Compile Include="ParserContainsArgs.cs" />

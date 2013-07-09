@@ -14,5 +14,4 @@ namespace Eto.Parse.Writers.Code
 			args.Output.WriteLine("{0}.Inner = {1};", name, child);
 		}
 	}
-	
 }

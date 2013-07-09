@@ -7,8 +7,9 @@ namespace Eto.Parse
 {
 	public class ParserWriterArgs
 	{
-		Dictionary<Type, int> names;
-		HashSet<string> namedParsers;
+		Dictionary<Type, int> names = new Dictionary<Type, int>();
+		HashSet<string> namedParsers = new HashSet<string>();
+		Dictionary<object, string> objectNames = new Dictionary<object, string>();
 
 		public Stack<Parser> Parsers { get; private set; }
 
@@ -45,18 +46,28 @@ namespace Eto.Parse
 
 		public string GenerateName(ICharTester tester)
 		{
-			return GenerateName(tester.GetType());
+			string name;
+			if (!objectNames.TryGetValue(tester, out name))
+			{
+				name = GenerateName(tester.GetType());
+				objectNames[tester] = name;
+			}
+			return name;
 		}
 
 		public string GenerateName(Parser parser)
 		{
-			return GenerateName(parser.GetType());
+			string name;
+			if (!objectNames.TryGetValue(parser, out name))
+			{
+				name = GenerateName(parser.GetType());
+				objectNames[parser] = name;
+			}
+			return name;
 		}
 
 		public string GenerateName(Type type)
 		{
-			if (names == null)
-				names = new Dictionary<Type, int>();
 			int val;
 			if (!names.TryGetValue(type, out val))
 				val = 0;
@@ -68,8 +79,6 @@ namespace Eto.Parse
 
 		public bool IsDefined(string name)
 		{
-			if (namedParsers == null)
-				namedParsers = new HashSet<string>();
 			if (!namedParsers.Contains(name))
 			{
 				namedParsers.Add(name);

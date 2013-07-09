@@ -16,11 +16,13 @@ namespace Eto.Parse.Writers
 				{ typeof(Parser), new Code.ParserWriter<Parser>() },
 				{ typeof(Grammar), new Code.GrammarWriter() },
 				{ typeof(NamedParser), new Code.NamedWriter() },
-				{ typeof(ListParser), new Code.ListWriter() },
+				{ typeof(ListParser), new Code.ListWriter<ListParser>() },
 				{ typeof(UnaryParser), new Code.UnaryWriter<UnaryParser>() },
 				{ typeof(CharParser), new Code.CharWriter() },
 				{ typeof(LiteralParser), new Code.LiteralWriter() },
-				{ typeof(RepeatParser), new Code.RepeatWriter() }
+				{ typeof(RepeatParser), new Code.RepeatWriter() },
+				{ typeof(GroupParser), new Code.GroupWriter() },
+				{ typeof(SequenceParser), new Code.SequenceWriter() },
 			}, 
 			new TesterDictionary
 			{
@@ -28,6 +30,7 @@ namespace Eto.Parse.Writers
 				{ typeof(IncludeTester), new Code.IncludeTesterWriter() },
 				{ typeof(ExcludeTester), new Code.ExcludeTesterWriter() },
 				{ typeof(RangeTester), new Code.RangeTesterWriter() },
+				{ typeof(CharSetTester), new Code.CharSetTesterWriter() },
 			})
 		{
 		}

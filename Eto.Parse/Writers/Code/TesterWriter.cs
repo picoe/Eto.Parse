@@ -33,5 +33,4 @@ namespace Eto.Parse.Writers.Code
 			return name;
 		}
 	}
-	
 }

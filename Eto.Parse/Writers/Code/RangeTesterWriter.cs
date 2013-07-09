@@ -13,4 +13,3 @@ namespace Eto.Parse.Writers.Code
 		}
 	}
 }
-
