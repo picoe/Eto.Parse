@@ -11,6 +11,8 @@ namespace Eto.Parse.Grammars
 {
 	public class GoldDefinition
 	{
+		Parser separator;
+
 		public Dictionary<string, string> Properties { get; private set; }
 
 		public Dictionary<string, CharParser> Sets { get; private set; }
@@ -23,11 +25,34 @@ namespace Eto.Parse.Grammars
 
 		public Parser Whitespace { get { return Terminals.ContainsKey("Whitespace") ? Terminals["Whitespace"] : null; } }
 
+		public Parser NewLine { get { return Terminals.ContainsKey("NewLine") ? Terminals["NewLine"] : null; } }
+
+		internal void ClearSeparator()
+		{
+			separator = null;
+		}
+
 		public Parser Separator
 		{
 			get
 			{
-				return AlternativeParser.ExcludeNull(Comment, Whitespace);
+				if (separator == null)
+				{
+					var alt = new AlternativeParser();
+					var p = Comment;
+					if (p != null)
+						alt.Items.Add(p);
+					p = Whitespace;
+					if (p != null)
+						alt.Items.Add(p);
+					p = NewLine;
+					if (p != null)
+						alt.Items.Add(p);
+					if (alt.Items.Count == 0)
+						return null;
+					separator = -alt;
+				}
+				return separator;
 			}
 		}
 
@@ -121,8 +146,8 @@ namespace Eto.Parse.Grammars
 
 			// Line-Based Grammar Declarations
 
-			var comments = ~(("!*" & (-Terminals.AnyChar).Until("*!") & "*!") | ('!' & -!Terminals.Eol));
-			whitespace = -Terminals.SingleLineWhiteSpace & comments & -Terminals.SingleLineWhiteSpace;
+			var comments = new GroupParser("!*", "*!", "!");
+			whitespace = -(Terminals.SingleLineWhiteSpace | comments);
 			Parser.DefaultSeparator = whitespace;
 			var newline = Terminals.Eol;
 			var nlOpt = -newline;
@@ -184,7 +209,7 @@ namespace Eto.Parse.Grammars
 
 			var content = -definitionDecl;
 
-			this.Inner = nlOpt & content & nlOpt & Terminals.End;
+			this.Inner = nlOpt & content;
 
 			Parser.DefaultSeparator = oldSeparator;
 			AttachEvents();
@@ -200,7 +225,8 @@ namespace Eto.Parse.Grammars
 
 			ruleDecl.Matched += m => {
 				var name = m["name"]["value"].Value;
-				var parser = Alternative(m, "handle", r => Sequence(r, "symbol", cm => Symbol(cm)));
+				bool addWhitespace = name == definition.StartSymbolName;
+				var parser = Alternative(m, "handle", r => Sequence(r, "symbol", cm => Symbol(cm), addWhitespace));
 				definition.Rules[name].Inner = parser;
 			};
 			ruleDecl.PreMatch += m => {
@@ -218,28 +244,46 @@ namespace Eto.Parse.Grammars
 				var parser = m.Tag as NamedParser;
 				if (parser != null)
 					parser.Inner = inner;
-				var group = m.Tag as GroupParser;
-				if (group != null)
+				var groupParser = m.Tag as GroupParser;
+				var name = m["name"].Value;
+				if (groupParser != null)
 				{
-					var name = m["name"].Value;
 					if (name.EndsWith(" Start"))
-						group.Start = inner;
+						groupParser.Start = inner;
 					else if (name.EndsWith(" End"))
-						group.End = inner;
+						groupParser.End = inner;
 					else if (name.EndsWith(" Line"))
-						group.Line = inner;
+						groupParser.Line = inner;
+					var count = name.EndsWith(" Start") ? 6 : name.EndsWith(" Line") ? 5 : name.EndsWith(" End") ? 4 : 0;
+					name = name.Substring(0, name.Length - count);
+				}
+
+				if (name.Equals("Comment", StringComparison.OrdinalIgnoreCase)
+				    || name.Equals("Whitespace", StringComparison.OrdinalIgnoreCase)
+				    || name.Equals("NewLine", StringComparison.OrdinalIgnoreCase)
+				    )
+				{
+					definition.ClearSeparator();
 				}
 			};
 
 			terminalDecl.PreMatch += m => {
 				var name = m["name"].Value;
-				Parser parser;
 				if (name.EndsWith(" Start") || name.EndsWith(" End") || name.EndsWith(" Line"))
-					parser = new GroupParser();
+				{
+					Parser parser;
+					var count = name.EndsWith(" Start") ? 6 : name.EndsWith(" Line") ? 5 : name.EndsWith(" End") ? 4 : 0;
+					name = name.Substring(0, name.Length - count);
+					if (definition.Terminals.TryGetValue(name, out parser))
+					{
+						parser = parser as GroupParser ?? new GroupParser();
+					}
+					else
+						parser = new GroupParser();
+					m.Tag = definition.Terminals[name] = parser;
+				}
 				else
-					parser = new NamedParser(name);
-				definition.Terminals[name] = parser;
-				m.Tag = parser;
+					m.Tag = definition.Terminals[name] = new NamedParser(name);
 			};
 
 			setDecl.Matched += m => {
@@ -263,11 +307,20 @@ namespace Eto.Parse.Grammars
 				return parsers.FirstOrDefault();
 		}
 
-		Parser Sequence(NamedMatch m, string innerName, Func<NamedMatch, Parser> inner)
+		Parser Sequence(NamedMatch m, string innerName, Func<NamedMatch, Parser> inner, bool addWhitespace = false)
 		{
 			var parsers = m.Find(innerName).Select(r => inner(r));
-			if (parsers.Count() > 1)
-				return new SequenceParser(parsers) { Separator = definition.Separator };
+			if (addWhitespace || parsers.Count() > 1)
+			{
+				var sep = definition.Separator;
+				var seq = new SequenceParser(parsers) { Separator = sep };
+				if (addWhitespace)
+				{
+					seq.Items.Insert(0, sep);
+					seq.Items.Add(sep);
+				}
+				return seq;
+			}
 			else
 				return parsers.FirstOrDefault();
 		}
@@ -355,7 +408,7 @@ namespace Eto.Parse.Grammars
 		{
 			var match = Match(grammar);
 			if (!match.Success)
-				throw new FormatException(string.Format("Error parsing gold grammar: {0}", match.Error));
+				throw new FormatException(string.Format("Error parsing gold grammar: {0}", match.ErrorMessage));
 			return definition;
 		}
 
