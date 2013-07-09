@@ -60,9 +60,6 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ParseArgs.cs">
       <SubType>Code</SubType>
     </Compile>
