@@ -10,8 +10,8 @@ namespace Eto.Parse.Parsers
 
 		public ICharTester Tester { get; set; }
 
-		protected CharParser(CharParser other)
-			: base(other)
+		protected CharParser(CharParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 			Tester = other.Tester;
 		}
@@ -56,9 +56,9 @@ namespace Eto.Parse.Parsers
 			yield break;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new CharParser(this);
+			return new CharParser(this, chain);
 		}
 
 		public static CharParser operator +(CharParser parser, CharParser include)

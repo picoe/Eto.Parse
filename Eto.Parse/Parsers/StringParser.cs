@@ -11,7 +11,8 @@ namespace Eto.Parse.Parsers
 		public bool AllowDoubleQuote { get; set; }
 
 
-		protected StringParser(StringParser other)
+		protected StringParser(StringParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 			this.QuoteCharacters = other.QuoteCharacters != null ? (char[])other.QuoteCharacters.Clone() : null;
 			this.AllowDoubleQuote = other.AllowDoubleQuote;
@@ -52,9 +53,9 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new StringParser(this);
+			return new StringParser(this, chain);
 		}
 	}
 }

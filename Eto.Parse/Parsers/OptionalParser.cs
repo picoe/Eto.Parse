@@ -4,8 +4,8 @@ namespace Eto.Parse.Parsers
 {
 	public class OptionalParser : UnaryParser
 	{
-		protected OptionalParser(OptionalParser other)
-			: base(other)
+		protected OptionalParser(OptionalParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 		}
 
@@ -33,9 +33,9 @@ namespace Eto.Parse.Parsers
 				return args.EmptyMatch;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new OptionalParser(this);
+			return new OptionalParser(this, chain);
 		}
 		
 	}

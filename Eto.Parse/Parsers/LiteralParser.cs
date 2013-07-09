@@ -8,8 +8,8 @@ namespace Eto.Parse.Parsers
 	{
 		public string Value { get; set; }
 
-		protected LiteralParser(LiteralParser other)
-			: base(other)
+		protected LiteralParser(LiteralParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 			Value = other.Value;
 		}
@@ -40,9 +40,9 @@ namespace Eto.Parse.Parsers
 			return new ParseMatch(pos, Value.Length);
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new LiteralParser(this);
+			return new LiteralParser(this, chain);
 		}
 	}
 }

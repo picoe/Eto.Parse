@@ -200,6 +200,9 @@
     <Compile Include="Writers\Display\LiteralWriter.cs" />
     <Compile Include="Parsers\StringParser.cs" />
     <Compile Include="GrammarMatch.cs" />
+    <Compile Include="ParserCloneArgs.cs" />
+    <Compile Include="ParserChain.cs" />
+    <Compile Include="ParserContainsArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

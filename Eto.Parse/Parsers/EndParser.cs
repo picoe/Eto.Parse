@@ -6,8 +6,8 @@ namespace Eto.Parse.Parsers
 {
 	public class EndParser : Parser
 	{
-		protected EndParser(EndParser other)
-			: base(other)
+		protected EndParser(EndParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 		}
 
@@ -28,9 +28,9 @@ namespace Eto.Parse.Parsers
 			yield break;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new EndParser(this);
+			return new EndParser(this, chain);
 		}
 	}
 }

@@ -4,8 +4,8 @@ namespace Eto.Parse.Parsers
 {
 	public class LookAheadParser : UnaryParser
 	{
-		protected LookAheadParser(LookAheadParser other)
-			: base(other)
+		protected LookAheadParser(LookAheadParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 		}
 
@@ -27,9 +27,9 @@ namespace Eto.Parse.Parsers
 				return new ParseMatch(pos, 0);
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new LookAheadParser(this);
+			return new LookAheadParser(this, chain);
 		}
 	}
 }

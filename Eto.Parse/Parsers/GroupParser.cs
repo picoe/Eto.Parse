@@ -10,7 +10,7 @@ namespace Eto.Parse.Parsers
 		Parser end;
 		SequenceParser lineSeq;
 		SequenceParser blockSeq;
-		Parser group;
+		Parser groupParser;
 
 		public Parser Start
 		{
@@ -18,6 +18,27 @@ namespace Eto.Parse.Parsers
 			set {
 				start = value;
 				SetBlock();
+				SetInner();
+			}
+		}
+
+		public Parser End
+		{
+			get { return end; }
+			set
+			{
+				end = value;
+				SetBlock();
+				SetInner();
+			}
+		}
+
+		public Parser Line {
+			get { return line; }
+			set {
+				line = value;
+				SetLine();
+				SetInner();
 			}
 		}
 
@@ -26,47 +47,43 @@ namespace Eto.Parse.Parsers
 			yield break;
 		}
 
-		public Parser End { get; set; }
-
-		public Parser Line {
-			get { return line; }
-			set {
-				line = value;
-				if (line != null)
-					lineSeq = line & +(Terminals.AnyChar - Terminals.Eol) & Terminals.Eol;
-				else
-					lineSeq = null;
-				SetInner();
-			}
-		}
-
 		void SetBlock()
 		{
 			if (start != null && end != null)
-				blockSeq = start & (+Terminals.AnyChar).Until(end) & end;
+				blockSeq = start & (-Terminals.AnyChar).Until(end) & end;
 			else
 				blockSeq = null;
-			SetInner();
+		}
+
+		void SetLine()
+		{
+			if (line != null)
+				lineSeq = line & -!Terminals.Eol;
+			else
+				lineSeq = null;
 		}
 
 		void SetInner()
 		{
 			if (lineSeq != null && blockSeq != null)
-				group = lineSeq | blockSeq;
+				groupParser = blockSeq | lineSeq;
 			else if (lineSeq != null)
-				group = lineSeq;
+				groupParser = lineSeq;
 			else if (blockSeq != null)
-				group = blockSeq;
+				groupParser = blockSeq;
 			else
-				group = null;
+				groupParser = null;
 		}
 
-		protected GroupParser(GroupParser other)
+		protected GroupParser(GroupParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
-			this.line = other.line != null ? other.line.Clone() : null;
-			this.start = other.start != null ? other.start.Clone() : null;
-			this.end = other.end != null ? other.end.Clone() : null;
+			this.line = chain.Clone(other.line);
+			this.start = chain.Clone(other.start);
+			this.end = chain.Clone(other.end);
+			SetLine();
 			SetBlock();
+			SetInner();
 		}
 
 		public GroupParser()
@@ -83,20 +100,21 @@ namespace Eto.Parse.Parsers
 			this.start = start;
 			this.end = end;
 			this.line = line;
+			SetLine();
 			SetBlock();
+			SetInner();
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (group != null)
-				return group.Parse(args);
+			if (groupParser != null)
+				return groupParser.Parse(args);
 			return args.NoMatch;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new GroupParser(this);
+			return new GroupParser(this, chain);
+		}
 		}
 	}
-}
-

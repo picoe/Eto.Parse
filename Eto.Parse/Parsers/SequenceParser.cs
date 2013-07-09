@@ -8,11 +8,10 @@ namespace Eto.Parse.Parsers
 	{
 		public Parser Separator { get; set; }
 
-		protected SequenceParser(SequenceParser other)
-			: base(other)
+		protected SequenceParser(SequenceParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
-			if (other.Separator != null)
-				Separator = other.Separator.Clone();
+			Separator = chain.Clone(other.Separator);
 		}
 
 		public SequenceParser()
@@ -38,10 +37,10 @@ namespace Eto.Parse.Parsers
 				throw new InvalidOperationException("There are no items in this sequence");
 			var pos = args.Scanner.Position;
 			var separator = Separator ?? args.Grammar.Separator;
-			ParseMatch match = new ParseMatch(pos, 0);
+			var match = new ParseMatch(pos, 0);
 			for (int i = 0; i < Items.Count; i++)
 			{
-				ParseMatch sepMatch = args.NoMatch;
+				var sepMatch = args.NoMatch;
 				if (i > 0 && separator != null)
 				{
 					sepMatch = separator.Parse(args);
@@ -63,15 +62,14 @@ namespace Eto.Parse.Parsers
 					match.Length += sepMatch.Length;
 
 				match.Length += childMatch.Length;
-
 			}
 
 			return match;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new SequenceParser(this);
+			return new SequenceParser(this, chain);
 		}
 	}
 }

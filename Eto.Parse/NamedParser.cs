@@ -8,6 +8,12 @@ namespace Eto.Parse
 	{
 		public string Name { get; set; }
 
+		protected NamedParser(NamedParser other, ParserCloneArgs chain)
+			: base(other, chain)
+		{
+			this.Name = other.Name;
+		}
+
 		public NamedParser()
 		{
 			this.Name = Guid.NewGuid().ToString();
@@ -76,6 +82,11 @@ namespace Eto.Parse
 				args.Pop(false);
 				return args.NoMatch;
 			}
+		}
+
+		public override Parser Clone(ParserCloneArgs chain)
+		{
+			return new NamedParser(this, chain);
 		}
 	}
 }

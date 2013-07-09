@@ -21,8 +21,8 @@ namespace Eto.Parse.Parsers
 				return new AlternativeParser(p);
 		}
 
-		protected AlternativeParser(AlternativeParser other)
-			: base(other)
+		protected AlternativeParser(AlternativeParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 		}
 
@@ -59,9 +59,9 @@ namespace Eto.Parse.Parsers
 			return args.NoMatch;
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new AlternativeParser(this);
+			return new AlternativeParser(this, chain);
 		}
 	}
 }

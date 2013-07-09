@@ -15,8 +15,6 @@ namespace Eto.Parse
 
 		internal bool Reusable { get; set; }
 
-		public object Context { get; set; }
-
 		public virtual string GetErrorMessage()
 		{
 			return "Expected " + DescriptiveName;
@@ -24,7 +22,8 @@ namespace Eto.Parse
 
 		public virtual string DescriptiveName
 		{
-			get {
+			get
+			{
 				var type = GetType();
 				var name = type.Name;
 				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
@@ -37,10 +36,10 @@ namespace Eto.Parse
 		{
 		}
 
-		protected Parser(Parser other)
+		protected Parser(Parser other, ParserCloneArgs clone)
 		{
-			Context = other.Context;
 			AddError = other.AddError;
+			clone.Add(other, this);
 		}
 
 		public ParseMatch Parse(ParseArgs args)
@@ -59,6 +58,16 @@ namespace Eto.Parse
 			return match;
 		}
 
+		public bool Contains(Parser parser)
+		{
+			return Contains(new ParserContainsArgs(parser));
+		}
+
+		public virtual bool Contains(ParserContainsArgs args)
+		{
+			return args.Parser == this;
+		}
+
 		public virtual IEnumerable<NamedParser> Find(string parserId)
 		{
 			yield break;
@@ -71,7 +80,12 @@ namespace Eto.Parse
 
 		protected abstract ParseMatch InnerParse(ParseArgs args);
 
-		public abstract Parser Clone();
+		public Parser Clone()
+		{
+			return Clone(new ParserCloneArgs());
+		}
+
+		public abstract Parser Clone(ParserCloneArgs chain);
 
 		object ICloneable.Clone()
 		{

@@ -13,11 +13,10 @@ namespace Eto.Parse
 			return string.Format("{0}, Inner: {1}", base.GetDescriptiveNameInternal(parents), Inner != null ? Inner.GetDescriptiveName(parents): null);
 		}*/
 
-		protected UnaryParser(UnaryParser other)
-			: base(other)
+		protected UnaryParser(UnaryParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
-			if (other != null)
-				Inner = other.Clone();
+			Inner = chain.Clone(other.Inner);
 		}
 
 		public UnaryParser()
@@ -27,6 +26,19 @@ namespace Eto.Parse
 		public UnaryParser(Parser inner)
 		{
 			this.Inner = inner;
+		}
+
+		public override bool Contains(ParserContainsArgs args)
+		{
+			if (base.Contains(args))
+				return true;
+			if (Inner != null && args.Push(this))
+			{
+				var ret = Inner.Contains(args);
+				args.Pop(this);
+				return ret;
+			}
+			return false;
 		}
 
 		public override IEnumerable<NamedParser> Find(string parserId)
@@ -45,9 +57,9 @@ namespace Eto.Parse
 				return Inner.Parse(args);
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new UnaryParser(this);
+			return new UnaryParser(this, chain);
 		}
 	}
 }

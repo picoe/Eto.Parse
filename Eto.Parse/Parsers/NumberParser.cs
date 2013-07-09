@@ -10,7 +10,8 @@ namespace Eto.Parse.Parsers
 
 		public bool AllowExponent { get; set; }
 
-		protected NumberParser(NumberParser other)
+		protected NumberParser(NumberParser other, ParserCloneArgs chain)
+			: base(other, chain)
 		{
 			AllowSign = other.AllowSign;
 			AllowExponent = other.AllowExponent;
@@ -79,9 +80,9 @@ namespace Eto.Parse.Parsers
 			return new ParseMatch(pos, len);
 		}
 
-		public override Parser Clone()
+		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new NumberParser(this);
+			return new NumberParser(this, chain);
 		}
 	}
 }
