@@ -27,16 +27,16 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
-			int pos;
 			var len = 0;
 			char ch;
 			bool hasNext;
+			var pos = scanner.Position;
 			if (AllowSign)
 			{
-				hasNext = scanner.ReadChar(out ch, out pos);
+				hasNext = scanner.ReadChar(out ch);
 				if (!hasNext)
 				{
-					scanner.Position = pos;
+					scanner.SetPosition(pos);
 					return args.NoMatch;
 				}
 				if (ch == '-' || ch == '+')
@@ -46,7 +46,7 @@ namespace Eto.Parse.Parsers
 				}
 			}
 			else
-				hasNext = scanner.ReadChar(out ch, out pos);
+				hasNext = scanner.ReadChar(out ch);
 
 			bool foundNumber = false;
 			bool hasDecimal = false;
@@ -68,7 +68,7 @@ namespace Eto.Parse.Parsers
 				}
 				else if (!foundNumber)
 				{
-					scanner.Position = pos;
+					scanner.SetPosition(pos);
 					return args.NoMatch;
 				}
 				else
@@ -76,7 +76,7 @@ namespace Eto.Parse.Parsers
 				len++;
 				hasNext = scanner.ReadChar(out ch);
 			}
-			scanner.Position = pos + len;
+			scanner.SetPosition(pos + len);
 			return new ParseMatch(pos, len);
 		}
 

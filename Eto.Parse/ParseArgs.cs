@@ -11,7 +11,7 @@ namespace Eto.Parse
 
 		public GrammarMatch Root { get; internal set; }
 
-		public IScanner Scanner { get; private set; }
+		public Scanner Scanner { get; private set; }
 
 		public Grammar Grammar { get; private set; }
 
@@ -21,7 +21,7 @@ namespace Eto.Parse
 
 		public bool Trace { get; set; }
 
-		public ParseArgs(Grammar grammar, IScanner scanner)
+		public ParseArgs(Grammar grammar, Scanner scanner)
 		{
 			Grammar = grammar;
 			Scanner = scanner;
@@ -72,11 +72,13 @@ namespace Eto.Parse
 
 		public bool IsRecursive(Parser parser)
 		{
-			if (nodes.Count < 2)
+			return false;
+			var recursePos = nodes.Count - 2;
+			if (recursePos <= 0)
 				return false;
 
 			var pos = Scanner.Position;
-			for (int i = nodes.Count - 2; i >= 0; i--)
+			for (int i = recursePos; i >= 0; i--)
 			{
 				var parseNode = nodes[i];
 				if (parseNode.Position < pos)
@@ -86,18 +88,19 @@ namespace Eto.Parse
 					// check to see if we have recursed through the same path already
 					// going through different paths are okay!
 					// e.g. A->B->A->C->B[->A]
-					var count = Math.Min(i, nodes.Count - i);
-					var recursePos = nodes.Count - 2;
+					var count = nodes.Count - i;
+					if (i < count) // if we have enough to test for recursion to this path
+						return false;
+
 					var prevPos = i;
 					for (int j = 0; j < count; j ++)
 					{
-						var recurseNode = nodes[recursePos];
-						var prevNode = nodes[prevPos];
-						if (prevNode.Parser != recurseNode.Parser) return false;
-						prevPos--;
-						recursePos--;
+						var recurseNode = nodes[recursePos--];
+						var prevNode = nodes[prevPos--];
+						if (!object.ReferenceEquals(prevNode.Parser, recurseNode.Parser)
+						    || prevNode.Position < recurseNode.Position)
+							return false;
 					}
-
 					return true;
 				}
 			}
@@ -122,7 +125,7 @@ namespace Eto.Parse
 			RemoveLast();
 
 			if (!success)
-				Scanner.Position = last.Position;
+				Scanner.SetPosition(last.Position);
 		}
 
 		public void Pop(NamedMatch match, bool success)
@@ -139,7 +142,7 @@ namespace Eto.Parse
 				}
 				else
 				{
-					Scanner.Position = last.Position;
+					Scanner.SetPosition(last.Position);
 					last.Matches.Clear();
 					reusableMatches.Push(last.Matches);
 				}

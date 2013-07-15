@@ -2,6 +2,7 @@ using System;
 using Eto.Parse.Parsers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Eto.Parse
 {
@@ -55,15 +56,25 @@ namespace Eto.Parse
 			return name;
 		}
 
-		public string GenerateName(Parser parser)
+		public string GenerateName(Parser parser, string name = null)
 		{
-			string name;
-			if (!objectNames.TryGetValue(parser, out name))
+			string cachedName;
+			if (!objectNames.TryGetValue(parser, out cachedName))
 			{
-				name = GenerateName(parser.GetType());
-				objectNames[parser] = name;
+				if (name != null)
+				{
+					cachedName = name;
+					var count = 1;
+					while (objectNames.Values.Contains(cachedName))
+					{
+						cachedName = name + count++;
+					}
+				}
+				else
+					cachedName = GenerateName(parser.GetType());
+				objectNames[parser] = cachedName;
 			}
-			return name;
+			return cachedName;
 		}
 
 		public string GenerateName(Type type)

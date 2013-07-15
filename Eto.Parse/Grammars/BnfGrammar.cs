@@ -72,7 +72,6 @@ namespace Eto.Parse.Grammars
 				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').Named("parser"));
 			}
 
-
 			list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term"))).Named("parser");
 
 			listRepeat = (list.Named("list") & ws & '|' & sws & RuleParser.Named("expression")).Named("parser");
@@ -100,7 +99,7 @@ namespace Eto.Parse.Grammars
 
 			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
 			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
-			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag);
+			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 1);
 			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{

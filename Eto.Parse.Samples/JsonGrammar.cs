@@ -14,9 +14,9 @@ namespace Eto.Parse.Samples
 
 			//Nonterminals
 			var jobject = new NamedParser("Object"); 
-			var jobjectBr = new NamedParser("ObjectBr");
+			var jobjectBr = new UnaryParser();
 			var jarray = new NamedParser("Array");
-			var jarrayBr = new NamedParser("ArrayBr");
+			var jarrayBr = new UnaryParser();
 			var jvalue = new NamedParser("Value");
 			var jprop = new NamedParser("Property"); 
 

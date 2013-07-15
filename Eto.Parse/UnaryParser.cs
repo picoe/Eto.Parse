@@ -51,10 +51,10 @@ namespace Eto.Parse
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (Inner == null)
-				return args.EmptyMatch;
-			else
+			if (Inner != null)
 				return Inner.Parse(args);
+			else
+				return args.EmptyMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

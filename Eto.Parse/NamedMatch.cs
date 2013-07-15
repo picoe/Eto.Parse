@@ -38,20 +38,24 @@ namespace Eto.Parse
 			}
 		}
 
-		public IScanner Scanner { get; private set; }
+		public Scanner Scanner { get; private set; }
 
 		public string Value
 		{
 			get { return Success ? Scanner.SubString(Index, Length) : null; }
 		}
 
+		public string Name { get; private set; }
+
 		public NamedParser Parser { get; private set; }
 
 		public object Tag { get; set; }
 
-		public NamedMatch(NamedParser parser, IScanner scanner, int index, int length, NamedMatchCollection matches)
+		public NamedMatch(NamedParser parser, Scanner scanner, int index, int length, NamedMatchCollection matches)
 		{
 			this.Parser = parser;
+			if (parser != null)
+				this.Name = parser.Name;
 			this.Scanner = scanner;
 			this.Index = index;
 			this.Length = length;
@@ -112,7 +116,7 @@ namespace Eto.Parse
 	{
 		public IEnumerable<NamedMatch> Find(string id, bool deep = false)
 		{
-			var matches = this.Where(r => r.Parser.Name == id);
+			var matches = this.Where(r => r.Name == id);
 			if (deep && !matches.Any())
 				return matches.Concat(this.SelectMany(r => r.Find(id, deep)));
 			else

@@ -40,14 +40,17 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			char ch;
-			int pos;
-			if (scanner.ReadChar(out ch, out pos))
+			var pos = scanner.Position;
+			if (scanner.ReadChar(out ch))
 			{
+				if (Tester == null)
+					return new ParseMatch(pos, 1);
+
 				bool matched = Tester.Test(ch, args.Grammar.CaseSensitive);
 				if (matched != Inverse)
 					return new ParseMatch(pos, 1);
 			}
-			scanner.Position = pos;
+			scanner.SetPosition(pos);
 			return args.NoMatch;
 		}
 

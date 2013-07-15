@@ -15,7 +15,7 @@ namespace Eto.Parse.Writers.Code
 
 		public override string GetName(TextParserWriterArgs args, NamedParser parser)
 		{
-			return GetIdentifier(parser.Name);
+			return args.GenerateName(parser, GetIdentifier(parser.Name));
 		}
 
 		public override void WriteObject(TextParserWriterArgs args, NamedParser parser, string name)

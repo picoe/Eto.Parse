@@ -90,9 +90,6 @@
     <Compile Include="Scanners\StringScanner.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Testers\AnyCharTester.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Testers\CharSetTester.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,9 +154,6 @@
     <Compile Include="ICharTester.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IScanner.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Testers\RangeTester.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -202,6 +196,9 @@
     <Compile Include="ParserCloneArgs.cs" />
     <Compile Include="ParserChain.cs" />
     <Compile Include="ParserContainsArgs.cs" />
+    <Compile Include="Scanner.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

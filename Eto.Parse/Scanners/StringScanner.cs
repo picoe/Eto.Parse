@@ -2,26 +2,19 @@ using System;
 
 namespace Eto.Parse.Scanners
 {
-	public class StringScanner : IScanner
+	public class StringScanner : Scanner
 	{
-		int offset;
 		int length;
 		string value;
 
-		public int Position
+		public override bool IsEof
 		{
-			get { return offset; }
-			set { offset = value; }
-		}
-
-		public bool IsEof
-		{
-			get { return offset >= length; }
+			get { return Position >= length; }
 		}
 		
-		public char Current
+		public override char Current
 		{
-			get { return value[offset]; }
+			get { return value[Position]; }
 		}
 
 		public StringScanner(string value)
@@ -30,46 +23,33 @@ namespace Eto.Parse.Scanners
 			this.length = value.Length;
 		}
 		
-		public bool ReadChar(out char ch)
+		public override bool ReadChar(out char ch)
 		{
-			if (offset < length)
+			if (Position < length)
 			{
-				ch = value[offset];
-				offset++;
+				ch = value[Position];
+				Position ++;
 				return true;
 			}
 			ch = (char)0;
 			return false;
 		}
 
-		public bool ReadChar(out char ch, out int pos)
+		public override int Advance(int length)
 		{
-			pos = offset;
-			if (offset < length)
-			{
-				ch = value[offset];
-				offset++;
-				return true;
-			}
-			ch = (char)0;
-			return false;
-		}
-
-		public int Advance(int length)
-		{
-			var start = offset;
-			if (offset + length > this.length)
+			var start = Position;
+			var newPos = start + length;
+			if (newPos > this.length)
 				return -1;
-			offset += length;
+			Position = newPos;
 			return start;
-			//offset = Math.Min(offset + length, this.length);
-			//return offset + length > this.length ? -1 : start;
 		}
 
-		public bool ReadString(string matchString, bool caseSensitive, out int pos)
+		public override bool ReadString(string matchString, bool caseSensitive)
 		{
-			var index = pos = this.Position;
-			if (index + matchString.Length <= value.Length)
+			var index = this.Position;
+			var end = index + matchString.Length;
+			if (end <= value.Length)
 			{
 				if (caseSensitive)
 				{
@@ -87,13 +67,13 @@ namespace Eto.Parse.Scanners
 							return false;
 					}
 				}
-				offset += matchString.Length;
+				Position = end;
 				return true;
 			}
 			return false;
 		}
 
-		public string SubString(int offset, int length)
+		public override string SubString(int offset, int length)
 		{
 			if (offset >= value.Length)
 				return null;

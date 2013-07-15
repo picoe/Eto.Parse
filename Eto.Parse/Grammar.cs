@@ -57,7 +57,7 @@ namespace Eto.Parse
 			return Match(new StringScanner(value));
 		}
 
-		public GrammarMatch Match(IScanner scanner)
+		public GrammarMatch Match(Scanner scanner)
 		{
 			scanner.ThrowIfNull("scanner");
 			var args = new ParseArgs(this, scanner);
@@ -78,7 +78,7 @@ namespace Eto.Parse
 			return Matches(new StringScanner(value));
 		}
 
-		public NamedMatchCollection Matches(IScanner scanner)
+		public NamedMatchCollection Matches(Scanner scanner)
 		{
 			scanner.ThrowIfNull("scanner");
 			var matches = new NamedMatchCollection();

@@ -33,8 +33,8 @@ namespace Eto.Parse.Parsers
 			if (Value == null)
 				return args.EmptyMatch;
 
-			int pos;
-			if (!args.Scanner.ReadString(Value, args.Grammar.CaseSensitive, out pos))
+			int pos = args.Scanner.Position;
+			if (!args.Scanner.ReadString(Value, args.Grammar.CaseSensitive))
 				return args.NoMatch;
 
 			return new ParseMatch(pos, Value.Length);

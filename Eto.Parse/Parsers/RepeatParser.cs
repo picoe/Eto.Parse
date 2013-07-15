@@ -27,7 +27,7 @@ namespace Eto.Parse.Parsers
 			Separator = DefaultSeparator;
 		}
 
-		public RepeatParser(Parser inner, int minimum = 1, int maximum = Int32.MaxValue, Parser until = null)
+		public RepeatParser(Parser inner, int minimum, int maximum = Int32.MaxValue, Parser until = null)
 		: base(inner)
 		{
 			this.Minimum = minimum;
@@ -41,7 +41,7 @@ namespace Eto.Parse.Parsers
 			if (args.IsRecursive(this))
 				return args.NoMatch;
 			
-			IScanner scanner = args.Scanner;
+			var scanner = args.Scanner;
 			int count = 0;
 			var pos = scanner.Position;
 			ParseMatch match = new ParseMatch(pos, 0);
@@ -56,8 +56,8 @@ namespace Eto.Parse.Parsers
 					var stopMatch = Until.Parse(args);
 					if (stopMatch.Success)
 					{
-						scanner.Position = stopMatch.Index;
-						break;
+						scanner.SetPosition(stopMatch.Index);
+						return match;
 					}
 				}
 
@@ -74,7 +74,7 @@ namespace Eto.Parse.Parsers
 					if (childMatch.FailedOrEmpty)
 					{
 						if (sepMatch.Success)
-							scanner.Position = sepMatch.Index;
+							scanner.SetPosition(sepMatch.Index);
 						break;
 					}
 					if (sepMatch.Success)
@@ -94,7 +94,7 @@ namespace Eto.Parse.Parsers
 
 			if (count < Minimum)
 			{
-				scanner.Position = pos;
+				scanner.SetPosition(pos);
 				return args.NoMatch;
 			}
 

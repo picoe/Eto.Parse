@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
@@ -22,7 +23,6 @@ namespace Eto.Parse.Parsers
 		public StringParser()
 		{
 			QuoteCharacters = "\"\'".ToCharArray();
-			AllowDoubleQuote = true;
 			AddError = true;
 		}
 
@@ -31,15 +31,24 @@ namespace Eto.Parse.Parsers
 			var scanner = args.Scanner;
 			if (this.QuoteCharacters != null)
 			{
+				var pos = scanner.Position;
+
+				char ch;
+				if (scanner.ReadChar(out ch) && QuoteCharacters.Contains(ch))
+				{
+
+				}
+
+				scanner.SetPosition(pos);
 				return args.EmptyMatch;
 
 			}
 			else
 			{
 				int length = 0;
-				int pos;
+				int pos = scanner.Position;
 				char ch;
-				while (scanner.ReadChar(out ch, out pos) && !char.IsWhiteSpace(ch))
+				while (scanner.ReadChar(out ch) && !char.IsWhiteSpace(ch))
 				{
 					length++;
 				}
@@ -47,7 +56,7 @@ namespace Eto.Parse.Parsers
 				if (length > 0)
 					return new ParseMatch(pos, length);
 				else {
-					scanner.Position = pos;
+					scanner.SetPosition(pos);
 					return args.NoMatch;
 				}
 			}

@@ -20,7 +20,7 @@ namespace Eto.Parse.Parsers
 			var match = Inner.Parse(args);
 			if (match.Success)
 			{
-				args.Scanner.Position = pos;
+				args.Scanner.SetPosition(pos);
 				return args.NoMatch;
 			}
 			else

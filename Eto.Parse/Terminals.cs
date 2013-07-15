@@ -7,7 +7,7 @@ namespace Eto.Parse
 {
 	public static class Terminals
 	{
-		public static CharParser AnyChar { get { return new CharParser(new AnyCharTester()); } }
+		public static CharParser AnyChar { get { return new CharParser(null); } }
 		public static CharParser Digit { get { return new CharParser(new DigitTester()); } }
 		public static CharParser HexDigit { get { return new CharParser(new HexDigitTester()); } }
 		public static CharParser Letter { get { return new CharParser(new LetterTester()); } }

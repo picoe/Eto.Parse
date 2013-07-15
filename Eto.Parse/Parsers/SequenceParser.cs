@@ -46,7 +46,7 @@ namespace Eto.Parse.Parsers
 					sepMatch = separator.Parse(args);
 					if (!sepMatch.Success)
 					{
-						args.Scanner.Position = pos;
+						args.Scanner.SetPosition(pos);
 						return sepMatch;
 					}
 				}
@@ -55,7 +55,7 @@ namespace Eto.Parse.Parsers
 				var childMatch = parser.Parse(args);
 				if (!childMatch.Success)
 				{
-					args.Scanner.Position = pos;
+					args.Scanner.SetPosition(pos);
 					return childMatch;
 				}
 				if (sepMatch.Success && !childMatch.Empty)

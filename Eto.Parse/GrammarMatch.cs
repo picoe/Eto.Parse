@@ -10,7 +10,7 @@ namespace Eto.Parse
 
 		public IEnumerable<Parser> Errors { get; private set; }
 
-		public GrammarMatch(Grammar grammar, IScanner scanner, int index, int length, NamedMatchCollection matches, int errorIndex, IEnumerable<Parser> errors)
+		public GrammarMatch(Grammar grammar, Scanner scanner, int index, int length, NamedMatchCollection matches, int errorIndex, IEnumerable<Parser> errors)
 			: base(grammar, scanner, index, length, matches)
 		{
 			this.Errors = errors;
