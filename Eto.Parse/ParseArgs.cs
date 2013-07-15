@@ -19,8 +19,6 @@ namespace Eto.Parse
 
 		public List<Parser> Errors { get { return errors; } }
 
-		public bool Trace { get; set; }
-
 		public ParseArgs(Grammar grammar, Scanner scanner)
 		{
 			Grammar = grammar;
@@ -72,9 +70,8 @@ namespace Eto.Parse
 
 		public bool IsRecursive(Parser parser)
 		{
-			return false;
 			var recursePos = nodes.Count - 2;
-			if (recursePos <= 0)
+			if (recursePos < 0)
 				return false;
 
 			var pos = Scanner.Position;

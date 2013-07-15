@@ -44,16 +44,18 @@ namespace Eto.Parse
 
 		public ParseMatch Parse(ParseArgs args)
 		{
-			if (args.Trace)
-				Console.WriteLine(this.DescriptiveName);
+			if (args.Grammar.Trace)
+				Console.WriteLine("{0}, {1}", args.Scanner.Position, this.DescriptiveName);
 			var match = InnerParse(args);
 			if (!match.Success)
 			{
-				if (args.Trace)
+				if (args.Grammar.Trace)
 					Console.WriteLine("FAILED: {0}", this.DescriptiveName);
 				if (AddError)
 					args.AddError(this, args.Scanner.Position);
 			}
+			else if (args.Grammar.Trace)
+				Console.WriteLine("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName);
 
 			return match;
 		}

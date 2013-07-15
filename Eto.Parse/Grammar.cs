@@ -15,6 +15,8 @@ namespace Eto.Parse
 
 		public bool CaseSensitive { get; set; }
 
+		public bool Trace { get; set; }
+
 		protected Grammar(Grammar other)
 		{
 			this.EnableMatchEvents = other.EnableMatchEvents;
