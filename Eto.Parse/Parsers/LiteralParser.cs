@@ -8,10 +8,16 @@ namespace Eto.Parse.Parsers
 	{
 		public string Value { get; set; }
 
+		public override string DescriptiveName
+		{
+			get { return string.Format("Literal: '{0}'", Value); }
+		}
+
 		protected LiteralParser(LiteralParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
 			Value = other.Value;
+			AddError = true;
 		}
 
 		public LiteralParser()
@@ -23,11 +29,6 @@ namespace Eto.Parse.Parsers
 			Value = value;
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
-		{
-			yield break;
-		}
-		
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (Value == null)

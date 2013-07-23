@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return Char.IsDigit(ch);
 		}
+
+		public override string ToString()
+		{
+			return "Digit";
+		}
 	}
 }

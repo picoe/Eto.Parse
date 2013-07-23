@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return Char.IsLetter(ch);
 		}
+
+		public override string ToString()
+		{
+			return "Letter";
+		}
 	}
 }

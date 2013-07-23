@@ -1,19 +1,36 @@
 using System;
 using Eto.Parse.Scanners;
+using System.Linq;
 
 namespace Eto.Parse
 {
 	public class Grammar : NamedParser
 	{
+		bool initialized;
+
 		/// <summary>
 		/// Gets or sets a value indicating that the match events will be triggered after a successful match
 		/// </summary>
 		/// <value></value>
 		public bool EnableMatchEvents { get; set; }
 
+		/// <summary>
+		/// Gets or sets the separator to use for <see cref="RepeatParser"/> and <see cref="SequenceParser"/> if not explicitly defined.
+		/// </summary>
+		/// <value>The separator to use inbetween repeats and items of a sequence</value>
 		public Parser Separator { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this grammar is case sensitive or not
+		/// </summary>
+		/// <value><c>true</c> if case sensitive; otherwise, <c>false</c>.</value>
 		public bool CaseSensitive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether a partial match of the input scanner is allowed
+		/// </summary>
+		/// <value><c>true</c> to allow a successful match if partially matched; otherwise, <c>false</c> to indicate that the entire input must be consumed to match.</value>
+		public bool AllowPartialMatch { get; set; }
 
 		public bool Trace { get; set; }
 
@@ -36,18 +53,24 @@ namespace Eto.Parse
 		{
 		}
 
+		public void Initialize()
+		{
+			Initialize(new ParserInitializeArgs(this));
+			initialized = true;
+		}
+
+
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (args.IsRoot)
 			{
-				var matches = args.Push(this, true);
+				var matches = args.Push(this);
 				var match = (Inner != null) ? Inner.Parse(args) : args.EmptyMatch;
-				args.Root = new GrammarMatch(this, args.Scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors);
-				args.Pop(match.Success);
-				if (match.Success)
-					return match;
-				else
-					return args.NoMatch;
+				if (match.Success && !AllowPartialMatch && !args.Scanner.IsEof)
+					match = args.NoMatch;
+				args.Root = new GrammarMatch(this, args.Scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
+				args.Pop(match.Success, false);
+				return match;
 			}
 			else
 				return base.InnerParse(args);
@@ -63,6 +86,8 @@ namespace Eto.Parse
 		{
 			scanner.ThrowIfNull("scanner");
 			var args = new ParseArgs(this, scanner);
+			if (!initialized)
+				Initialize();
 			Parse(args);
 			var root = args.Root;
 

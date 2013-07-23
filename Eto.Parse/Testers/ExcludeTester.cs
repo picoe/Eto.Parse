@@ -35,6 +35,11 @@ namespace Eto.Parse.Testers
 			return Include.Test(ch, caseSensitive) != IncludeInverse
 				&& Exclude.Test(ch, caseSensitive) == ExcludeInverse;
 		}
+
+		public override string ToString()
+		{
+			return string.Format("{1}{0}, Excluding: {3}{2}", Include, IncludeInverse ? "!" : "", Exclude, ExcludeInverse ? "!" : "");
+		}
 	}
 }
 

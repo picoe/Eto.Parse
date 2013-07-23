@@ -24,9 +24,24 @@ namespace Eto.Parse
 			Items = sequence.ToList();
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(ParserFindArgs args)
 		{
-			return Items.SelectMany(r => r.Find(parserId));
+			if (args.Push(this)) 
+			{
+				var ret = Items.Where(r => r != null).SelectMany(r => r.Find(args)).ToArray();
+				args.Pop(this);
+				return ret;
+			}
+			return Enumerable.Empty<NamedParser>();
+		}
+
+		public void InitializeItems(ParserInitializeArgs args)
+		{
+			foreach (var item in Items)
+			{
+				if (item != null)
+					item.Initialize(args);
+			}
 		}
 
 		public override bool Contains(ParserContainsArgs args)

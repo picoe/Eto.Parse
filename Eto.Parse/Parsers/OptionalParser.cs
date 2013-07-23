@@ -21,22 +21,22 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.IsRecursive(this))
-				return args.NoMatch;
-
 			args.Push(this);
-			ParseMatch match = Inner.Parse(args);
-			args.Pop(true);
+			var match = Inner.Parse(args);
+
 			if (match.Success)
+			{
+				args.Pop(true);
 				return match;
-			else
-				return args.EmptyMatch;
+			}
+
+			args.Pop(false);
+			return args.EmptyMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new OptionalParser(this, chain);
 		}
-		
 	}
 }

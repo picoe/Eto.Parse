@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return Char.IsPunctuation(ch);
 		}
+
+		public override string ToString()
+		{
+			return "Punctuation";
+		}
 	}
 }

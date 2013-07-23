@@ -29,10 +29,9 @@ namespace Eto.Parse
 			get {
 				var context = GetErrorContext(10);
 				var messages = string.Join("\n", Errors.Select(r => r.GetErrorMessage()));
-				return string.Format("Index={0}, Context=\"{1}\"\n{2}", ErrorIndex, context, messages);
+				return string.Format("Index={0}, Context=\"{1}\"\nExpected:\n{2}", ErrorIndex, context, messages);
 			}
 		}
-
 	}
 }
 

@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return Char.IsControl(ch);
 		}
+
+		public override string ToString()
+		{
+			return "Control";
+		}
 	}
 }

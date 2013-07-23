@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return ch == '\n' || ch == '\r';
 		}
+
+		public override string ToString()
+		{
+			return "EOL";
+		}
 	}
 }

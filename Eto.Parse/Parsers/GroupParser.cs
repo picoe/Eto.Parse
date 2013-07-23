@@ -42,11 +42,6 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
-		{
-			yield break;
-		}
-
 		void SetBlock()
 		{
 			if (start != null && end != null)
@@ -116,5 +111,20 @@ namespace Eto.Parse.Parsers
 		{
 			return new GroupParser(this, chain);
 		}
+		
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			if (args.Push(this))
+			{
+				base.Initialize(args);
+				if (line != null)
+					line.Initialize(args);
+				if (start != null)
+					start.Initialize(args);
+				if (end != null)
+					end.Initialize(args);
+				args.Pop(this);
+			}
 		}
 	}
+}

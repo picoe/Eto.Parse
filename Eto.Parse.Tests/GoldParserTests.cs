@@ -1,6 +1,8 @@
 using System;
 using NUnit.Framework;
 using Eto.Parse.Grammars;
+using Eto.Parse.Writers;
+using System.Linq;
 
 namespace Eto.Parse.Tests
 {
@@ -8,7 +10,6 @@ namespace Eto.Parse.Tests
 	public class GoldParserTests
 	{
 		const string goldBnf = @"
-
 !-----------------------------------------------------------------------------------
 ! GOLD Meta-Language
 !
@@ -172,18 +173,21 @@ Comment End   = '*!'
 
 <Symbol>     ::= Terminal
                | Nonterminal           
-
 ";
+
+		static readonly string[] GOLD_RULES = new string[]
+		{
+			"Grammar", "Content", "Definition", "nl opt", "nl", "Parameter", "Parameter Body", "Parameter Items", "Parameter Item", "Set Decl", "Set Exp", "Set Item", "Terminal Decl", "Terminal Name", "Reg Exp", "Reg Exp Seq", "Reg Exp Item", "Reg Exp 2", "Kleene Opt", "Rule Decl", "Handles", "Handle", "Symbol"
+		};
 
 		[Test]
 		public void TestParsing()
 		{
 			var goldParser = new GoldGrammar();
 			var definition = goldParser.Build(goldBnf);
-			CollectionAssert.AreEquivalent(definition.Rules.Keys, new string[]
-			{
-				"Grammar", "Content", "Definition", "nl opt", "nl", "Parameter", "Parameter Body", "Parameter Items", "Parameter Item", "Set Decl", "Set Exp", "Set Item", "Terminal Decl", "Terminal Name", "Reg Exp", "Reg Exp Seq", "Reg Exp Item", "Reg Exp 2", "Kleene Opt", "Rule Decl", "Handles", "Handle", "Symbol"
-			});
+
+			// check rules
+			CollectionAssert.AreEquivalent(GOLD_RULES, definition.Rules.Keys);
 		}
 
 		[Test]
@@ -193,12 +197,16 @@ Comment End   = '*!'
 			var code = new GoldGrammar().ToCode(goldBnf, "MyGoldGrammar");
 
 			// execute generated code
-			var generatedGoldParser = Helper.Create<Grammar>(code, "MyGoldGrammar", "Eto.Parse");
+			var generatedGoldParser = Helper.Create<Grammar>(code, "MyGoldGrammar");
 
 			// match using generated parser
 			var match = generatedGoldParser.Match(goldBnf);
 
 			Assert.IsTrue(match.Success, "Error: {0}", match.ErrorMessage);
+
+			// check rules
+			var rules = match.Find("Rule Decl", true).Select(r => r["Nonterminal"].Value.TrimStart('<').TrimEnd('>')).ToArray();
+			CollectionAssert.AreEquivalent(GOLD_RULES, rules);
 		}
 	}
 }

@@ -42,13 +42,14 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.IsRecursive(this))
-				return args.NoMatch;
+			var pos = args.Scanner.Position;
 			for (int i = 0; i < Items.Count; i++)
 			{
-				args.Push(this);
 				var parser = Items[i];
-				var match = parser != null ? parser.Parse(args) : args.EmptyMatch;
+				if (parser == null)
+					return args.EmptyMatch;
+				args.Push(this);
+				var match = parser.Parse(args);
 				if (match.Success)
 				{
 					args.Pop(true);
@@ -62,6 +63,69 @@ namespace Eto.Parse.Parsers
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new AlternativeParser(this, chain);
+		}
+
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (args.Push(this))
+			{
+				var first = new List<Parser>();
+				var second = new List<Parser>();
+				foreach (var item in Items)
+				{
+					if (item != null && item.IsLeftRecursive(new ParserContainsArgs(this)))
+					{
+						second.Add(item);
+						args.RecursionFixes.Add(this);
+						item.Initialize(args);
+						args.RecursionFixes.Remove(this);
+					}
+					else
+					{
+						first.Add(item);
+						if (item != null)
+							item.Initialize(args);
+					}
+				}
+				if (second.Count > 0)
+				{
+					this.Items.Clear();
+					var secondParser = second.Count > 1 ? new AlternativeParser(second) : second[0];
+					if (first.Count > 0)
+					{
+						var firstParser = first.Count > 1 ? new AlternativeParser(first) : first[0];
+						if (first.Count == 1 && first[0] == null)
+						{
+							this.Items.Add(-secondParser);
+						}
+						else
+							this.Items.Add(new SequenceParser(firstParser, -secondParser));
+					}
+					else
+						this.Items.Add(+secondParser);
+				}
+				args.Pop(this);
+			}
+		}
+
+		public override bool IsLeftRecursive(ParserContainsArgs args)
+		{
+			if (base.IsLeftRecursive(args))
+				return true;
+			if (args.Push(this))
+			{
+				foreach (var item in Items)
+				{
+					if (item != null && item.IsLeftRecursive(args))
+					{
+						args.Pop(this);
+						return true;
+					}
+				}
+				args.Pop(this);
+			}
+			return false;
 		}
 	}
 }

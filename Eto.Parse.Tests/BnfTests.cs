@@ -77,7 +77,7 @@ Vancouver, BC V5V5V5";
 			var code = bnfParser.ToCode(postalAddressBnf, "postal-address", "PostalGrammar");
 
 			// execute the code and test
-			var addressParser = Helper.Create<Grammar>(code, "PostalGrammar", "Eto.Parse");
+			var addressParser = Helper.Create<Grammar>(code, "PostalGrammar");
 			TestAddress(addressParser);
 		}
 
@@ -91,9 +91,9 @@ Vancouver, BC V5V5V5";
 			Assert.That(match.ErrorIndex == AddressMissingZipPart.Length, "Error should be where the zip code is specified");
 		}
 
-		public static void TestAddress(NamedMatch match)
+		public static void TestAddress(GrammarMatch match)
 		{
-			Assert.IsTrue(match.Success);
+			Assert.IsTrue(match.Success, match.ErrorMessage);
 			Assert.AreEqual("Joe", match["first-name", true].Value);
 			Assert.AreEqual("Smith", match["last-name", true].Value);
 			Assert.AreEqual("123", match["house-num", true].Value);

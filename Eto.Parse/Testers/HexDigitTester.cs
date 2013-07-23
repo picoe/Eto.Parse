@@ -10,5 +10,10 @@ namespace Eto.Parse.Testers
 				|| (ch >= 'A' && ch <= 'F')
 				|| (ch >= 'a' && ch <= 'f');
 		}
+
+		public override string ToString()
+		{
+			return "Hex Digit";
+		}
 	}
 }

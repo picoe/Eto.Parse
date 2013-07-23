@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using Eto.Parse.Writers;
+using Eto.Parse.Grammars;
 
 namespace Eto.Parse.TestSpeed
 {
@@ -16,11 +17,12 @@ namespace Eto.Parse.TestSpeed
 			/**/
 			{
 				var g = new Eto.Parse.Samples.JsonGrammar { EnableMatchEvents = false };
+				var m = g.Match(json);
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
-					var m = g.Match(json);
+					m = g.Match(json);
 					if (!m.Success)
 						Console.WriteLine("Error: {0}", m.ErrorMessage);
 				}
@@ -29,15 +31,16 @@ namespace Eto.Parse.TestSpeed
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
-			/**
+			/**/
 			{
 				var g = new Irony.Samples.Json.JsonGrammar();
 				var p = new Irony.Parsing.Parser(g);
+				var pt = p.Parse(json);
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
-					var pt = p.Parse(json);
+					pt = p.Parse(json);
 					if (pt.HasErrors())
 					{
 						foreach (var error in pt.ParserMessages)
@@ -48,23 +51,23 @@ namespace Eto.Parse.TestSpeed
 				sw.Stop();
 				Console.WriteLine("Irony: {0} seconds", sw.Elapsed.TotalSeconds);
 			}
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-			/**
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			/**/
 			{
 				Newtonsoft.Json.Linq.JObject.Parse(json);
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
-					var m = Newtonsoft.Json.Linq.JObject.Parse(json);
+					Newtonsoft.Json.Linq.JObject.Parse(json);
 				}
 				sw.Stop();
 				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);
 			}
 			/**
 			var test = new Eto.Parse.Tests.BnfTests();
-			test.BnfParser();
+			test.BnfToCode();
 			/**
 			var test = new Eto.Parse.Tests.GoldParserTests();
 			test.ToCode();

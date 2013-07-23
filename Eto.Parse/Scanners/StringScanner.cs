@@ -49,7 +49,7 @@ namespace Eto.Parse.Scanners
 		{
 			var index = this.Position;
 			var end = index + matchString.Length;
-			if (end <= value.Length)
+			if (end <= this.length)
 			{
 				if (caseSensitive)
 				{
@@ -75,10 +75,10 @@ namespace Eto.Parse.Scanners
 
 		public override string SubString(int offset, int length)
 		{
-			if (offset >= value.Length)
+			if (offset >= this.length)
 				return null;
+			length = Math.Min(offset + length, this.length) - offset;
 			return value.Substring(offset, length);
 		}
-		
 	}
 }

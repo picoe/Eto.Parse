@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Eto.Parse.Testers
 {
@@ -10,7 +11,8 @@ namespace Eto.Parse.Testers
 		public char[] Characters
 		{
 			get { return characters; }
-			set {
+			set
+			{
 				characters = value;
 				lowerCharacters = new char[characters.Length];
 				for (int i = 0; i < characters.Length; i++)
@@ -24,7 +26,7 @@ namespace Eto.Parse.Testers
 		{
 			this.Characters = (char[])chars.Clone();
 		}
-		
+
 		public bool Test(char ch, bool caseSensitive)
 		{
 			if (caseSensitive)
@@ -44,6 +46,12 @@ namespace Eto.Parse.Testers
 				}
 			}
 			return false;
+		}
+
+		public override string ToString()
+		{
+			var chars = string.Join(",", Characters.Select(c => char.IsControl(c) || char.IsWhiteSpace(c) ? string.Format("0x{0:x2}", (int)c) : string.Format("'{0}'", c)));
+			return string.Format("{0}", chars);
 		}
 	}
 }

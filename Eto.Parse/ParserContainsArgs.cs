@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Eto.Parse
 {
-
 	public class ParserContainsArgs : ParserChain
 	{
 		public Parser Parser { get; private set; }

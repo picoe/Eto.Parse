@@ -197,9 +197,13 @@
     <Compile Include="ParserCloneArgs.cs" />
     <Compile Include="ParserChain.cs" />
     <Compile Include="ParserContainsArgs.cs" />
+    <Compile Include="ParserInitializeArgs.cs" />
     <Compile Include="Scanner.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Parsers\EmptyParser.cs" />
+    <Compile Include="ParserFindArgs.cs" />
+    <Compile Include="Grammars\GoldDefinition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

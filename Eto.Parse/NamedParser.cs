@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Eto.Parse.Scanners;
+using System.Linq;
 
 namespace Eto.Parse
 {
@@ -61,15 +62,26 @@ namespace Eto.Parse
 			OnPreMatch(match);
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(ParserFindArgs args)
 		{
-			if (this.Name == parserId)
-				yield return this;
+			if (args.Push(this))
+			{
+				IEnumerable<NamedParser> ret;
+				if (string.Equals(this.Name, args.ParserId, StringComparison.InvariantCultureIgnoreCase))
+					ret = new NamedParser[] { this };
+				else if (Inner != null)
+					ret = Inner.Find(args);
+				else
+					ret = Enumerable.Empty<NamedParser>();
+				args.Pop(this);
+				return ret;
+			}
+			return Enumerable.Empty<NamedParser>();
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			var matches = args.Push(this, true);
+			var matches = args.Push(this);
 			var match = base.InnerParse(args);
 			if (match.Success)
 			{

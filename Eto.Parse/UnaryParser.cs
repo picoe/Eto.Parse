@@ -28,6 +28,16 @@ namespace Eto.Parse
 			this.Inner = inner;
 		}
 
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (Inner != null && args.Push(this))
+			{
+				Inner.Initialize(args);
+				args.Pop(this);
+			}
+		}
+
 		public override bool Contains(ParserContainsArgs args)
 		{
 			if (base.Contains(args))
@@ -41,12 +51,14 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
+		public override IEnumerable<NamedParser> Find(ParserFindArgs args)
 		{
-			if (Inner != null)
-				return Inner.Find(parserId);
-			else
-				return Enumerable.Empty<NamedParser>();
+			if (Inner != null && args.Push(this)) {
+				var ret = Inner.Find(args);
+				args.Pop(this);
+				return ret;
+			}
+			return Enumerable.Empty<NamedParser>();
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -60,6 +72,24 @@ namespace Eto.Parse
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new UnaryParser(this, chain);
+		}
+
+		public override bool IsLeftRecursive(ParserContainsArgs args)
+		{
+			if (base.IsLeftRecursive(args))
+				return true;
+			if (Inner != null)
+			{
+				if (args.Push(this))
+				{
+					var ret = Inner.IsLeftRecursive(args);
+					args.Pop(this);
+					return ret;
+				}
+				return false;
+			}
+			else
+				return false;
 		}
 	}
 }

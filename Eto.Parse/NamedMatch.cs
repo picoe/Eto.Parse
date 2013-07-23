@@ -51,7 +51,7 @@ namespace Eto.Parse
 
 		public object Tag { get; set; }
 
-		public NamedMatch(NamedParser parser, Scanner scanner, int index, int length, NamedMatchCollection matches)
+		internal NamedMatch(NamedParser parser, Scanner scanner, int index, int length, NamedMatchCollection matches)
 		{
 			this.Parser = parser;
 			if (parser != null)
@@ -62,24 +62,18 @@ namespace Eto.Parse
 			this.matches = matches;
 		}
 
-		public void PreMatch()
+		internal void PreMatch()
 		{
 			if (matches != null)
 				matches.ForEach(r => r.PreMatch());
 			Parser.TriggerPreMatch(this);
 		}
 
-		public void Match()
+		internal void Match()
 		{
 			if (matches != null)
 				matches.ForEach(r => r.Match());
 			Parser.TriggerMatch(this);
-		}
-
-		internal void Set(ParseMatch inner)
-		{
-			this.Index = inner.Index;
-			this.Length = inner.Length;
 		}
 
 		public override string ToString()

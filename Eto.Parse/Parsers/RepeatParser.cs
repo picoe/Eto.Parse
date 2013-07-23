@@ -38,9 +38,6 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (args.IsRecursive(this))
-				return args.NoMatch;
-			
 			var scanner = args.Scanner;
 			int count = 0;
 			var pos = scanner.Position;

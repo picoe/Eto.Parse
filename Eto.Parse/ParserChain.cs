@@ -9,7 +9,9 @@ namespace Eto.Parse
 {
 	public class ParserChain
 	{
-		HashSet<Parser> parents;
+		List<Parser> parents;
+
+		public IEnumerable<Parser> Parents { get { return parents; } }
 
 		public bool Push(Parser parser)
 		{
@@ -28,7 +30,7 @@ namespace Eto.Parse
 
 		internal ParserChain()
 		{
-			parents = new HashSet<Parser>();
+			parents = new List<Parser>();
 		}
 	}
 	

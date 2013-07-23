@@ -82,7 +82,7 @@ namespace Eto.Parse.Grammars
 			Expresssions = new AlternativeParser();
 			Expresssions.Items.Add(rule);
 
-			this.Inner = (Expresssions & this) | Expresssions;
+			this.Inner = +Expresssions;
 
 			AttachEvents();
 		}
@@ -99,7 +99,7 @@ namespace Eto.Parse.Grammars
 
 			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
 			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
-			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 1);
+			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 1) { Separator = sws };
 			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{

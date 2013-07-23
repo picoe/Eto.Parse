@@ -38,7 +38,7 @@ namespace Eto.Parse.Tests
 			// repeat until we get a digit, and exclude any whitespace inbetween
 			var repeat = +Terminals.AnyChar - (ws & Terminals.Digit);
 
-			var match = new Grammar(repeat).Match(input);
+			var match = new Grammar(repeat) { AllowPartialMatch = true }.Match(input);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("abc def", match.Value);
 		}

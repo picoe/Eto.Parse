@@ -35,6 +35,11 @@ namespace Eto.Parse.Testers
 			return First.Test(ch, caseSensitive) != FirstInverse
 				|| Second.Test(ch, caseSensitive) != SecondInverse;
 		}
+
+		public override string ToString()
+		{
+			return string.Format("{1}{0}, {3}{2}", First, FirstInverse ? "!" : "", Second, SecondInverse ? "!" : "");
+		}
 	}
 }
 

@@ -23,11 +23,6 @@ namespace Eto.Parse.Parsers
 				return args.NoMatch;
 		}
 
-		public override IEnumerable<NamedParser> Find(string parserId)
-		{
-			yield break;
-		}
-
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new EndParser(this, chain);

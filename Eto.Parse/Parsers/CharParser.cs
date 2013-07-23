@@ -18,11 +18,7 @@ namespace Eto.Parse.Parsers
 
 		public override string DescriptiveName
 		{
-			get
-			{
-				var tester = Tester != null ? Tester.GetType().Name : null;
-				return string.Format("{0}, Tester: {1}", base.DescriptiveName, tester);
-			}
+			get { return string.Format("{0}: {1}", base.DescriptiveName, Tester); }
 		}
 
 		public CharParser()
@@ -52,11 +48,6 @@ namespace Eto.Parse.Parsers
 			}
 			scanner.SetPosition(pos);
 			return args.NoMatch;
-		}
-
-		public override IEnumerable<NamedParser> Find(string parserId)
-		{
-			yield break;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
