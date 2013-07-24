@@ -13,6 +13,7 @@ namespace Eto.Parse.TestSpeed
 			var json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.sample.json")).ReadToEnd();
 			var iters = 100;
 			Console.WriteLine("Json for {0} iterations:", iters);
+			double etoSpeed = 0;
 
 			/**/
 			{
@@ -27,11 +28,11 @@ namespace Eto.Parse.TestSpeed
 						Console.WriteLine("Error: {0}", m.ErrorMessage);
 				}
 				sw.Stop();
-				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);
+				Console.WriteLine("Eto.Parse: {0} seconds", etoSpeed = sw.Elapsed.TotalSeconds);
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
-			/**/
+			/**
 			{
 				var g = new Irony.Samples.Json.JsonGrammar();
 				var p = new Irony.Parsing.Parser(g);
@@ -49,11 +50,11 @@ namespace Eto.Parse.TestSpeed
 					}
 				}
 				sw.Stop();
-				Console.WriteLine("Irony: {0} seconds", sw.Elapsed.TotalSeconds);
+				Console.WriteLine("Irony: {0} seconds {1}", sw.Elapsed.TotalSeconds, FasterOrSlower(etoSpeed, sw.Elapsed.TotalSeconds));
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
-			/**/
+			/**
 			{
 				Newtonsoft.Json.Linq.JObject.Parse(json);
 				var sw = new Stopwatch();
@@ -63,7 +64,7 @@ namespace Eto.Parse.TestSpeed
 					Newtonsoft.Json.Linq.JObject.Parse(json);
 				}
 				sw.Stop();
-				Console.WriteLine("Eto.Parse: {0} seconds", sw.Elapsed.TotalSeconds);
+				Console.WriteLine("Newtonsoft.Json: {0} seconds {1}", sw.Elapsed.TotalSeconds, FasterOrSlower(etoSpeed, sw.Elapsed.TotalSeconds));
 			}
 			/**
 			var test = new Eto.Parse.Tests.BnfTests();
@@ -72,6 +73,19 @@ namespace Eto.Parse.TestSpeed
 			var test = new Eto.Parse.Tests.GoldParserTests();
 			test.ToCode();
 			/**/
+		}
+
+		static string FasterOrSlower(double etoSpeed, double newSpeed)
+		{
+			if (etoSpeed > 0)
+			{
+				if (etoSpeed > newSpeed)
+					return string.Format("({0:0.000}x Faster)", etoSpeed / newSpeed);
+				else
+					return string.Format("({0:0.000}x Slower)", newSpeed / etoSpeed);
+			}
+			else
+				return string.Empty;
 		}
 	}
 }
