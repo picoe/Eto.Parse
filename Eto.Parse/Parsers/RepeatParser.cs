@@ -41,26 +41,26 @@ namespace Eto.Parse.Parsers
 			var scanner = args.Scanner;
 			int count = 0;
 			var pos = scanner.Position;
-			ParseMatch match = new ParseMatch(pos, 0);
+			var match = new ParseMatch(pos, 0);
 
 			var separator = Separator ?? args.Grammar.Separator;
 			// retrieve up to the maximum number
-			ParseMatch sepMatch = args.NoMatch;
-			while (count < Maximum)
+			var sepMatch = args.NoMatch;
+			if (Inner != null)
 			{
-				if (Until != null && count >= Minimum)
+				while (count < Maximum)
 				{
-					var stopMatch = Until.Parse(args);
-					if (stopMatch.Success)
+					if (Until != null && count >= Minimum)
 					{
-						scanner.SetPosition(stopMatch.Index);
-						return match;
+						var stopMatch = Until.Parse(args);
+						if (stopMatch.Success)
+						{
+							scanner.SetPosition(stopMatch.Index);
+							return match;
+						}
 					}
-				}
 
-				if (Inner != null)
-				{
-					if (count > 0 && separator != null)
+					if (separator != null && count > 0)
 					{
 						sepMatch = separator.Parse(args);
 						if (!sepMatch.Success)
@@ -77,16 +77,30 @@ namespace Eto.Parse.Parsers
 					if (sepMatch.Success)
 						match.Length += sepMatch.Length;
 					match.Length += childMatch.Length;
+
+					count++;
 				}
-				else
+			}
+			else
+			{
+				while (count < Maximum)
 				{
+					if (Until != null && count >= Minimum)
+					{
+						var stopMatch = Until.Parse(args);
+						if (stopMatch.Success)
+						{
+							scanner.SetPosition(stopMatch.Index);
+							return match;
+						}
+					}
+
 					var ofs = scanner.Advance(1);
 					if (ofs == -1)
 						break;
 					match.Length += 1;
+					count++;
 				}
-
-				count++;
 			}
 
 			if (count < Minimum)

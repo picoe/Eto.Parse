@@ -6,7 +6,8 @@ namespace Eto.Parse.Parsers
 {
 	public class LiteralParser : Parser
 	{
-		public string Value { get; set; }
+		string value;
+		public string Value { get { return this.value; } set { this.value = value; } }
 
 		public override string DescriptiveName
 		{
@@ -31,14 +32,14 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (Value == null)
+			if (value == null)
 				return args.EmptyMatch;
 
 			int pos = args.Scanner.Position;
-			if (!args.Scanner.ReadString(Value, args.Grammar.CaseSensitive))
-				return args.NoMatch;
+			if (args.Scanner.ReadString(value, args.Grammar.CaseSensitive))
+				return new ParseMatch(pos, value.Length);
 
-			return new ParseMatch(pos, Value.Length);
+			return args.NoMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
