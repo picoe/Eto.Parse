@@ -42,7 +42,6 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			var pos = args.Scanner.Position;
 			for (int i = 0; i < Items.Count; i++)
 			{
 				var parser = Items[i];

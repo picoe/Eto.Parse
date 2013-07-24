@@ -63,7 +63,7 @@ namespace Eto.Parse
 
 		public void Push(Parser parser)
 		{
-			nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, null));
+			nodes.Insert(nodes.Count, new ParseNode(parser));
 		}
 
 		public NamedMatchCollection Pop(bool success)
@@ -73,7 +73,6 @@ namespace Eto.Parse
 
 			if (!success)
 			{
-				Scanner.SetPosition(last.Position);
 				if (last.Matches != null)
 				{
 					last.Matches.Clear();
@@ -124,19 +123,15 @@ namespace Eto.Parse
 	{
 		NamedMatchCollection matches;
 		Parser parser;
-		int position;
 
 		public NamedMatchCollection Matches { get { return matches; } set { matches = value; } }
 
 		public Parser Parser { get { return parser; } }
 
-		public int Position { get { return position; } }
-
-		public ParseNode(Parser parser, int position, NamedMatchCollection matches)
+		public ParseNode(Parser parser)
 		{
 			this.parser = parser;
-			this.position = position;
-			this.matches = matches;
+			this.matches = null;
 		}
 	}
 }

@@ -59,15 +59,18 @@ namespace Eto.Parse
 			initialized = true;
 		}
 
-
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			if (args.IsRoot)
 			{
+				var pos = args.Scanner.Position;
 				args.Push(this);
 				var match = (Inner != null) ? Inner.Parse(args) : args.EmptyMatch;
 				if (match.Success && !AllowPartialMatch && !args.Scanner.IsEof)
+				{
+					args.Scanner.SetPosition(pos);
 					match = args.NoMatch;
+				}
 				var matches = args.Pop(match.Success);
 				args.Root = new GrammarMatch(this, args.Scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
 				return match;

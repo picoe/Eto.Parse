@@ -29,7 +29,6 @@ namespace Eto.Parse.Parsers
 				args.Pop(true);
 				return match;
 			}
-
 			args.Pop(false);
 			return args.EmptyMatch;
 		}
