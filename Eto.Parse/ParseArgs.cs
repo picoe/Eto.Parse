@@ -61,42 +61,62 @@ namespace Eto.Parse
 			errors.Add(parser);
 		}
 
-		public NamedMatchCollection Push(Parser parser)
+		public void Push(Parser parser)
 		{
-			var matches = CreateTempMatchCollection();
-			nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, matches));
-			return matches;
+			nodes.Insert(nodes.Count, new ParseNode(parser, Scanner.Position, null));
 		}
 
-		public void Pop(bool success, bool clear = true)
+		public NamedMatchCollection Pop(bool success)
 		{
 			var last = nodes[nodes.Count - 1];
 			nodes.RemoveAt(nodes.Count - 1);
 
 			if (!success)
-				Scanner.SetPosition(last.Position);
-			else if (nodes.Count > 0)
-				nodes[nodes.Count - 1].Matches.AddRange(last.Matches);
-
-			if (clear)
 			{
-				last.Matches.Clear();
-				reusableMatches.Push(last.Matches);
+				Scanner.SetPosition(last.Position);
+				if (last.Matches != null)
+				{
+					last.Matches.Clear();
+					reusableMatches.Push(last.Matches);
+				}
+				return null;
 			}
+			else if (nodes.Count > 0)
+			{
+				var node = nodes[nodes.Count - 1];
+				if (last.Matches != null)
+				{
+					if (node.Matches != null)
+					{
+						node.Matches.AddRange(last.Matches);
+						last.Matches.Clear();
+						reusableMatches.Push(last.Matches);
+					}
+					else
+					{
+						node.Matches = last.Matches;
+						nodes[nodes.Count - 1] = node;
+					}
+				}
+				return node.Matches;
+			}
+			return last.Matches;
 		}
 
-		public void Pop(NamedMatch match, bool success)
+		public void PopMatch(NamedParser parser, ParseMatch match)
 		{
+			// allways successful here
 			var last = nodes[nodes.Count - 1];
 			nodes.RemoveAt(nodes.Count - 1);
-			if (!success)
+
+			var node = nodes[nodes.Count - 1];
+			if (node.Matches == null)
 			{
-				Scanner.SetPosition(last.Position);
-				last.Matches.Clear();
-				reusableMatches.Push(last.Matches);
+				node.Matches = CreateTempMatchCollection();
+				nodes[nodes.Count - 1] = node;
 			}
-			else if (nodes.Count > 0)
-				nodes[nodes.Count - 1].Matches.Add(match);
+			var namedMatch = new NamedMatch(parser, Scanner, match.Index, match.Length, last.Matches);
+			node.Matches.Add(namedMatch);
 		}
 	}
 
@@ -106,7 +126,7 @@ namespace Eto.Parse
 		Parser parser;
 		int position;
 
-		public NamedMatchCollection Matches { get { return matches; } }
+		public NamedMatchCollection Matches { get { return matches; } set { matches = value; } }
 
 		public Parser Parser { get { return parser; } }
 
@@ -118,6 +138,5 @@ namespace Eto.Parse
 			this.position = position;
 			this.matches = matches;
 		}
-
 	}
 }

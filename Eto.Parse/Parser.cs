@@ -50,15 +50,17 @@ namespace Eto.Parse
 			//if (trace)
 			//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
 			var match = InnerParse(args);
-			if (!match.Success)
+			if (match.Success)
 			{
 				//if (trace)
-				//	Trace.WriteLine(string.Format("FAILED: {0}", this.DescriptiveName));
-				if (AddError)
-					args.AddError(this);
+				//	Trace.WriteLine(string.Format("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName));
+				return match;
 			}
-			//else if (trace)
-			//	Trace.WriteLine(string.Format("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName));
+
+			//if (trace)
+			//	Trace.WriteLine(string.Format("FAILED: {0}", this.DescriptiveName));
+			if (AddError)
+				args.AddError(this);
 			return match;
 		}
 

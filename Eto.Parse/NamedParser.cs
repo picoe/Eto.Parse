@@ -81,12 +81,11 @@ namespace Eto.Parse
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			var matches = args.Push(this);
+			args.Push(this);
 			var match = base.InnerParse(args);
 			if (match.Success)
 			{
-				var namedMatch = new NamedMatch(this, args.Scanner, match.Index, match.Length, matches);
-				args.Pop(namedMatch, true);
+				args.PopMatch(this, match);
 				return match;
 			}
 			else
