@@ -2,8 +2,10 @@ using System;
 
 namespace Eto.Parse.Parsers
 {
-	public class LookAheadParser : UnaryParser
+	public class LookAheadParser : UnaryParser, IInverseParser
 	{
+		public bool Inverse { get; set; }
+
 		protected LookAheadParser(LookAheadParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
@@ -21,10 +23,10 @@ namespace Eto.Parse.Parsers
 			if (match.Success)
 			{
 				args.Scanner.SetPosition(pos);
-				return args.NoMatch;
+				return Inverse ? args.NoMatch : args.EmptyMatch;
 			}
 			else
-				return new ParseMatch(pos, 0);
+				return Inverse ? args.EmptyMatch : args.NoMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
