@@ -1,5 +1,6 @@
 using System;
 using Eto.Parse.Parsers;
+using System.Linq;
 
 namespace Eto.Parse.Samples
 {
@@ -8,31 +9,36 @@ namespace Eto.Parse.Samples
 		public JsonGrammar()
 			: base("json")
 		{
+			// terminals
 			var jstring = new GroupParser("\"");
-			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true };
+			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true };
 			var comma = Terminals.String(",");
 
-			//Nonterminals
+			// nonterminals (things we're interested in getting back)
 			var jobject = new NamedParser("Object"); 
-			var jobjectBr = new UnaryParser();
 			var jarray = new NamedParser("Array");
-			var jarrayBr = new UnaryParser();
 			var jvalue = new NamedParser("Value");
 			var jprop = new NamedParser("Property"); 
 
 			var ws = -(Terminals.Set(" \n\r"));
-			Parser.DefaultSeparator = ws;
 
-			//Rules
+			// rules
+			var jobjectBr = "{" & ~jobject & "}";
+			var jarrayBr = "[" & ~jarray & "]";
+
 			jvalue.Inner = jstring | jnumber | jobjectBr | jarrayBr | "true" | "false" | "null";
-			jobjectBr.Inner = "{" & ~jobject & "}";
 			jobject.Inner = jprop & -(comma & jprop);
 			jprop.Inner = jstring & ":" & jvalue;
-			jarrayBr.Inner = "[" & ~jarray & "]";
 			jarray.Inner = jvalue & -(comma & jvalue);
 
-			this.Inner = ws & jvalue;
-			Parser.DefaultSeparator = null;
+			// separate sequence and repeating parsers by whitespace
+			jvalue.SeparateChildrenBy(ws);
+
+			// allow whitespace before and after
+			this.Inner = ws & jvalue & ws;
+
+			// turn off character errors, named parser errors are granular enough
+			SetError<CharParser>(false);
 		}
 	}
 }

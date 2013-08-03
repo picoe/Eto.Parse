@@ -7,12 +7,10 @@ namespace Eto.Parse
 	public class UnaryParser : Parser
 	{
 		public Parser Inner { get; set; }
-
 		/*protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
 		{
 			return string.Format("{0}, Inner: {1}", base.GetDescriptiveNameInternal(parents), Inner != null ? Inner.GetDescriptiveName(parents): null);
 		}*/
-
 		protected UnaryParser(UnaryParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
@@ -53,7 +51,8 @@ namespace Eto.Parse
 
 		public override IEnumerable<NamedParser> Find(ParserFindArgs args)
 		{
-			if (Inner != null && args.Push(this)) {
+			if (Inner != null && args.Push(this))
+			{
 				var ret = Inner.Find(args);
 				args.Pop(this);
 				return ret;
@@ -90,6 +89,17 @@ namespace Eto.Parse
 			}
 			else
 				return false;
+		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			if (Inner != null && args.Push(this))
+			{
+				var ret = new Parser[] { Inner }.Concat(Inner.Children(args).ToArray());
+				args.Pop(this);
+				return ret;
+			}
+			return Enumerable.Empty<Parser>();
 		}
 	}
 }

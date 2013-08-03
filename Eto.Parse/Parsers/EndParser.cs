@@ -27,5 +27,10 @@ namespace Eto.Parse.Parsers
 		{
 			return new EndParser(this, chain);
 		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			yield break;
+		}
 	}
 }

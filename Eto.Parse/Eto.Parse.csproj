@@ -204,6 +204,10 @@
     <Compile Include="Parsers\EmptyParser.cs" />
     <Compile Include="ParserFindArgs.cs" />
     <Compile Include="Grammars\GoldDefinition.cs" />
+    <Compile Include="Grammars\EbnfGrammar.cs" />
+    <Compile Include="Parsers\ExceptParser.cs" />
+    <Compile Include="Writers\Code\ExceptWriter.cs" />
+    <Compile Include="ISeparatedParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

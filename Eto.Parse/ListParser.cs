@@ -62,6 +62,18 @@ namespace Eto.Parse
 			}
 			return false;
 		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			if (args.Push(this))
+			{
+				var items = Items.Where(r => r != null);
+				var childItems = items.SelectMany(r => r.Children(args)).ToArray();
+				args.Pop(this);
+				return items.Concat(childItems);
+			}
+			return Enumerable.Empty<Parser>();
+		}
 	}
 }
 

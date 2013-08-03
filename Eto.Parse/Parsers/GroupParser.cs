@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
@@ -126,5 +127,13 @@ namespace Eto.Parse.Parsers
 				args.Pop(this);
 			}
 		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			var items = new Parser[] { start, end, line }.Where(r => r != null);
+			var childItems = items.SelectMany(r => r.Children(args));
+			return items.Concat(childItems);
+		}
+
 	}
 }

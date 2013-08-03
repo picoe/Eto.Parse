@@ -8,5 +8,10 @@ namespace Eto.Parse.Testers
 		{
 			return Char.IsWhiteSpace(ch);
 		}
+
+		public override string ToString()
+		{
+			return "White Space";
+		}
 	}
 }

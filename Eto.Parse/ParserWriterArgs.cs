@@ -85,7 +85,10 @@ namespace Eto.Parse
 			val++;
 
 			names[type] = val;
-			return type.Name.ToLowerInvariant() + val;
+			var name = type.Name;
+			if (name.EndsWith("Parser"))
+				name = name.Substring(0, name.Length - 6);
+			return name.ToLowerInvariant() + val;
 		}
 
 		public bool IsDefined(string name)

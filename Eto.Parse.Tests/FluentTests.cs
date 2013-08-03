@@ -17,20 +17,18 @@ namespace Eto.Parse.Tests
 
 			// parse a value with or without brackets
 			var valueParser = Terminals.Set('(')
-				.Then(ws)
 				.Then(Terminals.Set(')').Inverse().Repeat().Until(ws.Then(')')).Named("value"))
-				.Then(ws)
 				.Then(Terminals.Set(')'))
+				.SeparatedBy(ws)
 				.Or(Terminals.WhiteSpace.Inverse().Repeat().Named("value"));
 
 			// our grammar
 			var grammar = new Grammar(
 				ws
 				.Then(valueParser.Named("first"))
-				.Then(ws)
 				.Then(valueParser.Named("second"))
-				.Then(ws)
 				.Then(Terminals.End)
+				.SeparatedBy(ws)
 			);
 
 			var match = grammar.Match(input);

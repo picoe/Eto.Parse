@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
-	public class SequenceParser : ListParser
+	public class SequenceParser : ListParser, ISeparatedParser
 	{
 		public Parser Separator { get; set; }
 

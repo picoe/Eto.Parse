@@ -84,5 +84,10 @@ namespace Eto.Parse.Parsers
 		{
 			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, new CharSetTester(ch), false)) { Reusable = true };
 		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			yield break;
+		}
 	}
 }

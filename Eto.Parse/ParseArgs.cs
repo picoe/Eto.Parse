@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Eto.Parse
 {
@@ -16,6 +17,14 @@ namespace Eto.Parse
 		public Grammar Grammar { get; private set; }
 
 		public int ErrorIndex { get; private set; }
+
+		public string Path
+		{
+			get
+			{
+				return string.Join(" > ", nodes.Select(r => r.Parser).OfType<NamedParser>().Select(r => r.Name));
+			}
+		}
 
 		public List<Parser> Errors { get { return errors; } }
 

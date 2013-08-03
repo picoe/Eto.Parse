@@ -39,12 +39,18 @@ namespace Eto.Parse.Parsers
 			if (args.Scanner.ReadString(value, args.Grammar.CaseSensitive))
 				return new ParseMatch(pos, value.Length);
 
+			args.Scanner.SetPosition(pos);
 			return args.NoMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new LiteralParser(this, chain);
+		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			yield break;
 		}
 	}
 }

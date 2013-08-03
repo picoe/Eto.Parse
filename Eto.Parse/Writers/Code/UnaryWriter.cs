@@ -10,8 +10,11 @@ namespace Eto.Parse.Writers.Code
 	{
 		public override void WriteContents(TextParserWriterArgs args, T parser, string name)
 		{
-			var child = args.Write(parser.Inner);
-			args.Output.WriteLine("{0}.Inner = {1};", name, child);
+			if (parser.Inner != null)
+			{
+				var child = args.Write(parser.Inner);
+				args.Output.WriteLine("{0}.Inner = {1};", name, child);
+			}
 		}
 	}
 }

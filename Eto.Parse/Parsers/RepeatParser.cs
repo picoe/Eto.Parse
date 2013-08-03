@@ -3,7 +3,7 @@ using Eto.Parse;
 
 namespace Eto.Parse.Parsers
 {
-	public class RepeatParser : UnaryParser
+	public class RepeatParser : UnaryParser, ISeparatedParser
 	{
 		public Parser Separator { get; set; }
 

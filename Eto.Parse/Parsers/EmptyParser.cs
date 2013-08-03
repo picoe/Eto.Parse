@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
@@ -21,6 +22,11 @@ namespace Eto.Parse.Parsers
 		public override Parser Clone(ParserCloneArgs args)
 		{
 			return new EmptyParser(this, args);
+		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			yield break;
 		}
 	}
 }

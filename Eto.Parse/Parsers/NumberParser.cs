@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
 	public class NumberParser : Parser
 	{
 		public bool AllowSign { get; set; }
+
+		public bool AllowDecimal { get; set; }
 
 		public char DecimalSeparator { get; set; }
 
@@ -57,7 +60,7 @@ namespace Eto.Parse.Parsers
 				{
 					foundNumber = true;
 				}
-				else if (!hasDecimal && ch == DecimalSeparator)
+				else if (AllowDecimal && !hasDecimal && ch == DecimalSeparator)
 				{
 					hasDecimal = true;
 				}
@@ -83,6 +86,11 @@ namespace Eto.Parse.Parsers
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new NumberParser(this, chain);
+		}
+
+		public override IEnumerable<Parser> Children(ParserChain args)
+		{
+			yield break;
 		}
 	}
 }

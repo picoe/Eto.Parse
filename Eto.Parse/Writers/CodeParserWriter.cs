@@ -23,6 +23,7 @@ namespace Eto.Parse.Writers
 				{ typeof(RepeatParser), new Code.RepeatWriter() },
 				{ typeof(GroupParser), new Code.GroupWriter() },
 				{ typeof(SequenceParser), new Code.SequenceWriter() },
+				{ typeof(ExceptParser), new Code.ExceptWriter() },
 			}, 
 			new TesterDictionary
 			{

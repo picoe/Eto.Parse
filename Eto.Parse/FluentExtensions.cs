@@ -7,13 +7,30 @@ namespace Eto.Parse
 {
 	public static class FluentParserExtensions
 	{
-		public static Parser Then(this Parser parser, params Parser[] parsers)
+		public static SequenceParser Then(this Parser parser, params Parser[] parsers)
 		{
 			var sequence = parser as SequenceParser;
 			if (sequence == null || !sequence.Reusable)
 				sequence = new SequenceParser(parser) { Reusable = true };
 			sequence.Items.AddRange(parsers);
 			return sequence;
+		}
+
+		public static T SeparatedBy<T>(this T parser, Parser separator)
+			where T: ISeparatedParser
+		{
+			parser.Separator = separator;
+			return parser;
+		}
+
+		public static T SeparateChildrenBy<T>(this T parser, Parser separator)
+			where T: Parser
+		{
+			foreach (var item in parser.Children().OfType<ISeparatedParser>())
+			{
+				item.Separator = separator;
+			}
+			return parser;
 		}
 
 		public static T Inverse<T>(this T parser)

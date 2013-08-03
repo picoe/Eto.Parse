@@ -13,6 +13,7 @@ namespace Eto.Parse
 		public TextParserWriter(ParserDictionary writers = null, TesterDictionary testers = null)
 			: base(writers, testers)
 		{
+			Indent = "    ";
 		}
 
 		public string Write(Parser parser)

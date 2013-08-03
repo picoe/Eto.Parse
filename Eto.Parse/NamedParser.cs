@@ -16,19 +16,20 @@ namespace Eto.Parse
 		}
 
 		public NamedParser()
+			: this(Guid.NewGuid().ToString())
 		{
-			this.Name = Guid.NewGuid().ToString();
 		}
 
 		public NamedParser(string name)
+			: this(name, null)
 		{
-			this.Name = name ?? Guid.NewGuid().ToString();
 		}
 
 		public NamedParser(string name, Parser parser)
 			: base(parser)
 		{
 			this.Name = name ?? Guid.NewGuid().ToString();
+			this.AddError = true;
 		}
 
 		public override string DescriptiveName
@@ -38,7 +39,7 @@ namespace Eto.Parse
 
 		public event Action<NamedMatch> Matched;
 
-		protected void OnMatched(NamedMatch match)
+		protected virtual void OnMatched(NamedMatch match)
 		{
 			if (Matched != null)
 				Matched(match);
@@ -46,7 +47,7 @@ namespace Eto.Parse
 
 		public event Action<NamedMatch> PreMatch;
 
-		protected void OnPreMatch(NamedMatch match)
+		protected virtual void OnPreMatch(NamedMatch match)
 		{
 			if (PreMatch != null)
 				PreMatch(match);

@@ -10,5 +10,10 @@ namespace Eto.Parse.Testers
 				return false;
 			return Char.IsWhiteSpace(ch);
 		}
+
+		public override string ToString()
+		{
+			return "Single Line White Space";
+		}
 	}
 }

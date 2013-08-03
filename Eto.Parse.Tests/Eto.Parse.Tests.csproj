@@ -43,6 +43,7 @@
     <Compile Include="BnfTests.cs" />
     <Compile Include="ShorthandTests.cs" />
     <Compile Include="GoldParserTests.cs" />
+    <Compile Include="EbnfTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -43,16 +43,19 @@ namespace Eto.Parse.Grammars
 		public BnfGrammar(bool enhanced = true)
 			: base("bnf")
 		{
-			foreach (var property in typeof(Terminals).GetProperties())
+			if (enhanced)
 			{
-				if (typeof(Parser).IsAssignableFrom(property.PropertyType))
+				foreach (var property in typeof(Terminals).GetProperties())
 				{
-					var parser = property.GetValue(null, null) as Parser;
-					baseLookup[property.Name] = parser.Named(property.Name);
+					if (typeof(Parser).IsAssignableFrom(property.PropertyType))
+					{
+						var parser = property.GetValue(null, null) as Parser;
+						baseLookup[property.Name] = parser.Named(property.Name);
+					}
 				}
 			}
 
-			var lineEnd = LineEnd();
+			var lineEnd = sws & +(sws & Terminals.Eol);
 
 			literal = (
 				(sq & (+!sq).Named("value").Optional() & sq)
@@ -72,9 +75,9 @@ namespace Eto.Parse.Grammars
 				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').Named("parser"));
 			}
 
-			list = new SequenceParser(TermParser.Named("term"), -(sws.Named("ws") & TermParser.Named("term"))).Named("parser");
+			list = (TermParser.Named("term") & -(~((+Terminals.SingleLineWhiteSpace).Named("ws")) & TermParser.Named("term"))).Named("parser");
 
-			listRepeat = (list.Named("list") & ws & '|' & sws & RuleParser.Named("expression")).Named("parser");
+			listRepeat = (list.Named("list") & ws & '|' & sws & ~(RuleParser.Named("expression"))).Named("parser");
 			RuleParser.Items.Add(listRepeat);
 			RuleParser.Items.Add(list);
 
@@ -82,7 +85,7 @@ namespace Eto.Parse.Grammars
 			Expresssions = new AlternativeParser();
 			Expresssions.Items.Add(rule);
 
-			this.Inner = +Expresssions;
+			this.Inner = ws & +Expresssions & ws;
 
 			AttachEvents();
 		}
@@ -99,7 +102,7 @@ namespace Eto.Parse.Grammars
 
 			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
 			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
-			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 1) { Separator = sws };
+			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 0) { Separator = sws };
 			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{
@@ -115,7 +118,7 @@ namespace Eto.Parse.Grammars
 				}
 				else
 				{
-					m.Tag = m["parser"].Tag;
+					m.Tag = m["term"]["parser"].Tag;
 				}
 			};
 
@@ -142,14 +145,6 @@ namespace Eto.Parse.Grammars
 				m.Tag = parser;
 				parserLookup[parser.Name] = parser;
 			};
-		}
-
-		Parser LineEnd()
-		{
-			var lineEnd = new AlternativeParser();
-			lineEnd.Items.Add(lineEnd & lineEnd);
-			lineEnd.Items.Add(sws & Terminals.Eol);
-			return lineEnd;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

@@ -16,12 +16,14 @@ namespace Eto.Parse.Tests
 			var ws = -Terminals.WhiteSpace;
 
 			// parse a value with or without brackets
-			Parser valueParser = ('(' & ws & (+(!(Parser)')') - (ws & ')')).Named("value") & ws & ')')
+			Parser valueParser = 
+				('(' & ws & (+(Terminals.AnyChar) - (ws & ')')).Named("value") & ws & ')')
 				| (+!Terminals.WhiteSpace).Named("value");
 
-			// top level
-			var parser = new Grammar(ws & valueParser.Named("first") & ws & valueParser.Named("second") & ws & Terminals.End);
-			var match = parser.Match(input);
+			// our grammar
+			var grammar = new Grammar(ws & valueParser.Named("first") & ws & valueParser.Named("second") & ws & Terminals.End);
+
+			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);
 			Assert.AreEqual("hello", match["first"]["value"].Value);
 			Assert.AreEqual("parsing world", match["second"]["value"].Value);

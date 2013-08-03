@@ -16,6 +16,13 @@ namespace Eto.Parse
 
 		internal bool Reusable { get; set; }
 
+		public IEnumerable<Parser> Children()
+		{
+			return Children(new ParserChain());
+		}
+
+		public abstract IEnumerable<Parser> Children(ParserChain args);
+
 		public virtual string GetErrorMessage()
 		{
 			return DescriptiveName;
@@ -116,5 +123,13 @@ namespace Eto.Parse
 		{
 			return Clone();
 		}
+
+		public void SetError<T>(bool addError)
+			where T: Parser
+		{
+			foreach (var item in Children().OfType<T>())
+				item.AddError = addError;
+		}
+
 	}
 }

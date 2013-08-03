@@ -109,6 +109,40 @@ Vancouver, BC V5V5V5";
 		{
 			TestAddress(addressParser.Match(Address));
 		}
+
+		[Test]
+		public void Simple()
+		{
+			var grammarString = @"
+	<ws> ::= <WhiteSpace> <ws>
+			|
+
+	<simple-value> ::= <simple-value> <LetterOrDigit>
+				| <simple-value>
+
+	<bracket-value> ::= <bracket-value> <simple-value>
+						| <bracket-value>
+
+	<optional-bracket> ::= '(' <bracket-value> ')'
+							| <simple-value>
+
+	<first> ::= <optional-bracket>
+
+	<second> ::= <optional-bracket>
+
+	<grammar> ::= <ws> <first> <second> <ws>
+	";
+
+			var input = "  hello ( parsing world )  ";
+
+			// our grammar
+			var grammar = new BnfGrammar().Build(grammarString, "grammar");
+
+			var match = grammar.Match(input);
+			Assert.IsTrue(match.Success);
+			Assert.AreEqual("hello", match["first"]["simple-value", true].Value);
+			Assert.AreEqual("parsing world", match["second"]["bracket-value", true].Value);
+		}
 	}
 }
 
