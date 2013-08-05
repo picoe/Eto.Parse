@@ -10,7 +10,8 @@ namespace Eto.Parse.TestSpeed
 	{
 		public static void Main(string[] args)
 		{
-			var json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.sample.json")).ReadToEnd();
+			var sample = "Eto.Parse.TestSpeed.sample-large.json";
+			var json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream(sample)).ReadToEnd();
 			var iters = 100;
 			Console.WriteLine("Json for {0} iterations:", iters);
 			double etoSpeed = 0;
