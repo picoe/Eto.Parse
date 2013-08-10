@@ -41,7 +41,7 @@ namespace Eto.Parse.Tests.Parsers
 		[Test]
 		public void TestExponent()
 		{
-			var sample = "123E-02,123E+10,123.4567E+5";
+			var sample = "123E-02,123E+10,123.4567E+5,1234E2";
 
 			var grammar = new Grammar();
 			var num = new NumberParser { AllowDecimal = true, AllowExponent = true };
@@ -50,7 +50,7 @@ namespace Eto.Parse.Tests.Parsers
 
 			var match = grammar.Match(sample);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
-			CollectionAssert.AreEquivalent(new Decimal[] { 123E-2M, 123E+10M, 123.4567E+5M }, match.Find("str").Select(m => num.GetValue(m)));
+			CollectionAssert.AreEquivalent(new Decimal[] { 123E-2M, 123E+10M, 123.4567E+5M, 1234E+2M }, match.Find("str").Select(m => num.GetValue(m)));
 		}
 	}
 }
