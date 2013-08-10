@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Eto.Parse.Parsers
 {
@@ -25,6 +26,21 @@ namespace Eto.Parse.Parsers
 		{
 			AllowSign = true;
 			DecimalSeparator = '.';
+			AddError = true;
+		}
+
+		public decimal GetValue(NamedMatch match)
+		{
+			var style = NumberStyles.None;
+
+			if (AllowSign)
+				style |= NumberStyles.AllowLeadingSign;
+			if (AllowDecimal)
+				style |= NumberStyles.AllowDecimalPoint;
+			if (AllowExponent)
+				style |= NumberStyles.AllowExponent;
+
+			return decimal.Parse(match.Value, style);
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -63,6 +79,9 @@ namespace Eto.Parse.Parsers
 				else if (AllowDecimal && !hasDecimal && ch == DecimalSeparator)
 				{
 					hasDecimal = true;
+				}
+				else if (hasExponent && (ch == '+' || ch == '-'))
+				{
 				}
 				else if (AllowExponent && !hasExponent && (ch == 'E' || ch == 'e'))
 				{

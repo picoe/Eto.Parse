@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Eto.Parse.Grammars;
 using System.Linq;
 
-namespace Eto.Parse.Tests
+namespace Eto.Parse.Tests.Grammars
 {
 	[TestFixture]
 	public class EbnfTests

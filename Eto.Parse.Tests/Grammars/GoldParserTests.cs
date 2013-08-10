@@ -4,7 +4,7 @@ using Eto.Parse.Grammars;
 using Eto.Parse.Writers;
 using System.Linq;
 
-namespace Eto.Parse.Tests
+namespace Eto.Parse.Tests.Grammars
 {
 	[TestFixture]
 	public class GoldParserTests

@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using Eto.Parse;
 
-namespace Eto.Parse.Tests
+namespace Eto.Parse.Tests.Grammars
 {
 	[TestFixture]
 	public class FluentTests

@@ -41,11 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
-    <Compile Include="FluentTests.cs" />
-    <Compile Include="BnfTests.cs" />
-    <Compile Include="ShorthandTests.cs" />
-    <Compile Include="GoldParserTests.cs" />
-    <Compile Include="EbnfTests.cs" />
+    <Compile Include="Parsers\StringParserTests.cs" />
+    <Compile Include="Grammars\BnfTests.cs" />
+    <Compile Include="Grammars\GoldParserTests.cs" />
+    <Compile Include="Grammars\FluentTests.cs" />
+    <Compile Include="Grammars\EbnfTests.cs" />
+    <Compile Include="Grammars\ShorthandTests.cs" />
+    <Compile Include="Parsers\NumberParserTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -58,4 +60,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup>
+    <Folder Include="Parsers\" />
+    <Folder Include="Grammars\" />
+  </ItemGroup>
 </Project>

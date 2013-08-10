@@ -20,7 +20,7 @@ namespace Eto.Parse.Samples
 			var jvalue = new NamedParser("Value");
 			var jprop = new NamedParser("Property"); 
 
-			var ws = -(Terminals.Set(" \n\r"));
+			var ws = -Terminals.WhiteSpace;
 
 			// rules
 			var jobjectBr = "{" & ~jobject & "}";
