@@ -210,6 +210,8 @@
     <Compile Include="Parsers\ExceptParser.cs" />
     <Compile Include="Writers\Code\ExceptWriter.cs" />
     <Compile Include="ISeparatedParser.cs" />
+    <Compile Include="Writers\Code\StringWriter.cs" />
+    <Compile Include="Writers\Code\NumberWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

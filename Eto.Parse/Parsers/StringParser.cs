@@ -22,7 +22,7 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		public bool ProcessEscapeCharacters { get; set; }
+		public bool AllowEscapeCharacters { get; set; }
 
 		public bool AllowDoubleQuote { get; set; }
 
@@ -63,7 +63,7 @@ namespace Eto.Parse.Parsers
 				}
 			}
 			// process escapes using string format with no parameters
-			if (ProcessEscapeCharacters)
+			if (AllowEscapeCharacters)
 			{
 				val = GetEscapedString(val);
 			}
@@ -184,7 +184,7 @@ namespace Eto.Parse.Parsers
 		{
 			this.QuoteCharacters = other.QuoteCharacters != null ? (char[])other.QuoteCharacters.Clone() : null;
 			this.AllowDoubleQuote = other.AllowDoubleQuote;
-			this.ProcessEscapeCharacters = other.ProcessEscapeCharacters;
+			this.AllowEscapeCharacters = other.AllowEscapeCharacters;
 			this.AllowNonQuoted = other.AllowNonQuoted;
 			this.NonQuotedLetter = args.Clone(other.NonQuotedLetter);
 		}
@@ -217,7 +217,7 @@ namespace Eto.Parse.Parsers
 						if (!scanner.ReadChar(out ch))
 							break;
 						length++;
-						if (ProcessEscapeCharacters && ch == '\\')
+						if (AllowEscapeCharacters && ch == '\\')
 							isEscape = true;
 						else if (!isEscape)
 						{

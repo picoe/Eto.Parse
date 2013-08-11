@@ -24,7 +24,6 @@ namespace Eto.Parse.Parsers
 
 		public NumberParser()
 		{
-			AllowSign = true;
 			DecimalSeparator = '.';
 			AddError = true;
 		}

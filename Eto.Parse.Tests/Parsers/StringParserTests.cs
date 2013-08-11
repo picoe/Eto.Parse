@@ -29,7 +29,7 @@ namespace Eto.Parse.Tests.Parsers
 			var sample = "\"string\\'\\\"\\0\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234 1\",'string\\'\\\"\\0\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234 2'";
 
 			var grammar = new Grammar();
-			var str = new StringParser { ProcessEscapeCharacters = true  };
+			var str = new StringParser { AllowEscapeCharacters = true  };
 
 			grammar.Inner = (+str.Named("str")).SeparatedBy(",");
 
