@@ -28,7 +28,7 @@ namespace Eto.Parse
 		public static StartParser Start { get { return new StartParser(); } }
 		public static EndParser End { get { return new EndParser(); } }
 
-		public static LiteralParser String(string matchValue) { return new LiteralParser(matchValue); }
+		public static LiteralParser Literal(string matchValue) { return new LiteralParser(matchValue); }
 	}
 }
 

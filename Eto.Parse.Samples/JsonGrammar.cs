@@ -12,7 +12,7 @@ namespace Eto.Parse.Samples
 			// terminals
 			var jstring = new GroupParser("\"");
 			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true };
-			var comma = Terminals.String(",");
+			var comma = Terminals.Literal(",");
 
 			// nonterminals (things we're interested in getting back)
 			var jobject = new NamedParser("Object"); 
