@@ -87,37 +87,37 @@ namespace Eto.Parse.Parsers
 						case '\'':
 							c = '\'';
 							break;
-						case '\"':
+							case '\"':
 							c = '\"';
 							break;
-						case '\\':
+							case '\\':
 							c = '\\';
 							break;
-						case '0':
+							case '0':
 							c = '\0';
 							break;
-						case 'a':
+							case 'a':
 							c = '\a';
 							break;
-						case 'b':
+							case 'b':
 							c = '\b';
 							break;
-						case 'f':
+							case 'f':
 							c = '\f';
 							break;
-						case 'n':
+							case 'n':
 							c = '\n';
 							break;
-						case 'r':
+							case 'r':
 							c = '\r';
 							break;
-						case 't':
+							case 't':
 							c = '\t';
 							break;
-						case 'v':
+							case 'v':
 							c = '\v';
 							break;
-						case 'x':
+							case 'x':
 							var hex = new StringBuilder(4);
 							pos++;
 							if (pos >= source.Length)
@@ -137,7 +137,7 @@ namespace Eto.Parse.Parsers
 							c = (char)Int32.Parse(hex.ToString(), NumberStyles.HexNumber);
 							pos--;
 							break;
-						case 'u':
+							case 'u':
 							pos++;
 							if (pos + 3 >= source.Length)
 								throw new ArgumentException("Unrecognized escape sequence");
@@ -152,7 +152,7 @@ namespace Eto.Parse.Parsers
 								throw new ArgumentException("Unrecognized escape sequence");
 							}
 							break;
-						case 'U':
+							case 'U':
 							pos++;
 							if (pos + 7 >= source.Length)
 								throw new ArgumentException("Unrecognized escape sequence");
@@ -169,7 +169,7 @@ namespace Eto.Parse.Parsers
 								throw new ArgumentException("Unrecognized escape sequence");
 							}
 							break;
-						default:
+							default:
 							throw new ArgumentException("Unrecognized escape sequence");
 					}
 				}
@@ -198,7 +198,7 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			int length = 0;
+			int length = 1;
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
 			char ch;
@@ -206,9 +206,9 @@ namespace Eto.Parse.Parsers
 			if (AllowQuoted)
 			{
 				if (!scanner.ReadChar(out ch))
-					return args.EmptyMatch;
+					return args.NoMatch;
 
-				if (quoteCharacters.Contains(ch))
+				if (quoteCharString.IndexOf(ch) >= 0)
 				{
 					char quote = ch;
 					bool isEscape = false;
@@ -216,6 +216,7 @@ namespace Eto.Parse.Parsers
 					{
 						if (!scanner.ReadChar(out ch))
 							break;
+
 						length++;
 						if (AllowEscapeCharacters && ch == '\\')
 							isEscape = true;
@@ -225,7 +226,7 @@ namespace Eto.Parse.Parsers
 							{
 								if (!AllowDoubleQuote || scanner.IsEof || scanner.Current != quote)
 								{
-									return new ParseMatch(pos, length + 1);
+									return new ParseMatch(pos, length);
 								}
 								else
 									isEscape = true;
@@ -234,15 +235,13 @@ namespace Eto.Parse.Parsers
 						else
 							isEscape = false;
 					}
-
-					scanner.SetPosition(pos);
-					return args.EmptyMatch;
 				}
-				else
-					scanner.SetPosition(pos);
+
+				length = 0;
+				scanner.SetPosition(pos);
 			}
 
-			if (AllowNonQuoted)
+			if (AllowNonQuoted && NonQuotedLetter != null)
 			{
 				for (;;)
 				{
@@ -254,10 +253,10 @@ namespace Eto.Parse.Parsers
 				if (length > 0)
 					return new ParseMatch(pos, length);
 				else
-					return args.EmptyMatch;
+					return args.NoMatch;
 			}
 
-			return args.EmptyMatch;
+			return args.NoMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
@@ -271,4 +270,3 @@ namespace Eto.Parse.Parsers
 		}
 	}
 }
-

@@ -53,6 +53,40 @@ namespace Eto.Parse.Tests.Parsers
 			Assert.IsTrue(match.Success, match.ErrorMessage);
 			CollectionAssert.AreEquivalent(new string[] { "string\" ''1'", "string' \"\"2\"" }, match.Find("str").Select(m => str.GetValue(m)));
 		}
+
+		[Test]
+		public void TestErrorConditionsNoOptions()
+		{
+			var samples = new string[] { "string1", "\"string 2", "'string 3", "'string ''4", "string5'", "string6\"", "\"string\\\"7\"", "string 8" };
+
+			var grammar = new Grammar();
+			var str = new StringParser { AllowDoubleQuote = false, AllowNonQuoted = false, AllowEscapeCharacters = false };
+
+			grammar.Inner = str.Named("str");
+
+			foreach (var sample in samples)
+			{
+				var match = grammar.Match(sample);
+				Assert.IsFalse(match.Success, "Should not match string {0}", sample);
+			}
+		}
+
+		[Test]
+		public void TestErrorConditionsWithOptions()
+		{
+			var samples = new string[] { "string 1", "\"string 2", "'string 3", "'string ''4", "string5'", "string6\"", "\"string\\\"7" };
+
+			var grammar = new Grammar();
+			var str = new StringParser { AllowDoubleQuote = true, AllowNonQuoted = true, AllowEscapeCharacters = true };
+
+			grammar.Inner = str.Named("str");
+
+			foreach (var sample in samples)
+			{
+				var match = grammar.Match(sample);
+				Assert.IsFalse(match.Success, "Should not match string {0}", sample);
+			}
+		}
 	}
 }
 
