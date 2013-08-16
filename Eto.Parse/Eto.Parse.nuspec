@@ -10,9 +10,7 @@
     <projectUrl>https://github.com/picoe/Eto.Parse</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>$description$</summary>
-    <description><![CDATA[$description$
-    
-    	Eto.Parse is a highly optimized recursive decent parser framework that can be used to create parsers for complex grammars that go beyond the capability of regular expressions.
+    <description><![CDATA[Eto.Parse is a highly optimized recursive decent LL(k) parser framework that can be used to create parsers for complex grammars that go beyond the capability of regular expressions.
 
         You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).]]>
     </description>

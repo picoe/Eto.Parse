@@ -14,8 +14,7 @@ Eto.Parse is a highly optimized recursive decent parser framework that can be us
 
 You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
 
-Why not use RegEx?
-------------------
+### Why not use RegEx?
 
 This is a very valid question. Regular Expressions work great when the syntax is not complex, but fall short especially when dealing with any recursive syntax using some form of brackets or grouping concepts. 
 
@@ -24,7 +23,13 @@ For example, creating a math parser using RegEx cannot validate (directly) that 
 What's so great about Eto.Parse?
 --------------------------------
 
+### Matching
+
 The framework has been put together to get at the relevant values as easily as possible.  Each parser can be *named*, which then builds a tree of named matches that represent the interesting sections of the parsed input. You can use events on the named sections to perform logic when they match, or just parse the match tree directly.
+
+### Left Recursion
+
+One rather cumbersome issue to deal with using recursive descent parsers is [left recursion](http://en.wikipedia.org/wiki/Left_recursion). Eto.Parse automatically identifies left recursive grammars and will parse them with no issues by transforming into a repeating pattern.
 
 Performance
 -----------
@@ -33,19 +38,19 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Framework       | Run 1 | Run 2 | Run 3 | Average | Diff 
---------------- | ----- | ----- | ----- | ------- | -----
-Eto.Parse       | 0.620s| 0.621s| 0.620s| 0.620s  |   1x
-Newtonsoft.Json | 0.254s| 0.256s| 0.251s| 0.254s  | 2.4x Faster
-Irony           | 2.498s| 2.395s| 2.615s| 2.503s  | 4.0x Slower
+Framework       | Run 1  | Run 2  | Run 3  | Average | Diff 
+--------------- | ------ | ------ | ------ | ------- | ------------
+Eto.Parse       | 0.352s | 0.350s | 0.351s | 0.351s  | 1x
+Newtonsoft.Json | 0.278s | 0.268s | 0.268s | 0.271s  | 1.29x Faster
+Irony           | 2.514s | 2.513s | 2.557s | 2.528s  | 7.2x Slower
 
 ### Memory
 
 Framework       | Allocated | Diff       | # Objects | Diff
---------------- | --------- | ---------- | --------- | -----
-Eto.Parse       |  52.68 MB |    1x      |   1470122 |    1x
-Newtonsoft.Json | 109.39 MB | 2.08x More |   2176326 | 1.48x More
-Irony           | 440.21 MB | 8.36x More |   9572011 | 6.51x More
+--------------- | --------- | ---------- | --------- | ----------
+Eto.Parse       | 47.22 MB  | 1x         | 1470682   | 1x
+Newtonsoft.Json | 109.39 MB | 2.32x More | 2176326   | 1.48x More
+Irony           | 440.21 MB | 9.32x More | 9572011   | 6.51x More
 
 Example
 -------
@@ -123,6 +128,6 @@ These can parse the following text input:
 License
 -------
 
-Licensed under MIT.
+Licensed under [MIT](http://opensource.org/licenses/MIT).
 
 See LICENSE file for full license.
