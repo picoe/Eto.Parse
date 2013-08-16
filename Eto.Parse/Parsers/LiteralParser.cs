@@ -35,11 +35,12 @@ namespace Eto.Parse.Parsers
 			if (value == null)
 				return args.EmptyMatch;
 
-			int pos = args.Scanner.Position;
-			if (args.Scanner.ReadString(value, args.Grammar.CaseSensitive))
+			var scanner = args.Scanner;
+			int pos = scanner.Position;
+			if (scanner.ReadString(value, args.CaseSensitive))
 				return new ParseMatch(pos, value.Length);
 
-			args.Scanner.SetPosition(pos);
+			scanner.SetPosition(pos);
 			return args.NoMatch;
 		}
 

@@ -6,8 +6,8 @@ namespace Eto.Parse
 {
 	public class ParseArgs : EventArgs
 	{
-		List<ParseNode> nodes = new List<ParseNode>(100);
-		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>();
+		List<NamedMatchCollection> nodes = new List<NamedMatchCollection>(50);
+		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>(10);
 		List<Parser> errors = new List<Parser>();
 
 		public GrammarMatch Root { get; internal set; }
@@ -18,13 +18,7 @@ namespace Eto.Parse
 
 		public int ErrorIndex { get; private set; }
 
-		public string Path
-		{
-			get
-			{
-				return string.Join(" > ", nodes.Select(r => r.Parser).OfType<NamedParser>().Select(r => r.Name));
-			}
-		}
+		public bool CaseSensitive { get; private set; }
 
 		public List<Parser> Errors { get { return errors; } }
 
@@ -34,6 +28,7 @@ namespace Eto.Parse
 		{
 			Grammar = grammar;
 			Scanner = scanner;
+			CaseSensitive = grammar.CaseSensitive;
 		}
 
 		public bool IsRoot
@@ -72,75 +67,63 @@ namespace Eto.Parse
 
 		public void Push(Parser parser)
 		{
-			nodes.Insert(nodes.Count, new ParseNode(parser));
+			nodes.Insert(nodes.Count, null);
 		}
 
 		public NamedMatchCollection Pop(bool success)
 		{
-			var last = nodes[nodes.Count - 1];
-			nodes.RemoveAt(nodes.Count - 1);
+			var index = nodes.Count - 1;
+			var last = nodes[index];
+			nodes.RemoveAt(index);
 
 			if (!success)
 			{
-				if (last.Matches != null)
+				if (last != null)
 				{
-					last.Matches.Clear();
-					reusableMatches.Push(last.Matches);
+					last.Clear();
+					reusableMatches.Push(last);
 				}
 				return null;
 			}
 			else if (nodes.Count > 0)
 			{
-				var node = nodes[nodes.Count - 1];
-				if (last.Matches != null)
+				index--;
+				var node = nodes[index];
+				if (last != null)
 				{
-					if (node.Matches != null)
+					if (node != null)
 					{
-						node.Matches.AddRange(last.Matches);
-						last.Matches.Clear();
-						reusableMatches.Push(last.Matches);
+						node.AddRange(last);
+						last.Clear();
+						reusableMatches.Push(last);
 					}
 					else
 					{
-						node.Matches = last.Matches;
-						nodes[nodes.Count - 1] = node;
+						node = last;
+						nodes[index] = node;
 					}
 				}
-				return node.Matches;
+				return node;
 			}
-			return last.Matches;
+			return last;
 		}
 
 		public void PopMatch(NamedParser parser, ParseMatch match)
 		{
-			// allways successful here
-			var last = nodes[nodes.Count - 1];
-			nodes.RemoveAt(nodes.Count - 1);
+			// always successful here
+			var index = nodes.Count - 1;
+			var last = nodes[index];
+			nodes.RemoveAt(index);
 
-			var node = nodes[nodes.Count - 1];
-			if (node.Matches == null)
+			index--;
+			var node = nodes[index];
+			if (node == null)
 			{
-				node.Matches = CreateTempMatchCollection();
-				nodes[nodes.Count - 1] = node;
+				node = CreateTempMatchCollection();
+				nodes[index] = node;
 			}
-			var namedMatch = new NamedMatch(parser, Scanner, match.Index, match.Length, last.Matches);
-			node.Matches.Add(namedMatch);
-		}
-	}
-
-	struct ParseNode
-	{
-		NamedMatchCollection matches;
-		Parser parser;
-
-		public NamedMatchCollection Matches { get { return matches; } set { matches = value; } }
-
-		public Parser Parser { get { return parser; } }
-
-		public ParseNode(Parser parser)
-		{
-			this.parser = parser;
-			this.matches = null;
+			var namedMatch = new NamedMatch(parser, Scanner, match.Index, match.Length, last);
+			node.Add(namedMatch);
 		}
 	}
 }

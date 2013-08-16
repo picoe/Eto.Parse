@@ -23,7 +23,6 @@ namespace Eto.Parse.Parsers
 
 		public CharParser()
 		{
-			AddError = true;
 		}
 
 		public CharParser(ICharTester tester)
@@ -39,10 +38,10 @@ namespace Eto.Parse.Parsers
 			var pos = scanner.Position;
 			if (scanner.ReadChar(out ch))
 			{
-				if (Tester == null)
+				if (Tester == null && !Inverse)
 					return new ParseMatch(pos, 1);
 
-				bool matched = Tester.Test(ch, args.Grammar.CaseSensitive);
+				bool matched = Tester.Test(ch, args.CaseSensitive);
 				if (matched != Inverse)
 					return new ParseMatch(pos, 1);
 			}

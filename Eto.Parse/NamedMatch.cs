@@ -40,12 +40,9 @@ namespace Eto.Parse
 
 		public Scanner Scanner { get; private set; }
 
-		public string Value
-		{
-			get { return Success ? Scanner.SubString(Index, Length) : null; }
-		}
+		public string Value { get { return Success ? Scanner.SubString(Index, Length) : null; } }
 
-		public string Name { get; private set; }
+		public string Name { get { return this.Parser != null ? this.Parser.Name : null; } }
 
 		public NamedParser Parser { get; private set; }
 
@@ -54,8 +51,6 @@ namespace Eto.Parse
 		internal NamedMatch(NamedParser parser, Scanner scanner, int index, int length, NamedMatchCollection matches)
 		{
 			this.Parser = parser;
-			if (parser != null)
-				this.Name = parser.Name;
 			this.Scanner = scanner;
 			this.Index = index;
 			this.Length = length;
@@ -85,15 +80,9 @@ namespace Eto.Parse
 
 		public int Length { get; private set; }
 
-		public bool Success
-		{
-			get { return Length >= 0; }
-		}
+		public bool Success { get { return Length >= 0; } }
 
-		public bool Empty
-		{
-			get { return Length == 0; }
-		}
+		public bool Empty { get { return Length == 0; } }
 
 		public static bool operator true(NamedMatch match)
 		{
@@ -108,6 +97,11 @@ namespace Eto.Parse
 
 	public class NamedMatchCollection : List<NamedMatch>
 	{
+		public NamedMatchCollection()
+			: base(5)
+		{
+		}
+
 		public IEnumerable<NamedMatch> Find(string id, bool deep = false)
 		{
 			var matches = this.Where(r => r.Name == id);

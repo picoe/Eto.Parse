@@ -12,20 +12,11 @@ namespace Eto.Parse
 
 		public int Length { get { return length; } set { length = value; } }
 
-		public bool Success
-		{
-			get { return Length >= 0; }
-		}
+		public bool Success { get { return length >= 0; } }
 
-		public bool Empty
-		{
-			get { return Length == 0; }
-		}
+		public bool Empty { get { return length == 0; } }
 
-		public bool FailedOrEmpty
-		{
-			get { return Length <= 0; }
-		}
+		public bool FailedOrEmpty { get { return length <= 0; } }
 
 		public ParseMatch(int offset, int length)
 		{
