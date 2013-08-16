@@ -10,7 +10,7 @@ namespace Eto.Parse.Samples
 			: base("json")
 		{
 			// terminals
-			var jstring = new GroupParser("\"");
+			var jstring = new StringParser { AllowEscapeCharacters = true };
 			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true };
 			var comma = Terminals.Literal(",");
 
@@ -36,9 +36,6 @@ namespace Eto.Parse.Samples
 
 			// allow whitespace before and after
 			this.Inner = ws & jvalue & ws;
-
-			// turn off character errors, named parser errors are granular enough
-			SetError<CharParser>(false);
 		}
 	}
 }
