@@ -14,42 +14,63 @@ namespace Eto.Parse.TestSpeed
 			var json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream(sample)).ReadToEnd();
 			var iters = 100;
 			Console.WriteLine("Json for {0} iterations:", iters);
-			double etoSpeed = 0;
+			double? etoSpeed = null;
+			double? etoWarmupSpeed = null;
 
 			/**/
 			{
+				var warmupsw = new Stopwatch();
+				warmupsw.Start();
 				var g = new Eto.Parse.Samples.JsonGrammar { EnableMatchEvents = false };
 				var m = g.Match(json);
+				warmupsw.Stop();
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
 				{
 					m = g.Match(json);
 					if (!m.Success)
+					{
 						Console.WriteLine("Error: {0}", m.ErrorMessage);
+						break;
+					}
 				}
 				sw.Stop();
-				Console.WriteLine("Eto.Parse      : {0} seconds", etoSpeed = sw.Elapsed.TotalSeconds);
+				Console.WriteLine("Eto.Parse      : {0}, warmup: {1}", Speed((double)(etoSpeed = sw.Elapsed.TotalSeconds)), Speed((double)(etoWarmupSpeed = warmupsw.Elapsed.TotalSeconds)));
 			}
 			/**/
 			{
-				Newtonsoft.Json.Linq.JObject.Parse(json);
+				var warmupsw = new Stopwatch();
 				var sw = new Stopwatch();
-				sw.Start();
-				for (int i = 0; i < iters; i++)
+				try
 				{
+					warmupsw.Start();
 					Newtonsoft.Json.Linq.JObject.Parse(json);
+					warmupsw.Stop();
+					sw.Start();
+					for (int i = 0; i < iters; i++)
+					{
+						Newtonsoft.Json.Linq.JObject.Parse(json);
+					}
+				}
+				catch (Newtonsoft.Json.JsonException ex)
+				{
+					warmupsw.Stop();
+					Console.WriteLine("Error: {0}", ex);
 				}
 				sw.Stop();
-				Console.WriteLine("Newtonsoft.Json: {0} seconds {1}", sw.Elapsed.TotalSeconds, FasterOrSlower(etoSpeed, sw.Elapsed.TotalSeconds));
+				Console.WriteLine("Newtonsoft.Json: {0}, warmup: {1}", Speed(sw.Elapsed.TotalSeconds, etoSpeed), Speed(warmupsw.Elapsed.TotalSeconds, etoWarmupSpeed));
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 			/**/
 			{
+				var warmupsw = new Stopwatch();
+				warmupsw.Start();
 				var g = new Irony.Samples.Json.JsonGrammar();
 				var p = new Irony.Parsing.Parser(g);
 				var pt = p.Parse(json);
+				warmupsw.Stop();
 				var sw = new Stopwatch();
 				sw.Start();
 				for (int i = 0; i < iters; i++)
@@ -58,12 +79,12 @@ namespace Eto.Parse.TestSpeed
 					if (pt.HasErrors())
 					{
 						foreach (var error in pt.ParserMessages)
-							Console.WriteLine("Error: {0}", error);
+							Console.WriteLine("Error: {0}, Location: {1}", error, error.Location);
 						break;
 					}
 				}
 				sw.Stop();
-				Console.WriteLine("Irony          : {0} seconds {1}", sw.Elapsed.TotalSeconds, FasterOrSlower(etoSpeed, sw.Elapsed.TotalSeconds));
+				Console.WriteLine("Irony          : {0}, warmup: {1}", Speed(sw.Elapsed.TotalSeconds, etoSpeed), Speed(warmupsw.Elapsed.TotalSeconds, etoWarmupSpeed));
 			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -79,17 +100,18 @@ namespace Eto.Parse.TestSpeed
 			/**/
 		}
 
-		static string FasterOrSlower(double etoSpeed, double newSpeed)
+		static string Speed(double speed, double? compareSpeed = null)
 		{
-			if (etoSpeed > 0)
+
+			if (compareSpeed != null)
 			{
-				if (etoSpeed > newSpeed)
-					return string.Format("({0:0.000}x Faster)", etoSpeed / newSpeed);
+				if (compareSpeed > speed)
+					return string.Format("{0:0.00000}s ({1:0.000}x Faster)", speed, compareSpeed / speed);
 				else
-					return string.Format("({0:0.000}x Slower)", newSpeed / etoSpeed);
+					return string.Format("{0:0.00000}s ({1:0.000}x Slower)", speed, speed / compareSpeed);
 			}
 			else
-				return string.Empty;
+				return string.Format("{0:0.00000}s                ", speed);
 		}
 	}
 }
