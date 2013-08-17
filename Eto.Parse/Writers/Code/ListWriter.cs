@@ -11,6 +11,7 @@ namespace Eto.Parse.Writers.Code
 	{
 		public override void WriteContents(TextParserWriterArgs args, T parser, string name)
 		{
+			base.WriteContents(args, parser, name);
 			var items = new List<string>();
 			parser.Items.ForEach(r => {
 				var child = r != null ? args.Write(r) : "null";

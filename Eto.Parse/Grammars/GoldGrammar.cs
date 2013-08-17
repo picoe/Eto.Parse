@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Eto.Parse.Parsers;
-using Eto.Parse.Testers;
 using System.IO;
 using System.CodeDom.Compiler;
 using Eto.Parse.Writers;
@@ -29,8 +28,8 @@ namespace Eto.Parse.Grammars
 			// Special Terminals
 
 			var parameterCh = Terminals.Printable - Terminals.Set("\"'");
-			var nonterminalCh = Terminals.LetterOrDigit + Terminals.Set("_-. ");
-			var terminalCh = Terminals.LetterOrDigit + Terminals.Set("_-.");
+			var nonterminalCh = Terminals.LetterOrDigit | Terminals.Set("_-. ");
+			var terminalCh = Terminals.LetterOrDigit | Terminals.Set("_-.");
 			var literalCh = Terminals.Printable - Terminals.Set('\'');
 			var setLiteralCh = Terminals.Printable - Terminals.Set("[]'");
 			var setNameCh = Terminals.Printable - Terminals.Set("{}");
@@ -183,13 +182,8 @@ namespace Eto.Parse.Grammars
 					m.Tag = definition.Terminals[name] = new NamedParser(name);
 			};
 
-			setDecl.Matched += m => {
-				var parser = m.Tag as CharParser;
-				parser.Tester = SetMatch(m["setExp"]).Tester;
-			};
-
 			setDecl.PreMatch += m => {
-				var parser = new CharParser();
+				var parser = SetMatch(m["setExp"]);
 				definition.Sets[m["setName"]["value"].Value] = parser;
 				m.Tag = parser;
 			};
@@ -246,7 +240,7 @@ namespace Eto.Parse.Grammars
 				return null;
 			var l = m["literal"];
 			if (l.Success)
-				return new LiteralParser(l.Value.Length > 0 ? l.Value : "'");
+				return new LiteralTerminal(l.Value.Length > 0 ? l.Value : "'");
 
 			var t = m["terminal"];
 			if (t.Success)
@@ -279,7 +273,7 @@ namespace Eto.Parse.Grammars
 			}
 		}
 
-		CharParser SetLiteralOrName(NamedMatch m, bool error = true)
+		Parser SetLiteralOrName(NamedMatch m, bool error = true)
 		{
 			var literal = m.Name == "setLiteral" ? m : m["setLiteral"];
 			if (literal.Success)
@@ -287,7 +281,7 @@ namespace Eto.Parse.Grammars
 			var name = m.Name == "setName" ? m["value"] : m["setName"]["value"];
 			if (name.Success)
 			{
-				CharParser parser;
+				Parser parser;
 				if (definition.Sets.TryGetValue(name.Value, out parser))
 					return parser;
 			}
@@ -296,15 +290,15 @@ namespace Eto.Parse.Grammars
 			return null;
 		}
 
-		CharParser SetMatch(NamedMatch m)
+		Parser SetMatch(NamedMatch m)
 		{
-			CharParser parser = null;
+			Parser parser = null;
 			foreach (var child in m.Matches)
 			{
 				if (parser == null)
 					parser = SetLiteralOrName(child);
 				else if (child.Name == "add")
-					parser += SetLiteralOrName(child);
+					parser |= SetLiteralOrName(child);
 				else if (child.Name == "sub")
 					parser -= SetLiteralOrName(child);
 			}

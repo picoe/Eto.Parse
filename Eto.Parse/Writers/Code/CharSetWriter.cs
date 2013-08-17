@@ -1,13 +1,13 @@
 using System;
-using Eto.Parse.Testers;
+using Eto.Parse.Parsers;
 using System.Text;
 using System.Linq;
 
 namespace Eto.Parse.Writers.Code
 {
-	public class CharSetTesterWriter : TesterWriter<CharSetTester>
+	public class CharSetWriter : InverseWriter<CharSetTerminal>
 	{
-		public override void WriteContents(TextParserWriterArgs args, CharSetTester tester, string name)
+		public override void WriteContents(TextParserWriterArgs args, CharSetTerminal tester, string name)
 		{
 			base.WriteContents(args, tester, name);
 			args.Output.WriteLine("{0}.Characters = new char[] {{ {1} }}; // {2}", 

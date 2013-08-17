@@ -27,7 +27,7 @@ namespace Eto.Parse.Writers.Code
 			if (parser.AllowNonQuoted)
 				args.Output.WriteLine("{0}.AllowNonQuoted = {1};", name, parser.AllowNonQuoted);
 
-			if (parser.NonQuotedLetter == null || parser.NonQuotedLetter is CharParser)
+			if (parser.NonQuotedLetter == null || parser.NonQuotedLetter is CharTerminal)
 				args.Output.WriteLine("{0}.NonQuotedLetter = {1};", name, args.Write(parser.NonQuotedLetter));
 		}
 	}

@@ -40,22 +40,6 @@ namespace Eto.Parse
 			return Writer.WriteParser(this, parser);
 		}
 
-		public string Write(ICharTester tester)
-		{
-			return Writer.WriteTester(this, tester);
-		}
-
-		public string GenerateName(ICharTester tester)
-		{
-			string name;
-			if (!objectNames.TryGetValue(tester, out name))
-			{
-				name = GenerateName(tester.GetType());
-				objectNames[tester] = name;
-			}
-			return name;
-		}
-
 		public string GenerateName(Parser parser, string name = null)
 		{
 			string cachedName;

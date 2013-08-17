@@ -1,34 +1,33 @@
 using System;
 using Eto.Parse.Parsers;
-using Eto.Parse.Testers;
 using System.Linq;
 
 namespace Eto.Parse
 {
 	public static class Terminals
 	{
-		public static CharParser AnyChar { get { return new CharParser(null); } }
-		public static CharParser Digit { get { return new CharParser(new DigitTester()); } }
-		public static CharParser HexDigit { get { return new CharParser(new HexDigitTester()); } }
-		public static CharParser Letter { get { return new CharParser(new LetterTester()); } }
-		public static CharParser LetterOrDigit { get { return new CharParser(new LetterOrDigitTester()); } }
-		public static CharParser WhiteSpace { get { return new CharParser(new WhiteSpaceTester()); } }
-		public static CharParser SingleLineWhiteSpace { get { return new CharParser(new SingleLineWhiteSpaceTester()); } }
-		public static CharParser Punctuation { get { return new CharParser(new PunctuationTester()); } }
-		public static CharParser ControlCodes { get { return new CharParser(new ControlTester()); } }
-		public static CharParser Symbol { get { return new CharParser(new SymbolTester()); } }
-		public static CharParser Eol { get { return new CharParser(new EolTester()); } }
-		public static CharParser Set(params int[] chars) { return new CharParser(new CharSetTester(chars.Select(r => (char)r).ToArray())); }
-		public static CharParser Set(params char[] chars) { return new CharParser(new CharSetTester(chars)); }
-		public static CharParser Set(string chars) { return new CharParser(new CharSetTester(chars.ToCharArray())); }
-		public static CharParser Range(char start, char end) { return new CharParser(new RangeTester(start, end)); }
-		public static CharParser Range(int start, int end) { return new CharParser(new RangeTester((char)start, (char)end)); }
-		public static CharParser Printable { get { return new CharParser(new ControlTester()) { Inverse = true }; } }
+		public static Parser AnyChar { get { return new AnyCharTerminal(); } }
+		public static CharTerminal Digit { get { return new DigitTerminal(); } }
+		public static CharTerminal HexDigit { get { return new HexDigitTerminal(); } }
+		public static CharTerminal Letter { get { return new LetterTerminal(); } }
+		public static CharTerminal LetterOrDigit { get { return new LetterOrDigitTerminal(); } }
+		public static CharTerminal WhiteSpace { get { return new WhiteSpaceTerminal(); } }
+		public static CharTerminal SingleLineWhiteSpace { get { return new SingleLineWhiteSpaceTerminal(); } }
+		public static CharTerminal Punctuation { get { return new PunctuationTerminal(); } }
+		public static CharTerminal ControlCodes { get { return new ControlTerminal(); } }
+		public static CharTerminal Symbol { get { return new SymbolTerminal(); } }
+		public static CharTerminal Eol { get { return new EolTerminal(); } }
+		public static CharTerminal Set(params int[] chars) { return new CharSetTerminal(chars.Select(r => (char)r).ToArray()); }
+		public static CharTerminal Set(params char[] chars) { return new CharSetTerminal(chars); }
+		public static CharTerminal Set(string chars) { return new CharSetTerminal(chars.ToCharArray()); }
+		public static CharTerminal Range(char start, char end) { return new CharRangeTerminal(start, end); }
+		public static CharTerminal Range(int start, int end) { return new CharRangeTerminal((char)start, (char)end); }
+		public static CharTerminal Printable { get { return new ControlTerminal() { Inverse = true }; } }
 
 		public static StartParser Start { get { return new StartParser(); } }
 		public static EndParser End { get { return new EndParser(); } }
 
-		public static LiteralParser Literal(string matchValue) { return new LiteralParser(matchValue); }
+		public static LiteralTerminal Literal(string matchValue) { return new LiteralTerminal(matchValue); }
 	}
 }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Eto.Parse.Parsers;
-using Eto.Parse.Testers;
 
 namespace Eto.Parse
 {
@@ -95,26 +94,6 @@ namespace Eto.Parse
 					preMatch(match);
 				};
 			return namedParser;
-		}
-
-		public static CharParser Include(this CharParser parser, CharParser include)
-		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, include.Tester, include.Inverse));
-		}
-
-		public static CharParser Include(this CharParser parser, params char[] include)
-		{
-			return new CharParser(new IncludeTester(parser.Tester, parser.Inverse, new CharSetTester(include), false));
-		}
-
-		public static CharParser Exclude(this CharParser include, CharParser exclude)
-		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, exclude.Tester, exclude.Inverse));
-		}
-
-		public static CharParser Exclude(this CharParser include, params char[] exclude)
-		{
-			return new CharParser(new ExcludeTester(include.Tester, include.Inverse, new CharSetTester(exclude), false));
 		}
 
 		public static T Separate<T>(this T parser)

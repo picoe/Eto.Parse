@@ -70,7 +70,7 @@ namespace Eto.Parse
 
 		public static implicit operator Parser(string matchString)
 		{
-			return new LiteralParser(matchString) { Reusable = true };
+			return new LiteralTerminal(matchString) { Reusable = true };
 		}
 
 		public static SequenceParser operator &(Parser left, Parser right)
@@ -90,6 +90,10 @@ namespace Eto.Parse
 			return new SequenceParser(left, right) { Reusable = true };
 		}
 
+		public static ExceptParser operator -(Parser include, Parser exclude)
+		{
+			return new ExceptParser(include, exclude);
+		}
 	}
 }
 

@@ -2,7 +2,6 @@ using System;
 using Eto.Parse.Parsers;
 using System.Collections.Generic;
 using System.IO;
-using Eto.Parse.Testers;
 
 namespace Eto.Parse.Writers
 {
@@ -18,22 +17,15 @@ namespace Eto.Parse.Writers
 				{ typeof(NamedParser), new Code.NamedWriter() },
 				{ typeof(ListParser), new Code.ListWriter<ListParser>() },
 				{ typeof(UnaryParser), new Code.UnaryWriter<UnaryParser>() },
-				{ typeof(CharParser), new Code.CharWriter() },
-				{ typeof(LiteralParser), new Code.LiteralWriter() },
+				{ typeof(LiteralTerminal), new Code.LiteralWriter() },
 				{ typeof(RepeatParser), new Code.RepeatWriter() },
 				{ typeof(GroupParser), new Code.GroupWriter() },
 				{ typeof(SequenceParser), new Code.SequenceWriter() },
 				{ typeof(ExceptParser), new Code.ExceptWriter() },
 				{ typeof(StringParser), new Code.StringWriter() },
 				{ typeof(NumberParser), new Code.NumberWriter() },
-			}, 
-			new TesterDictionary
-			{
-				{ typeof(ICharTester), new Code.TesterWriter<ICharTester>() },
-				{ typeof(IncludeTester), new Code.IncludeTesterWriter() },
-				{ typeof(ExcludeTester), new Code.ExcludeTesterWriter() },
-				{ typeof(RangeTester), new Code.RangeTesterWriter() },
-				{ typeof(CharSetTester), new Code.CharSetTesterWriter() },
+				{ typeof(CharRangeTerminal), new Code.CharRangeWriter() },
+				{ typeof(CharSetTerminal), new Code.CharSetWriter() },
 			})
 		{
 		}

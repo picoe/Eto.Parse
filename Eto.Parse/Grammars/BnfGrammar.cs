@@ -17,7 +17,7 @@ namespace Eto.Parse.Grammars
 		Parser ws = Terminals.WhiteSpace.Repeat(0);
 		Parser sq = Terminals.Set('\'');
 		Parser dq = Terminals.Set('"');
-		LiteralParser ruleSeparator = new LiteralParser("::=");
+		LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
 		string startParserName;
 		NamedParser rule;
 		NamedParser listRepeat;
@@ -100,7 +100,7 @@ namespace Eto.Parse.Grammars
 				m.Tag = parser;
 			};
 
-			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
+			literal.Matched += m => m.Tag = new LiteralTerminal(m["value"].Value);
 			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
 			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 0) { Separator = sws };
 			list.Matched += m => {

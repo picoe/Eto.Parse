@@ -58,7 +58,7 @@ namespace Eto.Parse.Grammars
 
 			var special_sequence = ("?" & (+Terminals.AnyChar).Until("?").Named("name") & "?").Named("special sequence");
 
-			var meta_identifier_terminal = Terminals.Letter & -(Terminals.LetterOrDigit + '_');
+			var meta_identifier_terminal = Terminals.Letter & -(Terminals.LetterOrDigit | '_');
 			var integer = new NumberParser();
 
 			var old = Parser.DefaultSeparator;
@@ -192,7 +192,7 @@ namespace Eto.Parse.Grammars
 					}
 					return parser;
 				case "terminal string":
-					return new LiteralParser(child["value"].Value);
+					return new LiteralTerminal(child["value"].Value);
 				case "special sequence":
 					var name = child["name"].Value.Trim();
 					if (specialLookup.TryGetValue(name, out parser))

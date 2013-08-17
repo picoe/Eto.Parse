@@ -22,7 +22,7 @@ namespace Eto.Parse.Scanners
 			this.value = value;
 			this.length = value.Length;
 		}
-		
+
 		public override bool ReadChar(out char ch)
 		{
 			if (Position < length)
@@ -31,7 +31,7 @@ namespace Eto.Parse.Scanners
 				Position ++;
 				return true;
 			}
-			ch = (char)0;
+			ch = default(char);
 			return false;
 		}
 

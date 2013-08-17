@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
-	public class LiteralParser : Parser
+	public class LiteralTerminal : Parser
 	{
 		string value;
 		public string Value { get { return this.value; } set { this.value = value; } }
@@ -14,18 +14,18 @@ namespace Eto.Parse.Parsers
 			get { return string.Format("Literal: '{0}'", Value); }
 		}
 
-		protected LiteralParser(LiteralParser other, ParserCloneArgs chain)
+		protected LiteralTerminal(LiteralTerminal other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
 			Value = other.Value;
 			AddError = true;
 		}
 
-		public LiteralParser()
+		public LiteralTerminal()
 		{
 		}
 
-		public LiteralParser(string value)
+		public LiteralTerminal(string value)
 		{
 			Value = value;
 		}
@@ -46,7 +46,7 @@ namespace Eto.Parse.Parsers
 
 		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new LiteralParser(this, chain);
+			return new LiteralTerminal(this, chain);
 		}
 
 		public override IEnumerable<Parser> Children(ParserChain args)
