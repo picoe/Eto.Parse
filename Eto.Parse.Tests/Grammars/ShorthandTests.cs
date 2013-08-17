@@ -25,8 +25,8 @@ namespace Eto.Parse.Tests.Grammars
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("hello", match["first"]["value"].Value);
-			Assert.AreEqual("parsing world", match["second"]["value"].Value);
+			Assert.AreEqual("hello", match["first"]["value"].Text);
+			Assert.AreEqual("parsing world", match["second"]["value"].Text);
 		}
 
 		[Test]
@@ -42,7 +42,7 @@ namespace Eto.Parse.Tests.Grammars
 
 			var match = new Grammar(repeat) { AllowPartialMatch = true }.Match(input);
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("abc def", match.Value);
+			Assert.AreEqual("abc def", match.Text);
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace Eto.Parse.Parsers
 		}
 
 		public RepeatParser(Parser inner, int minimum, int maximum = Int32.MaxValue, Parser until = null)
-		: base(inner)
+			: base(null, inner)
 		{
 			this.Minimum = minimum;
 			this.Maximum = maximum;

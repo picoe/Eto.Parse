@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace Eto.Parse
 {
 	public class ParseArgs : EventArgs
 	{
-		List<NamedMatchCollection> nodes = new List<NamedMatchCollection>(50);
-		Stack<NamedMatchCollection> reusableMatches = new Stack<NamedMatchCollection>(10);
+		SlimStack<MatchCollection> nodes = new SlimStack<MatchCollection>(50);
+		SlimStack<MatchCollection> reusableMatches = new SlimStack<MatchCollection>(10);
 		List<Parser> errors = new List<Parser>();
 
 		public GrammarMatch Root { get; internal set; }
@@ -46,12 +47,12 @@ namespace Eto.Parse
 			get { return new ParseMatch(-1, -1); }
 		}
 
-		NamedMatchCollection CreateTempMatchCollection()
+		MatchCollection CreateTempMatchCollection()
 		{
 			if (reusableMatches.Count > 0)
 				return reusableMatches.Pop();
 			else
-				return new NamedMatchCollection();
+				return new MatchCollection();
 		}
 
 		public void AddError(Parser parser)
@@ -65,65 +66,61 @@ namespace Eto.Parse
 			errors.Add(parser);
 		}
 
-		public void Push(Parser parser)
+		public void Push()
 		{
-			nodes.Insert(nodes.Count, null);
+			nodes.PushDefault();
 		}
 
-		public NamedMatchCollection Pop(bool success)
+		public MatchCollection Pop()
 		{
-			var index = nodes.Count - 1;
-			var last = nodes[index];
-			nodes.RemoveAt(index);
+			return nodes.Pop();
+		}
 
-			if (!success)
+		public void PopSuccess()
+		{
+			var last = nodes.Pop();
+			if (last != null)
 			{
-				if (last != null)
+				var node = nodes.Last;
+				if (node != null)
 				{
+					node.AddRange(last);
 					last.Clear();
 					reusableMatches.Push(last);
 				}
-				return null;
-			}
-			else if (nodes.Count > 0)
-			{
-				index--;
-				var node = nodes[index];
-				if (last != null)
+				else
 				{
-					if (node != null)
-					{
-						node.AddRange(last);
-						last.Clear();
-						reusableMatches.Push(last);
-					}
-					else
-					{
-						node = last;
-						nodes[index] = node;
-					}
+					nodes.Last = last;
 				}
-				return node;
 			}
-			return last;
 		}
 
-		public void PopMatch(NamedParser parser, ParseMatch match)
+		public void PopFailed()
 		{
-			// always successful here
-			var index = nodes.Count - 1;
-			var last = nodes[index];
-			nodes.RemoveAt(index);
-
-			index--;
-			var node = nodes[index];
-			if (node == null)
+			var last = nodes.Pop();
+			if (last != null)
 			{
-				node = CreateTempMatchCollection();
-				nodes[index] = node;
+				last.Clear();
+				reusableMatches.Push(last);
 			}
-			var namedMatch = new NamedMatch(parser, Scanner, match.Index, match.Length, last);
-			node.Add(namedMatch);
+		}
+
+		public void PopMatch(Parser parser, ParseMatch match)
+		{
+			// always successful here, assume at least two or more nodes
+			var last = nodes.Pop();
+			var namedMatch = new Match(parser, Scanner, match.Index, match.Length, last);
+
+			if (nodes.Count > 0)
+			{
+				var node = nodes.Last;
+				if (node == null)
+				{
+					node = CreateTempMatchCollection();
+					nodes.Last = node;
+				}
+				node.Add(namedMatch);
+			}
 		}
 	}
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Text;
 using System.Globalization;
 
@@ -40,87 +39,116 @@ namespace Eto.Parse.Parsers
 			get { return AllowQuoted ? "Quoted String" : "String"; }
 		}
 
-		public string GetValue(NamedMatch match)
+		public string GetValue(Match match)
 		{
-			var val = match.Value;
-			if (val.Length == 0)
-				return string.Empty;
-			// process quotes
-			if (AllowQuoted)
+			return GetValue<string>(match);
+		}
+
+		public override T GetValue<T>(Match match)
+		{
+			var val = match.Text;
+			if (val.Length > 0)
 			{
-				var quoteIndex = quoteCharString.IndexOf(val[0]);
-				if (quoteIndex >= 0)
+				// process escapes using string format with no parameters
+				if (AllowEscapeCharacters)
 				{
-					var quoteChar = quoteCharString[quoteIndex];
-					if (quoteIndex >= 0 && val.Length >= 2 && val[val.Length - 1] == quoteChar)
+					val = GetEscapedString(val);
+				}
+				else if (AllowQuoted)
+				{
+					var quoteIndex = quoteCharString.IndexOf(val[0]);
+					if (quoteIndex >= 0)
 					{
-						val = val.Substring(1, val.Length - 2);
-					}
-					if (AllowDoubleQuote)
-					{
-						val = val.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
+						var quoteChar = quoteCharString[quoteIndex];
+						if (val.Length >= 2 && val[val.Length - 1] == quoteChar)
+						{
+							val = val.Substring(1, val.Length - 2);
+						}
+						if (AllowDoubleQuote)
+						{
+							val = val.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
+						}
 					}
 				}
 			}
-			// process escapes using string format with no parameters
-			if (AllowEscapeCharacters)
-			{
-				val = GetEscapedString(val);
-			}
-			return val;
+			return (T)Convert.ChangeType(val, typeof(T));
 		}
 
-		static string GetEscapedString(string source)
+		string GetEscapedString(string source)
 		{
-			var sb = new StringBuilder(source.Length);
 			int pos = 0;
-			while (pos < source.Length)
+			var length = source.Length;
+			var parseDoubleQuote = false;
+			char quoteChar = default(char);
+			if (AllowQuoted && pos == 0 && pos < source.Length)
+			{
+				var quoteIndex = quoteCharString.IndexOf(source[pos]);
+				if (quoteIndex >= 0)
+				{
+					quoteChar = quoteCharString[quoteIndex];
+					if (source.Length >= 2 && source[source.Length - 1] == quoteChar)
+					{
+						pos++;
+						length--;
+						parseDoubleQuote = AllowDoubleQuote;
+					}
+				}
+			}
+			var sb = new StringBuilder(length);
+			while (pos < length)
 			{
 				char c = source[pos];
+				/*if (parseDoubleQuote && pos < source.Length - 1 && quoteCharString.IndexOf(c) >= 0)
+				{
+					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
+					pos++;
+					sb.Append(c);
+					continue;
+				}*/
 				if (c == '\\')
 				{
 					pos++;
-					if (pos >= source.Length)
+					if (pos >= length)
 						throw new ArgumentException("Missing escape sequence");
 					switch (source[pos])
 					{
 						case '\'':
 							c = '\'';
 							break;
-							case '\"':
+						case '\"':
 							c = '\"';
 							break;
-							case '\\':
+						case '\\':
 							c = '\\';
 							break;
-							case '0':
+						case '0':
 							c = '\0';
 							break;
-							case 'a':
+						case 'a':
 							c = '\a';
 							break;
-							case 'b':
+						case 'b':
 							c = '\b';
 							break;
-							case 'f':
+						case 'f':
 							c = '\f';
 							break;
-							case 'n':
+						case 'n':
 							c = '\n';
 							break;
-							case 'r':
+						case 'r':
 							c = '\r';
 							break;
-							case 't':
+						case 't':
 							c = '\t';
 							break;
-							case 'v':
+						case 'v':
 							c = '\v';
 							break;
-							case 'x':
+						case 'x':
 							var hex = new StringBuilder(4);
 							pos++;
-							if (pos >= source.Length)
+							if (pos >= length)
 								throw new ArgumentException("Missing escape sequence");
 							for (int i = 0; i < 4; i++)
 							{
@@ -129,7 +157,7 @@ namespace Eto.Parse.Parsers
 									break;
 								hex.Append(c);
 								pos++;
-								if (pos > source.Length)
+								if (pos > length)
 									break;
 							}
 							if (hex.Length == 0)
@@ -137,9 +165,9 @@ namespace Eto.Parse.Parsers
 							c = (char)Int32.Parse(hex.ToString(), NumberStyles.HexNumber);
 							pos--;
 							break;
-							case 'u':
+						case 'u':
 							pos++;
-							if (pos + 3 >= source.Length)
+							if (pos + 3 >= length)
 								throw new ArgumentException("Unrecognized escape sequence");
 							try
 							{
@@ -152,9 +180,9 @@ namespace Eto.Parse.Parsers
 								throw new ArgumentException("Unrecognized escape sequence");
 							}
 							break;
-							case 'U':
+						case 'U':
 							pos++;
-							if (pos + 7 >= source.Length)
+							if (pos + 7 >= length)
 								throw new ArgumentException("Unrecognized escape sequence");
 							try
 							{
@@ -169,13 +197,18 @@ namespace Eto.Parse.Parsers
 								throw new ArgumentException("Unrecognized escape sequence");
 							}
 							break;
-							default:
+						default:
 							throw new ArgumentException("Unrecognized escape sequence");
 					}
 				}
 				pos++;
 				sb.Append(c);
 			}
+			if (parseDoubleQuote)
+			{
+				sb.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
+			}
+
 			return sb.ToString();
 		}
 
@@ -225,9 +258,7 @@ namespace Eto.Parse.Parsers
 							if (ch == quote)
 							{
 								if (!AllowDoubleQuote || scanner.IsEof || scanner.Current != quote)
-								{
 									return new ParseMatch(pos, length);
-								}
 								else
 									isEscape = true;
 							}
@@ -252,8 +283,6 @@ namespace Eto.Parse.Parsers
 				}
 				if (length > 0)
 					return new ParseMatch(pos, length);
-				else
-					return args.NoMatch;
 			}
 
 			return args.NoMatch;

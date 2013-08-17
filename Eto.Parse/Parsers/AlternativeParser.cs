@@ -47,14 +47,14 @@ namespace Eto.Parse.Parsers
 				var parser = Items[i];
 				if (parser == null)
 					return args.EmptyMatch;
-				args.Push(this);
+				args.Push();
 				var match = parser.Parse(args);
 				if (match.Success)
 				{
-					args.Pop(true);
+					args.PopSuccess();
 					return match;
 				}
-				args.Pop(false);
+				args.PopFailed();
 			}
 			return args.NoMatch;
 		}

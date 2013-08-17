@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Eto.Parse.Writers.Display
 {
-
 	public class RepeatWriter : UnaryWriter<RepeatParser>
 	{
 		public override string GetName(ParserWriterArgs args, RepeatParser parser)

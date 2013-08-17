@@ -19,7 +19,7 @@ namespace Eto.Parse.Samples
 			// name
 			var suffixPart = ((Parser)"Sr." | "Jr." | +Terminals.Set("IVXLCDM")).Named("suffix");
 			var personalPart = (terminal.Named("first-name") | (Terminals.Letter & ".")).Named("personal");
-			var namePart = new NamedParser("name");
+			var namePart = new UnaryParser("name");
 			namePart.Inner = (personalPart & terminal.Named("last-name") & ~suffixPart) | (personalPart & namePart); // recursion
 
 			this.Inner = namePart & Terminals.Eol & streetAddress & ~Terminals.Eol & zipPart;

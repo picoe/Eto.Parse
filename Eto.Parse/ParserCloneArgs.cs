@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Eto.Parse
 {
-
 	public class ParserCloneArgs
 	{
 		Dictionary<Parser, Parser> clones;

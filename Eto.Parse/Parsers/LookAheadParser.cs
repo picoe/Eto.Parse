@@ -6,8 +6,8 @@ namespace Eto.Parse.Parsers
 	{
 		public bool Inverse { get; set; }
 
-		protected LookAheadParser(LookAheadParser other, ParserCloneArgs chain)
-			: base(other, chain)
+		protected LookAheadParser(LookAheadParser other, ParserCloneArgs args)
+			: base(other, args)
 		{
 		}
 
@@ -29,9 +29,9 @@ namespace Eto.Parse.Parsers
 				return Inverse ? args.EmptyMatch : args.NoMatch;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new LookAheadParser(this, chain);
+			return new LookAheadParser(this, args);
 		}
 	}
 }

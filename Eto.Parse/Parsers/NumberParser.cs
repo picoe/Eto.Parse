@@ -28,7 +28,12 @@ namespace Eto.Parse.Parsers
 			AddError = true;
 		}
 
-		public decimal GetValue(NamedMatch match)
+		public decimal GetValue(Match match)
+		{
+			return GetValue<decimal>(match);
+		}
+
+		public override T GetValue<T>(Match match)
 		{
 			var style = NumberStyles.None;
 
@@ -39,7 +44,7 @@ namespace Eto.Parse.Parsers
 			if (AllowExponent)
 				style |= NumberStyles.AllowExponent;
 
-			return decimal.Parse(match.Value, style);
+			return (T)Convert.ChangeType(decimal.Parse(match.Text, style), typeof(T));
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Eto.Parse.Writers.Code
 {
-
 	public class ListWriter<T> : ParserWriter<T>
 		where T: ListParser
 	{

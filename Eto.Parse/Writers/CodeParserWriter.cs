@@ -14,7 +14,6 @@ namespace Eto.Parse.Writers
 			{
 				{ typeof(Parser), new Code.ParserWriter<Parser>() },
 				{ typeof(Grammar), new Code.GrammarWriter() },
-				{ typeof(NamedParser), new Code.NamedWriter() },
 				{ typeof(ListParser), new Code.ListWriter<ListParser>() },
 				{ typeof(UnaryParser), new Code.UnaryWriter<UnaryParser>() },
 				{ typeof(LiteralTerminal), new Code.LiteralWriter() },

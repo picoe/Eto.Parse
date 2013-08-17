@@ -18,7 +18,7 @@ namespace Eto.Parse.Grammars
 
 		public Dictionary<string, Parser> Terminals { get; private set; }
 
-		public Dictionary<string, NamedParser> Rules { get; private set; }
+		public Dictionary<string, UnaryParser> Rules { get; private set; }
 
 		public Parser Comment { get { return Terminals.ContainsKey("Comment") ? Terminals["Comment"] : null; } }
 
@@ -71,7 +71,7 @@ namespace Eto.Parse.Grammars
 		{ 
 			get
 			{
-				NamedParser parser;
+				UnaryParser parser;
 				var symbol = GrammarName;
 				if (!string.IsNullOrEmpty(symbol) && Rules.TryGetValue(symbol, out parser))
 					return parser as Grammar;
@@ -108,7 +108,7 @@ namespace Eto.Parse.Grammars
 			{
 				{ "Whitespace", +Sets["Whitespace"] }
 			};
-			Rules = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
+			Rules = new Dictionary<string, UnaryParser>(StringComparer.InvariantCultureIgnoreCase);
 			CreateSeparator();
 		}
 	}

@@ -15,6 +15,11 @@ namespace Eto.Parse.Writers.Code
 			return args.GenerateName(parser);
 		}
 
+		public static string GetIdentifier(string parserId)
+		{
+			return parserId.Replace(' ', '_').Replace('-', '_');
+		}
+
 		public virtual void WriteObject(TextParserWriterArgs args, T parser, string name)
 		{
 			var type = parser.GetType();
@@ -24,6 +29,8 @@ namespace Eto.Parse.Writers.Code
 
 		public virtual void WriteContents(TextParserWriterArgs args, T parser, string name)
 		{
+			if (parser.Name != null)
+				args.Output.WriteLine("{0}.Name = \"{1}\";", name, parser.Name.Replace("\"", "\\\""));
 		}
 
 		string TextParserWriter.IParserWriterHandler.Write(TextParserWriterArgs args, Parser parser)

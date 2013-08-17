@@ -39,14 +39,29 @@ namespace Eto.Parse
 			return parser;
 		}
 
-		public static Parser Not(this Parser parser)
+		public static LookAheadParser Not(this Parser parser)
+		{
+			return new LookAheadParser(parser) { Inverse = true };
+		}
+
+		public static LookAheadParser NonCaptured(this Parser parser)
 		{
 			return new LookAheadParser(parser);
 		}
 
-		public static Parser Not(this Parser parser, Parser inner)
+		public static SequenceParser NotFollowedBy(this Parser parser, Parser inner)
 		{
-			return new SequenceParser(parser, new LookAheadParser(inner));
+			return parser & new LookAheadParser(inner) { Inverse = true };
+		}
+
+		public static SequenceParser FollowedBy(this Parser parser, Parser lookAhead)
+		{
+			return parser & new LookAheadParser(lookAhead);
+		}
+
+		public static ExceptParser Except(this Parser parser, Parser exclude)
+		{
+			return new ExceptParser(parser, exclude);
 		}
 
 		public static RepeatParser Repeat(this Parser parser, int minimum = 1, int maximum = Int32.MaxValue)
@@ -60,12 +75,12 @@ namespace Eto.Parse
 			return parser;
 		}
 
-		public static Parser Optional(this Parser parser)
+		public static OptionalParser Optional(this Parser parser)
 		{
 			return new OptionalParser(parser);
 		}
 
-		public static Parser Or(this Parser left, Parser right)
+		public static AlternativeParser Or(this Parser left, Parser right)
 		{
 			var alternative = left as AlternativeParser;
 			if (alternative != null && alternative.Reusable)
@@ -82,18 +97,19 @@ namespace Eto.Parse
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
 
-		public static NamedParser Named(this Parser parser, string name, Action<NamedMatch> matched = null, Action<NamedMatch> preMatch = null)
+		public static Parser Named(this Parser parser, string name, Action<Match> matched = null, Action<Match> preMatch = null)
 		{
-			var namedParser = new NamedParser(name ?? Guid.NewGuid().ToString(), parser);
+			var unary = new UnaryParser(parser);
+			unary.Name = name ?? Guid.NewGuid().ToString();
 			if (matched != null)
-				namedParser.Matched += match => {
+				unary.Matched += match => {
 					matched(match);
 				};
 			if (preMatch != null)
-				namedParser.PreMatch += match => {
+				unary.PreMatch += match => {
 					preMatch(match);
 				};
-			return namedParser;
+			return unary;
 		}
 
 		public static T Separate<T>(this T parser)

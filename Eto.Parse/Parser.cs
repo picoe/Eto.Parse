@@ -10,6 +10,19 @@ namespace Eto.Parse
 {
 	public abstract partial class Parser : ICloneable
 	{
+		string name;
+
+		public string Name
+		{
+			get { return name; }
+			set
+			{
+				name = value;
+				if (name != null)
+					AddError = true;
+			}
+		}
+
 		public static Parser DefaultSeparator { get; set; }
 
 		public bool AddError { get; set; }
@@ -40,6 +53,32 @@ namespace Eto.Parse
 			}
 		}
 
+		public event Action<Match> Matched;
+
+		protected virtual void OnMatched(Match match)
+		{
+			if (Matched != null)
+				Matched(match);
+		}
+
+		public event Action<Match> PreMatch;
+
+		protected virtual void OnPreMatch(Match match)
+		{
+			if (PreMatch != null)
+				PreMatch(match);
+		}
+
+		internal void TriggerMatch(Match match)
+		{
+			OnMatched(match);
+		}
+
+		internal void TriggerPreMatch(Match match)
+		{
+			OnPreMatch(match);
+		}
+
 		public Parser()
 		{
 		}
@@ -52,23 +91,40 @@ namespace Eto.Parse
 
 		public ParseMatch Parse(ParseArgs args)
 		{
-
-			//var trace = args.Grammar.Trace;
-			//if (trace)
-			//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
-			var match = InnerParse(args);
-			if (match.Success)
+			if (Name == null)
 			{
+				//var trace = args.Grammar.Trace;
 				//if (trace)
-				//	Trace.WriteLine(string.Format("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName));
+				//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
+				var match = InnerParse(args);
+				if (match.Success)
+				{
+					//if (trace)
+					//	Trace.WriteLine(string.Format("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName));
+					return match;
+				}
+
+				//if (trace)
+				//	Trace.WriteLine(string.Format("FAILED: {0}", this.DescriptiveName));
+				if (AddError)
+					args.AddError(this);
 				return match;
 			}
+			else
+			{
+				args.Push();
+				var match = InnerParse(args);
+				if (match.Success)
+				{
+					args.PopMatch(this, match);
+					return match;
+				}
 
-			//if (trace)
-			//	Trace.WriteLine(string.Format("FAILED: {0}", this.DescriptiveName));
-			if (AddError)
-				args.AddError(this);
-			return match;
+				if (AddError)
+					args.AddError(this);
+				args.PopFailed();
+				return match;
+			}
 		}
 
 		public virtual void Initialize(ParserInitializeArgs args)
@@ -95,17 +151,18 @@ namespace Eto.Parse
 			return object.ReferenceEquals(args.Parser, this);
 		}
 
-		public IEnumerable<NamedParser> Find(string parserId)
+		public IEnumerable<Parser> Find(string parserId)
 		{
 			return Find(new ParserFindArgs(parserId));
 		}
 
-		public virtual IEnumerable<NamedParser> Find(ParserFindArgs args)
+		public virtual IEnumerable<Parser> Find(ParserFindArgs args)
 		{
-			yield break;
+			if (string.Equals(this.Name, args.ParserId, StringComparison.Ordinal))
+				yield return this;
 		}
 
-		public NamedParser this [string parserId]
+		public Parser this [string parserId]
 		{
 			get { return Find(parserId).FirstOrDefault(); }
 		}
@@ -131,5 +188,9 @@ namespace Eto.Parse
 				item.AddError = addError;
 		}
 
+		public virtual T GetValue<T>(Match match)
+		{
+			return (T)Convert.ChangeType(match.Text, typeof(T));
+		}
 	}
 }

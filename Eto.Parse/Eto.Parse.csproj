@@ -52,50 +52,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-      <HintPath>\System.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Eto.Parse.nuspec" />
+    <None Include="Eto.Parse.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParseArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parser.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ParseArgs.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnaryParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parsers\AlternativeParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parsers\EndParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parsers\OptionalParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parsers\RepeatParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Parsers\SequenceParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scanners\StringScanner.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="UnaryParser.cs" />
+    <Compile Include="Parsers\AlternativeParser.cs" />
+    <Compile Include="Parsers\EndParser.cs" />
+    <Compile Include="Parsers\OptionalParser.cs" />
+    <Compile Include="Parsers\RepeatParser.cs" />
+    <Compile Include="Parsers\SequenceParser.cs" />
+    <Compile Include="Scanners\StringScanner.cs" />
     <Compile Include="ListParser.cs" />
     <Compile Include="Parser.operators.cs" />
     <Compile Include="Terminals.cs" />
-    <Compile Include="Parsers\StartParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Parsers\StartParser.cs" />
     <Compile Include="FluentExtensions.cs" />
     <Compile Include="Writers\Code\ListWriter.cs" />
     <Compile Include="Writers\Code\ParserWriter.cs" />
@@ -112,20 +91,14 @@
     <Compile Include="TextParserWriter.cs" />
     <Compile Include="TextParserWriterArgs.cs" />
     <Compile Include="Parsers\GroupParser.cs" />
-    <Compile Include="InverseParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="InverseParser.cs" />
     <Compile Include="InternalExtensions.cs" />
-    <Compile Include="Parsers\LookAheadParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Parsers\LookAheadParser.cs" />
     <Compile Include="Grammar.cs" />
     <Compile Include="Grammars\GoldGrammar.cs" />
     <Compile Include="Grammars\BnfGrammar.cs" />
     <Compile Include="Writers\Code\GrammarWriter.cs" />
-    <Compile Include="ParseMatch.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ParseMatch.cs" />
     <Compile Include="Parsers\NumberParser.cs" />
     <Compile Include="Writers\Code\LiteralWriter.cs" />
     <Compile Include="Writers\Display\LiteralWriter.cs" />
@@ -137,9 +110,7 @@
     <Compile Include="ParserChain.cs" />
     <Compile Include="ParserContainsArgs.cs" />
     <Compile Include="ParserInitializeArgs.cs" />
-    <Compile Include="Scanner.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Scanner.cs" />
     <Compile Include="Parsers\EmptyParser.cs" />
     <Compile Include="ParserFindArgs.cs" />
     <Compile Include="Grammars\GoldDefinition.cs" />
@@ -167,10 +138,8 @@
     <Compile Include="Parsers\SymbolTerminal.cs" />
     <Compile Include="Parsers\WhiteSpaceTerminal.cs" />
     <Compile Include="Parsers\EolTerminal.cs" />
-    <Compile Include="Writers\Code\NamedWriter.cs" />
-    <Compile Include="NamedMatch.cs" />
-    <Compile Include="NamedParser.cs" />
-    <Compile Include="Writers\Display\NamedWriter.cs" />
+    <Compile Include="SlimStack.cs" />
+    <Compile Include="Match.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
