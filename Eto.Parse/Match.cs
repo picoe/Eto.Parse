@@ -40,16 +40,9 @@ namespace Eto.Parse
 
 		public Scanner Scanner { get; private set; }
 
-		public string StringValue { get { return GetValue<string>(); } }
-		public int Int32Value { get { return GetValue<int>(); } }
-		public Int64 Int64Value { get { return GetValue<Int64>(); } }
-		public double DoubleValue { get { return GetValue<double>(); } }
-		public decimal DecimalValue { get { return GetValue<decimal>(); } }
+		public object Value { get { return Success ? Parser.GetValue(this) : null; } }
 
-		public T GetValue<T>()
-		{
-			return Success ? Parser.GetValue<T>(this) : default(T);
-		}
+		public string StringValue { get { return Convert.ToString(Value); } }
 
 		public string Text { get { return Success ? Scanner.SubString(Index, Length) : null; } }
 

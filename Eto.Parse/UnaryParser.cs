@@ -14,6 +14,16 @@ namespace Eto.Parse
 			Inner = chain.Clone(other.Inner);
 		}
 
+		public override string DescriptiveName
+		{
+			get
+			{
+				if (Inner != null)
+					return string.Format("{0}: {1}", base.DescriptiveName, Inner.DescriptiveName);
+				return base.DescriptiveName;
+			}
+		}
+
 		public UnaryParser()
 		{
 		}
@@ -110,11 +120,11 @@ namespace Eto.Parse
 			return Enumerable.Empty<Parser>();
 		}
 
-		public override T GetValue<T>(Match match)
+		public override object GetValue(Match match)
 		{
 			if (Inner != null)
-				return Inner.GetValue<T>(match);
-			return base.GetValue<T>(match);
+				return Inner.GetValue(match);
+			return base.GetValue(match);
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Eto.Parse.Writers.Code
 		{
 			base.WriteContents(args, parser, name);
 			if (parser.Inverse)
-				args.Output.WriteLine("{0}.Inverse = true;", name);
+				args.Output.WriteLine("{0}.Inverse = {1};", name, parser.Inverse.ToString().ToLower());
 		}
 	}
 }

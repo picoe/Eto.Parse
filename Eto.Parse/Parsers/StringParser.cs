@@ -39,12 +39,7 @@ namespace Eto.Parse.Parsers
 			get { return AllowQuoted ? "Quoted String" : "String"; }
 		}
 
-		public string GetValue(Match match)
-		{
-			return GetValue<string>(match);
-		}
-
-		public override T GetValue<T>(Match match)
+		public override object GetValue(Match match)
 		{
 			var val = match.Text;
 			if (val.Length > 0)
@@ -71,7 +66,7 @@ namespace Eto.Parse.Parsers
 					}
 				}
 			}
-			return (T)Convert.ChangeType(val, typeof(T));
+			return val;
 		}
 
 		string GetEscapedString(string source)
@@ -98,13 +93,13 @@ namespace Eto.Parse.Parsers
 			while (pos < length)
 			{
 				char c = source[pos];
-				/*if (parseDoubleQuote && pos < source.Length - 1 && quoteCharString.IndexOf(c) >= 0)
+				if (parseDoubleQuote && pos < source.Length - 1 && quoteCharString.IndexOf(c) >= 0)
 				{
 					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
 					pos++;
 					sb.Append(c);
 					continue;
-				}*/
+				}
 				if (c == '\\')
 				{
 					pos++;
@@ -204,10 +199,6 @@ namespace Eto.Parse.Parsers
 				pos++;
 				sb.Append(c);
 			}
-			if (parseDoubleQuote)
-			{
-				sb.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
-			}
 
 			return sb.ToString();
 		}
@@ -226,7 +217,6 @@ namespace Eto.Parse.Parsers
 		{
 			NonQuotedLetter = Terminals.LetterOrDigit;
 			QuoteCharacters = "\"\'".ToCharArray();
-			AddError = true;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

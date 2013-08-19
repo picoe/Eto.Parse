@@ -31,7 +31,7 @@ namespace Eto.Parse.TestSpeed
 				var sb = new StringBuilder();
 				var warmupsw = new Stopwatch();
 				warmupsw.Start();
-				var g = new Eto.Parse.Samples.JsonGrammar { EnableMatchEvents = false };
+				var g = new Eto.Parse.Samples.JsonGrammar();
 				var m = g.Match(json);
 				warmupsw.Stop();
 				var sw = new Stopwatch();
@@ -48,7 +48,7 @@ namespace Eto.Parse.TestSpeed
 					var result = m["object"].Find("property").First(r => r["name"].StringValue == "result")["array"];
 					foreach (var item in result.Matches)
 					{
-						var id = item.Find("property").First(r => r["name"].StringValue == compareProperty)["number"].Int32Value;
+						var id = item.Find("property").First(r => r["name"].StringValue == compareProperty)["number"].Value;
 						sb.Append(id);
 					}
 					#endif

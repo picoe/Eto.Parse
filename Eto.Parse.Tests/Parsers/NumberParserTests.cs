@@ -59,28 +59,28 @@ namespace Eto.Parse.Tests.Parsers
 			var sample = "123.4567,+123.4567,-123.4567";
 
 			var grammar = new Grammar();
-			var num = new NumberParser { AllowSign = true, AllowDecimal = true };
+			var num = new NumberParser { AllowSign = true, AllowDecimal = true, ValueType = typeof(decimal) };
 
 			grammar.Inner = (+num.Named("str")).SeparatedBy(",");
 
 			var match = grammar.Match(sample);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
-			CollectionAssert.AreEquivalent(new Decimal[] { 123.4567M, 123.4567M, -123.4567M }, match.Find("str").Select(m => m.DecimalValue));
+			CollectionAssert.AreEquivalent(new Decimal[] { 123.4567M, 123.4567M, -123.4567M }, match.Find("str").Select(m => (decimal)m.Value));
 		}
 
 		[Test]
 		public void TestInt32Values()
 		{
-			var sample = "123.4567,+123.4567,-123.4567";
+			var sample = "123,+123,-123";
 
 			var grammar = new Grammar();
-			var num = new NumberParser { AllowSign = true, AllowDecimal = true };
+			var num = new NumberParser { AllowSign = true, AllowDecimal = true, ValueType = typeof(int) };
 
 			grammar.Inner = (+num.Named("str")).SeparatedBy(",");
 
 			var match = grammar.Match(sample);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
-			CollectionAssert.AreEquivalent(new Int32[] { 123, 123, -123 }, match.Find("str").Select(m => m.Int32Value));
+			CollectionAssert.AreEquivalent(new Int32[] { 123, 123, -123 }, match.Find("str").Select(m => (int)m.Value));
 		}
 	}
 }

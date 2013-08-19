@@ -11,31 +11,74 @@ namespace Eto.Parse
 	public abstract partial class Parser : ICloneable
 	{
 		string name;
+		bool? addError;
 
+		/// <summary>
+		/// Gets or sets the name of the match added to the match result tree
+		/// </summary>
+		/// <remarks>
+		/// When you set this property, it affects the match result tree returned from the <see cref="Grammar.Match"/>
+		/// method. Each parser that is named will get a node entry in the match tree if it has succesfully matched
+		/// on the input string.  This allows you to
+		/// 
+		/// If this is set to <c>null</c>, this parser will not add a node to the match tree, but any named
+		/// children will still add to the match tree (if any).
+		/// 
+		/// If you set the name, the parser will automatically set <see cref="Parser.AddError"/> to <c>true</c>
+		/// to give back information when this parser does not match, unless AddError has already been set
+		/// to something else explicitly.
+		/// </remarks>
+		/// <value>The name to give the match in the match result tree</value>
 		public string Name
 		{
 			get { return name; }
 			set
 			{
 				name = value;
-				if (name != null)
-					AddError = true;
+				if (addError == null && name != null)
+					addError = true;
 			}
 		}
 
 		public static Parser DefaultSeparator { get; set; }
 
-		public bool AddError { get; set; }
+		/// <summary>
+		/// Gets or sets a value indicating that this parser should add to the errors list when not matched
+		/// </summary>
+		/// <value><c>true</c> to add errors; otherwise, <c>false</c>.</value>
+		public bool AddError
+		{
+			get { return addError ?? false; }
+			set { addError = value; }
+		}
 
 		internal bool Reusable { get; set; }
 
+		/// <summary>
+		/// Gets an enumeration of all child parsers of this instance
+		/// </summary>
 		public IEnumerable<Parser> Children()
 		{
 			return Children(new ParserChain());
 		}
 
+		/// <summary>
+		/// Gets an enumeration of all child parsers of this instance
+		/// </summary>
+		/// <remarks>
+		/// Implementors of parsers should implement this, and call <see cref="ParserChain.Push"/> and <see cref="ParserChain.Pop"/>
+		/// before calling the Children method of contained parsers.
+		/// </remarks>
+		/// <param name="args">Arguments to get the children</param>
 		public abstract IEnumerable<Parser> Children(ParserChain args);
 
+		/// <summary>
+		/// Gets the error message to display for this parser
+		/// </summary>
+		/// <remarks>
+		/// By default, this will use the DescriptiveName
+		/// </remarks>
+		/// <returns>The error message to display when not matched</returns>
 		public virtual string GetErrorMessage()
 		{
 			return DescriptiveName;
@@ -45,6 +88,8 @@ namespace Eto.Parse
 		{
 			get
 			{
+				if (this.Name != null)
+					return this.Name;
 				var type = GetType();
 				var name = type.Name;
 				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
@@ -91,11 +136,12 @@ namespace Eto.Parse
 
 		public ParseMatch Parse(ParseArgs args)
 		{
+			//var trace = args.Grammar.Trace;
+			//if (trace)
+			//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
+
 			if (Name == null)
 			{
-				//var trace = args.Grammar.Trace;
-				//if (trace)
-				//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
 				var match = InnerParse(args);
 				if (match.Success)
 				{
@@ -120,9 +166,9 @@ namespace Eto.Parse
 					return match;
 				}
 
+				args.PopFailed();
 				if (AddError)
 					args.AddError(this);
-				args.PopFailed();
 				return match;
 			}
 		}
@@ -188,9 +234,9 @@ namespace Eto.Parse
 				item.AddError = addError;
 		}
 
-		public virtual T GetValue<T>(Match match)
+		public virtual object GetValue(Match match)
 		{
-			return (T)Convert.ChangeType(match.Text, typeof(T));
+			return match.Text;
 		}
 	}
 }

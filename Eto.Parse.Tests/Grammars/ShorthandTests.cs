@@ -17,7 +17,7 @@ namespace Eto.Parse.Tests.Grammars
 
 			// parse a value with or without brackets
 			Parser valueParser = 
-				('(' & ws & (+(Terminals.AnyChar) - (ws & ')')).Named("value") & ws & ')')
+				('(' & ws & (+Terminals.AnyChar ^ (ws & ')')).Named("value") & ws & ')')
 				| (+!Terminals.WhiteSpace).Named("value");
 
 			// our grammar
@@ -38,10 +38,10 @@ namespace Eto.Parse.Tests.Grammars
 			var ws = -Terminals.WhiteSpace;
 
 			// repeat until we get a digit, and exclude any whitespace inbetween
-			var repeat = +Terminals.AnyChar - (ws & Terminals.Digit);
+			var repeat = +Terminals.AnyChar ^ (ws & Terminals.Digit);
 
 			var match = new Grammar(repeat) { AllowPartialMatch = true }.Match(input);
-			Assert.IsTrue(match.Success);
+			Assert.IsTrue(match.Success, match.ErrorMessage);
 			Assert.AreEqual("abc def", match.Text);
 		}
 	}

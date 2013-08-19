@@ -22,12 +22,13 @@ namespace Eto.Parse
 			return parser;
 		}
 
-		public static T SeparateChildrenBy<T>(this T parser, Parser separator)
+		public static T SeparateChildrenBy<T>(this T parser, Parser separator, bool overrideExisting = true)
 			where T: Parser
 		{
 			foreach (var item in parser.Children().OfType<ISeparatedParser>())
 			{
-				item.Separator = separator;
+				if (overrideExisting || item.Separator == null)
+					item.Separator = separator;
 			}
 			return parser;
 		}

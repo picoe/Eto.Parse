@@ -140,6 +140,9 @@
     <Compile Include="Parsers\EolTerminal.cs" />
     <Compile Include="SlimStack.cs" />
     <Compile Include="Match.cs" />
+    <Compile Include="Writers\Code\BooleanWriter.cs" />
+    <Compile Include="Parsers\BooleanTerminal.cs" />
+    <Compile Include="Writers\Code\CharWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
