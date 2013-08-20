@@ -33,8 +33,8 @@ namespace Eto.Parse.Tests.Grammars
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("hello", match["first"]["value"].Value);
-			Assert.AreEqual("parsing world", match["second"]["value"].Value);
+			Assert.AreEqual("hello", match["first"]["value"].Text);
+			Assert.AreEqual("parsing world", match["second"]["value"].Text);
 		}
 
 		[Test]
@@ -50,7 +50,21 @@ namespace Eto.Parse.Tests.Grammars
 
 			var match = repeat.Match(input);
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("abc def", match.Value);
+			Assert.AreEqual("abc def", match.Text);
+		}
+
+		[Test]
+		public void Except()
+		{
+			var ch = Terminals.AnyChar.Except(Terminals.WhiteSpace).Repeat();
+
+			var input = "abc def 1234";
+
+			var repeat = new Grammar(ch) { AllowPartialMatch = true };
+
+			var match = repeat.Match(input);
+			Assert.IsTrue(match.Success);
+			Assert.AreEqual("abc", match.Text);
 		}
 
 	}

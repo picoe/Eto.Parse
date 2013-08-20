@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Eto.Parse.Writers.Code
 {
-
 	public class GrammarWriter : UnaryWriter<Grammar>
 	{
 		bool writeNewObject;
@@ -17,7 +16,7 @@ namespace Eto.Parse.Writers.Code
 			if (!string.IsNullOrEmpty(writer.ClassName))
 				return "this";
 			else
-				return NamedWriter.GetIdentifier(parser.Name);
+				return GetIdentifier(parser.Name);
 		}
 
 		public override void WriteObject(TextParserWriterArgs args, Grammar parser, string name)

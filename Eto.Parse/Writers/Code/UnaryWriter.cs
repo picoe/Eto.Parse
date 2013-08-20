@@ -10,6 +10,7 @@ namespace Eto.Parse.Writers.Code
 	{
 		public override void WriteContents(TextParserWriterArgs args, T parser, string name)
 		{
+			base.WriteContents(args, parser, name);
 			if (parser.Inner != null)
 			{
 				var child = args.Write(parser.Inner);

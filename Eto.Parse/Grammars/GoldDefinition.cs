@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Eto.Parse.Parsers;
-using Eto.Parse.Testers;
 using System.IO;
 using System.CodeDom.Compiler;
 using Eto.Parse.Writers;
@@ -15,11 +14,11 @@ namespace Eto.Parse.Grammars
 
 		public Dictionary<string, string> Properties { get; private set; }
 
-		public Dictionary<string, CharParser> Sets { get; private set; }
+		public Dictionary<string, Parser> Sets { get; private set; }
 
 		public Dictionary<string, Parser> Terminals { get; private set; }
 
-		public Dictionary<string, NamedParser> Rules { get; private set; }
+		public Dictionary<string, UnaryParser> Rules { get; private set; }
 
 		public Parser Comment { get { return Terminals.ContainsKey("Comment") ? Terminals["Comment"] : null; } }
 
@@ -72,7 +71,7 @@ namespace Eto.Parse.Grammars
 		{ 
 			get
 			{
-				NamedParser parser;
+				UnaryParser parser;
 				var symbol = GrammarName;
 				if (!string.IsNullOrEmpty(symbol) && Rules.TryGetValue(symbol, out parser))
 					return parser as Grammar;
@@ -84,7 +83,7 @@ namespace Eto.Parse.Grammars
 		public GoldDefinition()
 		{
 			Properties = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-			Sets = new Dictionary<string, CharParser>(StringComparer.InvariantCultureIgnoreCase)
+			Sets = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ "HT", Parse.Terminals.Set(0x09) },
 				{ "LF", Parse.Terminals.Set(0x0A) },
@@ -98,18 +97,18 @@ namespace Eto.Parse.Grammars
 
 				{ "Number", Parse.Terminals.Range(0x30, 0x39) },
 				{ "Digit", Parse.Terminals.Range(0x30, 0x39) },
-				{ "Letter", Parse.Terminals.Range(0x41, 0x58) + Parse.Terminals.Range(0x61, 0x78) },
-				{ "AlphaNumeric", Parse.Terminals.Range(0x30, 0x39) + Parse.Terminals.Range(0x41, 0x5A) + Parse.Terminals.Range(0x61, 0x7A) },
-				{ "Printable", Parse.Terminals.Range(0x20, 0x7E) + Parse.Terminals.Set(0xA0) },
-				{ "Letter Extended", Parse.Terminals.Range(0xC0, 0xD6) + Parse.Terminals.Range(0xD8, 0xF6) + Parse.Terminals.Range(0xF8, 0xFF) },
+				{ "Letter", Parse.Terminals.Range(0x41, 0x58) | Parse.Terminals.Range(0x61, 0x78) },
+				{ "AlphaNumeric", Parse.Terminals.Range(0x30, 0x39) | Parse.Terminals.Range(0x41, 0x5A) | Parse.Terminals.Range(0x61, 0x7A) },
+				{ "Printable", Parse.Terminals.Range(0x20, 0x7E) | Parse.Terminals.Set(0xA0) },
+				{ "Letter Extended", Parse.Terminals.Range(0xC0, 0xD6) | Parse.Terminals.Range(0xD8, 0xF6) | Parse.Terminals.Range(0xF8, 0xFF) },
 				{ "Printable Extended", Parse.Terminals.Range(0xA1, 0xFF) },
-				{ "Whitespace", Parse.Terminals.Range(0x09, 0x0D) + Parse.Terminals.Set(0x20, 0xA0) },
+				{ "Whitespace", Parse.Terminals.Range(0x09, 0x0D) | Parse.Terminals.Set(0x20, 0xA0) },
 			};
 			Terminals = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase)
 			{
 				{ "Whitespace", +Sets["Whitespace"] }
 			};
-			Rules = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
+			Rules = new Dictionary<string, UnaryParser>(StringComparer.InvariantCultureIgnoreCase);
 			CreateSeparator();
 		}
 	}

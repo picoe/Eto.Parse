@@ -11,21 +11,21 @@ namespace Eto.Parse.Grammars
 {
 	public class BnfGrammar : Grammar
 	{
-		Dictionary<string, NamedParser> parserLookup = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
-		Dictionary<string, NamedParser> baseLookup = new Dictionary<string, NamedParser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
 		Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
 		Parser ws = Terminals.WhiteSpace.Repeat(0);
 		Parser sq = Terminals.Set('\'');
 		Parser dq = Terminals.Set('"');
-		LiteralParser ruleSeparator = new LiteralParser("::=");
+		LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
 		string startParserName;
-		NamedParser rule;
-		NamedParser listRepeat;
-		NamedParser list;
-		NamedParser repeatRule;
-		NamedParser optionalRule;
-		NamedParser literal;
-		NamedParser ruleName;
+		Parser rule;
+		Parser listRepeat;
+		Parser list;
+		Parser repeatRule;
+		Parser optionalRule;
+		Parser literal;
+		Parser ruleName;
 
 
 		protected string RuleSeparator { get { return ruleSeparator.Value; } set { ruleSeparator.Value = value; } }
@@ -38,7 +38,7 @@ namespace Eto.Parse.Grammars
 
 		protected SequenceParser RuleNameParser { get; private set; }
 
-		public Dictionary<string, NamedParser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
+		public Dictionary<string, Parser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
 
 		public BnfGrammar(bool enhanced = true)
 			: base("bnf")
@@ -93,14 +93,17 @@ namespace Eto.Parse.Grammars
 		void AttachEvents()
 		{
 			ruleName.Matched += m => {
-				NamedParser parser;
-				var name = m["name"].Value;
+				Parser parser;
+				var name = m["name"].Text;
 				if (!parserLookup.TryGetValue(name, out parser) && !baseLookup.TryGetValue(name, out parser))
-					parser = Terminals.LetterOrDigit.Repeat().Named(name);
+				{
+					parser = Terminals.LetterOrDigit.Repeat();
+					parser.Name = name;
+				}
 				m.Tag = parser;
 			};
 
-			literal.Matched += m => m.Tag = new LiteralParser(m["value"].Value);
+			literal.Matched += m => m.Tag = new LiteralTerminal(m["value"].Text);
 			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
 			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 0) { Separator = sws };
 			list.Matched += m => {
@@ -131,17 +134,17 @@ namespace Eto.Parse.Grammars
 			};
 
 			rule.Matched += m => {
-				var parser = (NamedParser)m.Tag;
+				var parser = (UnaryParser)m.Tag;
 				parser.Inner = (Parser)m["parser"].Tag;
 				m.Tag = parser;
 			};
 			rule.PreMatch += m => {
-				var name = m["ruleName"]["name"].Value;
-				NamedParser parser;
+				var name = m["ruleName"]["name"].Text;
+				Parser parser;
 				if (name == startParserName)
 					parser = new Grammar(name);
 				else
-					parser = new NamedParser(name);
+					parser = new UnaryParser(name);
 				m.Tag = parser;
 				parserLookup[parser.Name] = parser;
 			};
@@ -149,14 +152,14 @@ namespace Eto.Parse.Grammars
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			parserLookup = new Dictionary<string, NamedParser>();
+			parserLookup = new Dictionary<string, Parser>();
 			return base.InnerParse(args);
 		}
 
 		public Grammar Build(string bnf, string startParserName)
 		{
 			this.startParserName = startParserName;
-			NamedParser parser;
+			Parser parser;
 			var match = this.Match(new StringScanner(bnf));
 
 			if (!match.Success)

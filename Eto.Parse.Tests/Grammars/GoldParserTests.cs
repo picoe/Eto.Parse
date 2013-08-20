@@ -205,7 +205,7 @@ Comment End   = '*!'
 			Assert.IsTrue(match.Success, "Error: {0}", match.ErrorMessage);
 
 			// check rules
-			var rules = match.Find("Rule Decl", true).Select(r => r["Nonterminal"].Value.TrimStart('<').TrimEnd('>')).ToArray();
+			var rules = match.Find("Rule Decl", true).Select(r => r["Nonterminal"].Text.TrimStart('<').TrimEnd('>')).ToArray();
 			CollectionAssert.AreEquivalent(GOLD_RULES, rules);
 		}
 	}

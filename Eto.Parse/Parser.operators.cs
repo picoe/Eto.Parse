@@ -68,9 +68,9 @@ namespace Eto.Parse
 			return parser;
 		}
 
-		public static implicit operator Parser(string matchString)
+		public static implicit operator Parser(string literalString)
 		{
-			return new LiteralParser(matchString) { Reusable = true };
+			return new LiteralTerminal(literalString) { Reusable = true };
 		}
 
 		public static SequenceParser operator &(Parser left, Parser right)
@@ -90,6 +90,15 @@ namespace Eto.Parse
 			return new SequenceParser(left, right) { Reusable = true };
 		}
 
+		public static ExceptParser operator -(Parser include, Parser exclude)
+		{
+			return new ExceptParser(include, exclude);
+		}
+
+		public static RepeatParser operator *(Parser parser, int repetitions)
+		{
+			return new RepeatParser(parser, repetitions, repetitions);
+		}
 	}
 }
 

@@ -6,8 +6,8 @@ using Irony.Parsing;
 
 namespace Irony.Samples.Json {
 	[Language("JSON", "1.0", "JSON data format")]
-	public class JsonGrammar : Grammar {
-		public JsonGrammar() {
+	public class IronyJsonGrammar : Grammar {
+		public IronyJsonGrammar() {
 			//Terminals
 			var jstring = new StringLiteral("string", "\"");
 			var jnumber = new NumberLiteral("number", NumberOptions.AllowSign);

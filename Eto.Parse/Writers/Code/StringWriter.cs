@@ -19,15 +19,15 @@ namespace Eto.Parse.Writers.Code
 				args.Output.WriteLine("{0}.QuoteCharacters = {1};", name, quoteChars);
 
 			if (parser.AllowEscapeCharacters)
-				args.Output.WriteLine("{0}.AllowEscapeCharacters = {1};", name, parser.AllowEscapeCharacters);
+				args.Output.WriteLine("{0}.AllowEscapeCharacters = {1};", name, parser.AllowEscapeCharacters.ToString().ToLower());
 
 			if (parser.AllowDoubleQuote)
-				args.Output.WriteLine("{0}.AllowDoubleQuote = {1};", name, parser.AllowDoubleQuote);
+				args.Output.WriteLine("{0}.AllowDoubleQuote = {1};", name, parser.AllowDoubleQuote.ToString().ToLower());
 
 			if (parser.AllowNonQuoted)
-				args.Output.WriteLine("{0}.AllowNonQuoted = {1};", name, parser.AllowNonQuoted);
+				args.Output.WriteLine("{0}.AllowNonQuoted = {1};", name, parser.AllowNonQuoted.ToString().ToLower());
 
-			if (parser.NonQuotedLetter == null || parser.NonQuotedLetter is CharParser)
+			if (parser.NonQuotedLetter == null || parser.NonQuotedLetter is CharTerminal)
 				args.Output.WriteLine("{0}.NonQuotedLetter = {1};", name, args.Write(parser.NonQuotedLetter));
 		}
 	}

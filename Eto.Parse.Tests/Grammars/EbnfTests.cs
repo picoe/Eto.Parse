@@ -161,8 +161,8 @@ grammar = ws, first, second, ws;
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
-			Assert.AreEqual("hello", match["first"]["simple value", true].Value);
-			Assert.AreEqual("parsing world", match["second"]["bracket value", true].Value);
+			Assert.AreEqual("hello", match["first"]["simple value", true].Text);
+			Assert.AreEqual("parsing world", match["second"]["bracket value", true].Text);
 		}
 	}
 }

@@ -7,18 +7,36 @@ namespace Eto.Parse
 	public class UnaryParser : Parser
 	{
 		public Parser Inner { get; set; }
-		/*protected override string GetDescriptiveNameInternal(HashSet<Parser> parents)
-		{
-			return string.Format("{0}, Inner: {1}", base.GetDescriptiveNameInternal(parents), Inner != null ? Inner.GetDescriptiveName(parents): null);
-		}*/
+
 		protected UnaryParser(UnaryParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
 			Inner = chain.Clone(other.Inner);
 		}
 
+		public override string DescriptiveName
+		{
+			get
+			{
+				if (Inner != null)
+					return string.Format("{0}: {1}", base.DescriptiveName, Inner.DescriptiveName);
+				return base.DescriptiveName;
+			}
+		}
+
 		public UnaryParser()
 		{
+		}
+
+		public UnaryParser(string name)
+		{
+			this.Name = name;
+		}
+
+		public UnaryParser(string name, Parser inner)
+		{
+			this.Name = name;
+			this.Inner = inner;
 		}
 
 		public UnaryParser(Parser inner)
@@ -49,15 +67,15 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public override IEnumerable<NamedParser> Find(ParserFindArgs args)
+		public override IEnumerable<Parser> Find(ParserFindArgs args)
 		{
 			if (Inner != null && args.Push(this))
 			{
 				var ret = Inner.Find(args);
 				args.Pop(this);
-				return ret;
+				return base.Find(args).Concat(ret);
 			}
-			return Enumerable.Empty<NamedParser>();
+			return base.Find(args);
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -100,6 +118,13 @@ namespace Eto.Parse
 				return ret;
 			}
 			return Enumerable.Empty<Parser>();
+		}
+
+		public override object GetValue(Match match)
+		{
+			if (Inner != null)
+				return Inner.GetValue(match);
+			return base.GetValue(match);
 		}
 	}
 }

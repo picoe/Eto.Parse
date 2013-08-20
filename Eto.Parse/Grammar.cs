@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Eto.Parse
 {
-	public class Grammar : NamedParser
+	public class Grammar : UnaryParser
 	{
 		bool initialized;
 
@@ -63,16 +63,21 @@ namespace Eto.Parse
 		{
 			if (args.IsRoot)
 			{
-				var pos = args.Scanner.Position;
-				args.Push(this);
+				var scanner = args.Scanner;
+				var pos = scanner.Position;
+				args.Push();
 				var match = (Inner != null) ? Inner.Parse(args) : args.EmptyMatch;
-				if (match.Success && !AllowPartialMatch && !args.Scanner.IsEof)
+				MatchCollection matches = null;
+				if (match.Success && !AllowPartialMatch && !scanner.IsEof)
 				{
-					args.Scanner.SetPosition(pos);
+					scanner.SetPosition(pos);
 					match = args.NoMatch;
 				}
-				var matches = args.Pop(match.Success);
-				args.Root = new GrammarMatch(this, args.Scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
+				else
+				{
+					matches = args.Pop();
+				}
+				args.Root = new GrammarMatch(this, scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
 				return match;
 			}
 			else
@@ -96,22 +101,22 @@ namespace Eto.Parse
 
 			if (root.Success && EnableMatchEvents)
 			{
-				root.PreMatch();
-				root.Match();
+				root.TriggerPreMatch();
+				root.TriggerMatch();
 			}
 			return root;
 		}
 
-		public NamedMatchCollection Matches(string value)
+		public MatchCollection Matches(string value)
 		{
 			value.ThrowIfNull("value");
 			return Matches(new StringScanner(value));
 		}
 
-		public NamedMatchCollection Matches(Scanner scanner)
+		public MatchCollection Matches(Scanner scanner)
 		{
 			scanner.ThrowIfNull("scanner");
-			var matches = new NamedMatchCollection();
+			var matches = new MatchCollection();
 			while (!scanner.IsEof)
 			{
 				var match = Match(scanner);

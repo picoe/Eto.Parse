@@ -1,11 +1,11 @@
 using System;
-using Eto.Parse.Testers;
+using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Writers.Code
 {
-	public class RangeTesterWriter : TesterWriter<RangeTester>
+	public class CharRangeWriter : InverseWriter<CharRangeTerminal>
 	{
-		public override void WriteContents(TextParserWriterArgs args, RangeTester tester, string name)
+		public override void WriteContents(TextParserWriterArgs args, CharRangeTerminal tester, string name)
 		{
 			base.WriteContents(args, tester, name);
 			args.Output.WriteLine("{0}.Start = (char)0x{1:x};", name, (int)tester.Start);

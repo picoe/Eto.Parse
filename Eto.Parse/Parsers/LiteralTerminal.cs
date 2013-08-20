@@ -4,49 +4,56 @@ using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
-	public class LiteralParser : Parser
+	public class LiteralTerminal : Parser
 	{
-		string value;
-		public string Value { get { return this.value; } set { this.value = value; } }
+		bool caseSensitive;
+		public bool? CaseSensitive { get; set; }
+
+		public string Value { get; set; }
 
 		public override string DescriptiveName
 		{
 			get { return string.Format("Literal: '{0}'", Value); }
 		}
 
-		protected LiteralParser(LiteralParser other, ParserCloneArgs chain)
+		protected LiteralTerminal(LiteralTerminal other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
+			CaseSensitive = other.CaseSensitive;
 			Value = other.Value;
-			AddError = true;
 		}
 
-		public LiteralParser()
+		public LiteralTerminal()
 		{
 		}
 
-		public LiteralParser(string value)
+		public LiteralTerminal(string value)
 		{
 			Value = value;
 		}
 
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
+		}
+
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (value == null)
+			if (Value == null)
 				return args.EmptyMatch;
 
 			var scanner = args.Scanner;
 			int pos = scanner.Position;
-			if (scanner.ReadString(value, args.CaseSensitive))
-				return new ParseMatch(pos, value.Length);
+			if (scanner.ReadString(Value, caseSensitive))
+				return new ParseMatch(pos, Value.Length);
 
-			scanner.SetPosition(pos);
 			return args.NoMatch;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)
 		{
-			return new LiteralParser(this, chain);
+			return new LiteralTerminal(this, chain);
 		}
 
 		public override IEnumerable<Parser> Children(ParserChain args)

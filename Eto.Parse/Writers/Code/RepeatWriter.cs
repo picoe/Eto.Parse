@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Eto.Parse.Writers.Code
 {
-
 	public class RepeatWriter : UnaryWriter<RepeatParser>
 	{
 		public override void WriteObject(TextParserWriterArgs args, RepeatParser parser, string name)

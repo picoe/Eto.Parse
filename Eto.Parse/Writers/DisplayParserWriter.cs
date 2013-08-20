@@ -11,11 +11,9 @@ namespace Eto.Parse.Writers
 			: base(new ParserDictionary
 			{
 				{ typeof(Parser), new Display.ParserWriter<Parser>() },
-				{ typeof(NamedParser), new Display.NamedWriter() },
 				{ typeof(ListParser), new Display.ListWriter() },
 				{ typeof(UnaryParser), new Display.UnaryWriter<UnaryParser>() },
-				{ typeof(CharParser), new Display.CharWriter() },
-				{ typeof(LiteralParser), new Display.LiteralWriter() },
+				{ typeof(LiteralTerminal), new Display.LiteralWriter() },
 				{ typeof(RepeatParser), new Display.RepeatWriter() }
 			})
 		{

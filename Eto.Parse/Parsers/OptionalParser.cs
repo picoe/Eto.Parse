@@ -13,24 +13,31 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		public OptionalParser(Parser inner)
-		: base(inner)
+		public OptionalParser(string name, Parser inner)
+			: base(name, inner)
 		{
-			
+		}
+
+		public OptionalParser(Parser inner)
+			: base(null, inner)
+		{
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			args.Push(this);
+			args.Push();
 			var match = Inner.Parse(args);
 
 			if (match.Success)
 			{
-				args.Pop(true);
+				args.PopSuccess();
 				return match;
 			}
-			args.Pop(false);
-			return args.EmptyMatch;
+			else
+			{
+				args.PopFailed();
+				return args.EmptyMatch;
+			}
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

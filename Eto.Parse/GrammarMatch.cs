@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Eto.Parse
 {
-	public class GrammarMatch : NamedMatch
+	public class GrammarMatch : Match
 	{
 		public int ErrorIndex { get; private set; }
 
 		public IEnumerable<Parser> Errors { get; private set; }
 
-		public GrammarMatch(Grammar grammar, Scanner scanner, int index, int length, NamedMatchCollection matches, int errorIndex, IEnumerable<Parser> errors)
+		public GrammarMatch(Grammar grammar, Scanner scanner, int index, int length, MatchCollection matches, int errorIndex, IEnumerable<Parser> errors)
 			: base(grammar, scanner, index, length, matches)
 		{
 			this.Errors = errors;

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 
 namespace Eto.Parse.Parsers
 {
 	public class NumberParser : Parser
 	{
+		MethodInfo parseMethod;
+
 		public bool AllowSign { get; set; }
 
 		public bool AllowDecimal { get; set; }
@@ -14,21 +17,31 @@ namespace Eto.Parse.Parsers
 
 		public bool AllowExponent { get; set; }
 
+		public Type ValueType { get; set; }
+
 		protected NumberParser(NumberParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
 			AllowSign = other.AllowSign;
 			AllowExponent = other.AllowExponent;
 			DecimalSeparator = other.DecimalSeparator;
+			ValueType = other.ValueType;
 		}
 
 		public NumberParser()
 		{
 			DecimalSeparator = '.';
-			AddError = true;
+			ValueType = typeof(decimal);
 		}
 
-		public decimal GetValue(NamedMatch match)
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (ValueType != null)
+				parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
+		}
+
+		public override object GetValue(Match match)
 		{
 			var style = NumberStyles.None;
 
@@ -39,7 +52,7 @@ namespace Eto.Parse.Parsers
 			if (AllowExponent)
 				style |= NumberStyles.AllowExponent;
 
-			return decimal.Parse(match.Value, style);
+			return parseMethod.Invoke(null, new object[] { match.Text, style });
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)

@@ -38,11 +38,7 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Framework       | Run 1  | Run 2  | Run 3  | Average | Diff 
---------------- | ------ | ------ | ------ | ------- | ------------
-Eto.Parse       | 0.352s | 0.350s | 0.351s | 0.351s  | 1x
-Newtonsoft.Json | 0.278s | 0.268s | 0.268s | 0.271s  | 1.29x Faster
-Irony           | 2.514s | 2.513s | 2.557s | 2.528s  | 7.2x Slower
+Framework       | Parsing | Diff         | Warmup | Diff--------------- | ------- | ------------ | ------ | ------------Eto.Parse       |  0.398s | 1x           | 0.045s | 1xNewtonsoft.Json |  0.255s | 1.56x Faster | 0.063s | 1.41x SlowerIrony           |  2.568s | 6.46x Slower | 0.270s | 6.04x Slower
 
 ### Memory
 

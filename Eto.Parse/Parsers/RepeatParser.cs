@@ -12,13 +12,13 @@ namespace Eto.Parse.Parsers
 
 		public Parser Until { get; set; }
 
-		protected RepeatParser(RepeatParser other, ParserCloneArgs chain)
-			: base(other, chain)
+		protected RepeatParser(RepeatParser other, ParserCloneArgs args)
+			: base(other, args)
 		{
 			Minimum = other.Minimum;
 			Maximum = other.Maximum;
-			Until = chain.Clone(other.Until);
-			Separator = chain.Clone(other.Separator);
+			Until = args.Clone(other.Until);
+			Separator = args.Clone(other.Separator);
 		}
 
 		public RepeatParser()
@@ -28,7 +28,7 @@ namespace Eto.Parse.Parsers
 		}
 
 		public RepeatParser(Parser inner, int minimum, int maximum = Int32.MaxValue, Parser until = null)
-		: base(inner)
+			: base(null, inner)
 		{
 			this.Minimum = minimum;
 			this.Maximum = maximum;
@@ -112,12 +112,12 @@ namespace Eto.Parse.Parsers
 			return match;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new RepeatParser(this, chain);
+			return new RepeatParser(this, args);
 		}
 
-		public static RepeatParser operator -(RepeatParser repeat, Parser until)
+		public static RepeatParser operator ^(RepeatParser repeat, Parser until)
 		{
 			repeat.Until = until;
 			return repeat;

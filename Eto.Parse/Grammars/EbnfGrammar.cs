@@ -58,22 +58,22 @@ namespace Eto.Parse.Grammars
 
 			var special_sequence = ("?" & (+Terminals.AnyChar).Until("?").Named("name") & "?").Named("special sequence");
 
-			var meta_identifier_terminal = Terminals.Letter & -(Terminals.LetterOrDigit + '_');
+			var meta_identifier_terminal = Terminals.Letter & -(Terminals.LetterOrDigit | '_');
 			var integer = new NumberParser();
 
 			var old = Parser.DefaultSeparator;
 			Parser.DefaultSeparator = cws;
 
 			// nonterminals
-			var definition_list = new NamedParser("definition list");
-			var single_definition = new NamedParser("single definition");
-			var term = new NamedParser("term");
-			var primary = new NamedParser("primary");
-			var exception = new NamedParser("exception");
-			var factor = new NamedParser("factor");
-			var meta_identifier = new NamedParser("meta identifier");
-			var syntax_rule = new NamedParser("syntax rule");
-			var rule_equals = new NamedParser("equals");
+			var definition_list = new UnaryParser("definition list");
+			var single_definition = new UnaryParser("single definition");
+			var term = new UnaryParser("term");
+			var primary = new UnaryParser("primary");
+			var exception = new UnaryParser("exception");
+			var factor = new UnaryParser("factor");
+			var meta_identifier = new UnaryParser("meta identifier");
+			var syntax_rule = new UnaryParser("syntax rule");
+			var rule_equals = new UnaryParser("equals");
 
 			var optional_sequence = ("[" & definition_list & "]").Named("optional sequence");
 			var repeated_sequence = ("{" & definition_list & "}").Named("repeated sequence");
@@ -99,7 +99,7 @@ namespace Eto.Parse.Grammars
 			AttachEvents();
 		}
 
-		protected override void OnPreMatch(NamedMatch match)
+		protected override void OnPreMatch(Match match)
 		{
 			base.OnPreMatch(match);
 			GenerateSeparator();
@@ -109,9 +109,9 @@ namespace Eto.Parse.Grammars
 		{
 			var syntax_rule = this["syntax rule"];
 			syntax_rule.Matched += m => {
-				var name = m["meta identifier"].Value;
-				var isTerminal = m["equals"].Value == "==";
-				var parser = m.Tag as NamedParser;
+				var name = m["meta identifier"].Text;
+				var isTerminal = m["equals"].Text == "==";
+				var parser = m.Tag as UnaryParser;
 				var inner = DefinitionList(m["definition list"], isTerminal);
 				if (name == startParserName)
 					parser.Inner = separator & inner & separator;
@@ -119,13 +119,13 @@ namespace Eto.Parse.Grammars
 					parser.Inner = inner;
 			};
 			syntax_rule.PreMatch += m => {
-				var name = m["meta identifier"].Value;
-				var parser = (name == startParserName) ? new Grammar(name) : new NamedParser(name);
+				var name = m["meta identifier"].Text;
+				var parser = (name == startParserName) ? new Grammar(name) : new UnaryParser(name);
 				m.Tag = parserLookup[name] = parser;
 			};
 		}
 
-		Parser DefinitionList(NamedMatch match, bool isTerminal)
+		Parser DefinitionList(Match match, bool isTerminal)
 		{
 			var definitions = match.Find("single definition").ToArray();
 			if (definitions.Length == 1)
@@ -134,7 +134,7 @@ namespace Eto.Parse.Grammars
 				return new AlternativeParser(definitions.Select(r => SingleDefinition(r, isTerminal)));
 		}
 
-		Parser SingleDefinition(NamedMatch match, bool isTerminal)
+		Parser SingleDefinition(Match match, bool isTerminal)
 		{
 			var terms = match.Find("term").ToArray();
 			if (terms.Length == 1)
@@ -148,7 +148,7 @@ namespace Eto.Parse.Grammars
 			}
 		}
 
-		Parser Term(NamedMatch match, bool isTerminal)
+		Parser Term(Match match, bool isTerminal)
 		{
 			var factor = Factor(match["factor"], isTerminal);
 			var exception = match["exception"];
@@ -158,17 +158,17 @@ namespace Eto.Parse.Grammars
 				return factor;
 		}
 
-		Parser Factor(NamedMatch match, bool isTerminal)
+		Parser Factor(Match match, bool isTerminal)
 		{
 			var primary = Primary(match["primary"], isTerminal);
 			var integer = match["integer"];
 			if (integer)
-				return new RepeatParser(primary, Int32.Parse(integer.Value));
+				return new RepeatParser(primary, Int32.Parse(integer.Text));
 			else
 				return primary;
 		}
 
-		Parser Primary(NamedMatch match, bool isTerminal)
+		Parser Primary(Match match, bool isTerminal)
 		{
 			var child = match.Matches.FirstOrDefault();
 			if (child == null)
@@ -186,15 +186,15 @@ namespace Eto.Parse.Grammars
 						repeat.Separator = separator;
 					return repeat;
 				case "meta identifier":
-					if (!parserLookup.TryGetValue(child.Value, out parser))
+					if (!parserLookup.TryGetValue(child.Text, out parser))
 					{
-						parser = parserLookup[child.Value] = Terminals.LetterOrDigit.Repeat().Named(child.Value);
+						parser = parserLookup[child.Text] = Terminals.LetterOrDigit.Repeat().Named(child.Text);
 					}
 					return parser;
 				case "terminal string":
-					return new LiteralParser(child["value"].Value);
+					return new LiteralTerminal(child["value"].Text);
 				case "special sequence":
-					var name = child["name"].Value.Trim();
+					var name = child["name"].Text.Trim();
 					if (specialLookup.TryGetValue(name, out parser))
 						return parser;
 					else

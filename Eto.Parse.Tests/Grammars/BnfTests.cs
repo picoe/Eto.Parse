@@ -94,15 +94,15 @@ Vancouver, BC V5V5V5";
 		public static void TestAddress(GrammarMatch match)
 		{
 			Assert.IsTrue(match.Success, match.ErrorMessage);
-			Assert.AreEqual("Joe", match["first-name", true].Value);
-			Assert.AreEqual("Smith", match["last-name", true].Value);
-			Assert.AreEqual("123", match["house-num", true].Value);
-			Assert.AreEqual("Elm Street", match["street", true].Value);
-			Assert.AreEqual("Elm", match["street-name", true].Value);
-			Assert.AreEqual("Street", match["street-type", true].Value);
-			Assert.AreEqual("Vancouver", match["town-name", true].Value);
-			Assert.AreEqual("BC", match["state-code", true].Value);
-			Assert.AreEqual("V5V5V5", match["zip-code", true].Value);
+			Assert.AreEqual("Joe", match["first-name", true].Text);
+			Assert.AreEqual("Smith", match["last-name", true].Text);
+			Assert.AreEqual("123", match["house-num", true].Text);
+			Assert.AreEqual("Elm Street", match["street", true].Text);
+			Assert.AreEqual("Elm", match["street-name", true].Text);
+			Assert.AreEqual("Street", match["street-type", true].Text);
+			Assert.AreEqual("Vancouver", match["town-name", true].Text);
+			Assert.AreEqual("BC", match["state-code", true].Text);
+			Assert.AreEqual("V5V5V5", match["zip-code", true].Text);
 		}
 
 		public static void TestAddress(Grammar addressParser)
@@ -140,8 +140,8 @@ Vancouver, BC V5V5V5";
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);
-			Assert.AreEqual("hello", match["first"]["simple-value", true].Value);
-			Assert.AreEqual("parsing world", match["second"]["bracket-value", true].Value);
+			Assert.AreEqual("hello", match["first"]["simple-value", true].Text);
+			Assert.AreEqual("parsing world", match["second"]["bracket-value", true].Text);
 		}
 	}
 }

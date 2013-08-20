@@ -9,33 +9,32 @@ namespace Eto.Parse.Samples
 		public JsonGrammar()
 			: base("json")
 		{
+			EnableMatchEvents = false;
+
 			// terminals
-			var jstring = new StringParser { AllowEscapeCharacters = true };
-			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true };
+			var jstring = new StringParser { AllowEscapeCharacters = true, Name = "string" };
+			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true, Name = "number" };
+			var jboolean = new BooleanTerminal { Name = "bool", TrueValues = new string[] { "true" }, FalseValues = new string[] { "false" } };
+			var jname = new StringParser { AllowEscapeCharacters = true, Name = "name" };
 			var comma = Terminals.Literal(",");
-
-			// nonterminals (things we're interested in getting back)
-			var jobject = new NamedParser("Object"); 
-			var jarray = new NamedParser("Array");
-			var jvalue = new NamedParser("Value");
-			var jprop = new NamedParser("Property"); 
-
 			var ws = -Terminals.WhiteSpace;
 
-			// rules
-			var jobjectBr = "{" & ~jobject & "}";
-			var jarrayBr = "[" & ~jarray & "]";
+			// nonterminals (things we're interested in getting back)
+			var jobject = new SequenceParser { Name = "object" }; 
+			var jarray = new SequenceParser { Name = "array" };
+			var jprop = new SequenceParser { Name = "property" };
 
-			jvalue.Inner = jstring | jnumber | jobjectBr | jarrayBr | "true" | "false" | "null";
-			jobject.Inner = jprop & -(comma & jprop);
-			jprop.Inner = jstring & ":" & jvalue;
-			jarray.Inner = jvalue & -(comma & jvalue);
+			// rules
+			var jvalue = jstring | jnumber | jobject | jarray | jboolean | "null";
+			jobject.Add("{", (-jprop).SeparatedBy(ws & comma & ws), "}");
+			jprop.Add(jname, ":", jvalue);
+			jarray.Add("[", (-jvalue).SeparatedBy(ws & comma & ws), "]");
 
 			// separate sequence and repeating parsers by whitespace
-			jvalue.SeparateChildrenBy(ws);
+			jvalue.SeparateChildrenBy(ws, false);
 
-			// allow whitespace before and after
-			this.Inner = ws & jvalue & ws;
+			// allow whitespace before and after the initial object or array
+			this.Inner = ws & (jobject | jarray) & ws;
 		}
 	}
 }
