@@ -5,6 +5,7 @@ Eto.Parse
 Discussion
 ----------
 
+* Join the [forums](http://groups.google.com/group/eto-parse)
 * Chat in [#eto.parse](http://webchat.freenode.net/?channels=eto.parse) on freenode
 
 Description
@@ -79,7 +80,7 @@ Or using shorthand operators:
 
 	// parse a value with or without brackets
 	Parser valueParser = 
-		('(' & ws & (+(Terminals.AnyChar) - (ws & ')')).Named("value") & ws & ')')
+		('(' & ws & (+Terminals.AnyChar ^ (ws & ')')).Named("value") & ws & ')')
 		| (+!Terminals.WhiteSpace).Named("value");
 
 	// our grammar
