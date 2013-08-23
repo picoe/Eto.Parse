@@ -128,7 +128,7 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		public override IEnumerable<Parser> Children(ParserChain args)
+		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
 		{
 			var items = new Parser[] { start, end, line }.Where(r => r != null);
 			var childItems = items.SelectMany(r => r.Children(args));

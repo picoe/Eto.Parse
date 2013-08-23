@@ -48,6 +48,8 @@
     <Compile Include="Grammars\EbnfTests.cs" />
     <Compile Include="Grammars\ShorthandTests.cs" />
     <Compile Include="Parsers\NumberParserTests.cs" />
+    <Compile Include="Markdown\MarkdownTests.cs" />
+    <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -55,13 +57,361 @@
       <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
       <Name>Eto.Parse</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj">
+      <Project>{EE5E310D-5E44-44B3-8634-D680A566F38F}</Project>
+      <Name>Eto.Parse.Samples</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Markdown\tests\pandoc\!readme.txt" />
+    <None Include="Markdown\tests\pandoc\failure-to-escape-less-than.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\failure-to-escape-less-than.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\indented-code-in-list-item.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\nested-divs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\nested-divs.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\nested-emphasis.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\nested-emphasis.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\unordered-list-and-horizontal-rules.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\unordered-list-followed-by-ordered-list.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\pandoc\unpredictable-sublists.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\!readme.txt" />
+    <None Include="Markdown\tests\php-markdown\Backslash escapes.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Backslash escapes.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Code block in a list item.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Code block in a list item.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Code Spans.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Code Spans.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Email auto links.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Email auto links.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Emphasis.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Emphasis.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Headers.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Headers.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Horizontal Rules.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Horizontal Rules.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML %28Simple%29.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML %28Simple%29.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML %28Span%29.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML %28Span%29.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML comments.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Inline HTML comments.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Ins &amp; del.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Ins &amp; del.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Links, inline style.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Links, inline style.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\MD5 Hashes.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\MD5 Hashes.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Nesting.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Nesting.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Parens in URL.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Parens in URL.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\PHP-Specific Bugs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\PHP-Specific Bugs.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Tight blocks.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\php-markdown\Tight blocks.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\paragraphs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\paragraphs.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Amps_and_angle_encoding.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Amps_and_angle_encoding.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Auto_links.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Auto_links.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Backslash_escapes.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Backslash_escapes.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Blockquotes_with_code_blocks.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Blockquotes_with_code_blocks.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Code_Blocks.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Code_Blocks.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Code_Spans.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Code_Spans.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Hard_wrapped_paragraphs_with_list_like_lines.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Hard_wrapped_paragraphs_with_list_like_lines.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Horizontal_rules.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Horizontal_rules.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\HTML_comment_edge_case.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\HTML_comment_edge_case.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Images.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Images.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_Advanced.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_Advanced.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_comments.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_comments.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_Simple.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Inline_HTML_Simple.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_inline_style.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_inline_style.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_reference_style.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_reference_style.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_shortcut_references.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Links_shortcut_references.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Literal_quotes_in_titles.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Literal_quotes_in_titles.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Markdown_Documentation_Basics.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Markdown_Documentation_Basics.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Markdown_Documentation_Syntax.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Markdown_Documentation_Syntax.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Nested_blockquotes.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Nested_blockquotes.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Ordered_and_unordered_lists.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Ordered_and_unordered_lists.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Strong_and_em_together.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Strong_and_em_together.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Tabs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Tabs.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Tidyness.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\Tidyness.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mdtest-1-1\!readme.txt" />
+    <None Include="Markdown\tests\mstest-0-1\!readme.txt" />
+    <None Include="Markdown\tests\mstest-0-1\code-inside-list.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\code-inside-list.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-cr.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-cr.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-crlf.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-crlf.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-lf.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\line-endings-lf.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\markdown-readme.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\mstest-0-1\markdown-readme.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\code.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\code.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\headers.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\headers.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\links.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\links.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\lists.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\simple\lists.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
     <Folder Include="Parsers\" />
     <Folder Include="Grammars\" />
+    <Folder Include="Markdown\" />
+    <Folder Include="Markdown\tests\" />
+    <Folder Include="Markdown\tests\simple\" />
+    <Folder Include="Markdown\tests\mdtest-1-1\" />
   </ItemGroup>
 </Project>

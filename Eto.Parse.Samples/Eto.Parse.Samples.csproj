@@ -36,8 +36,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JsonGrammar.cs" />
     <Compile Include="AddressGrammar.cs" />
+    <Compile Include="Json\JsonTokens.cs" />
+    <Compile Include="Json\JsonGrammar.cs" />
+    <Compile Include="Markdown\MarkdownGrammar.cs" />
+    <Compile Include="Markdown\MarkdownEncoding.cs" />
+    <Compile Include="Markdown\HtmlElementParser.cs" />
+    <Compile Include="Markdown\MarkdownReplacement.cs" />
+    <Compile Include="Markdown\ReplacementParser.cs" />
+    <Compile Include="Markdown\Encodings\BoldEncoding.cs" />
+    <Compile Include="Markdown\Encodings\CodeEncoding.cs" />
+    <Compile Include="Markdown\Encodings\EscapeEncoding.cs" />
+    <Compile Include="Markdown\Encodings\HtmlEncoding.cs" />
+    <Compile Include="Markdown\Encodings\LinkEncoding.cs" />
+    <Compile Include="Markdown\Sections\CodeSection.cs" />
+    <Compile Include="Markdown\Terms.cs" />
+    <Compile Include="Markdown\Sections\ParagraphSection.cs" />
+    <Compile Include="Markdown\Sections\HtmlSection.cs" />
+    <Compile Include="Markdown\Sections\HeaderSection.cs" />
+    <Compile Include="Markdown\Sections\ReferenceSection.cs" />
+    <Compile Include="Markdown\Sections\ListSection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -45,5 +63,11 @@
       <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
       <Name>Eto.Parse</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Json\" />
+    <Folder Include="Markdown\" />
+    <Folder Include="Markdown\Encodings\" />
+    <Folder Include="Markdown\Sections\" />
   </ItemGroup>
 </Project>

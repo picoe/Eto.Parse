@@ -9,6 +9,17 @@ using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Grammars
 {
+	/// <summary>
+	/// Grammar to build a parser grammar using Backus-Naur Form
+	/// </summary>
+	/// <remarks>
+	/// See https://en.wikipedia.org/wiki/Backus-Naur_Form.
+	/// 
+	/// This implements certain enhancements, such as grouping using brackets, repeating using curly braces, and
+	/// optional values using square brackets.
+	/// 
+	/// This grammar is not thread-safe.
+	/// </remarks>
 	public class BnfGrammar : Grammar
 	{
 		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
@@ -27,17 +38,41 @@ namespace Eto.Parse.Grammars
 		Parser literal;
 		Parser ruleName;
 
-
+		/// <summary>
+		/// Gets or sets the separator for rules, which is usually '::=' for BNF
+		/// </summary>
+		/// <value>The rule separator</value>
 		protected string RuleSeparator { get { return ruleSeparator.Value; } set { ruleSeparator.Value = value; } }
 
+		/// <summary>
+		/// Gets the rule parser for each of the rule types
+		/// </summary>
+		/// <value>The rule parser.</value>
 		protected AlternativeParser RuleParser { get; private set; }
 
+		/// <summary>
+		/// Gets the term parser for each term, such as optional, repeating, grouping, etc
+		/// </summary>
+		/// <value>The term parser.</value>
 		protected AlternativeParser TermParser { get; private set; }
 
+		/// <summary>
+		/// Gets the expresssions parser to support different expressions. By default, only one expression
+		/// is defined: RuleNameParser & RuleSeparator & RuleParser & EOL
+		/// </summary>
+		/// <value>The expresssions this parser supports</value>
 		protected AlternativeParser Expresssions { get; private set; }
 
+		/// <summary>
+		/// Gets the rule name parser, by default is a string surrounded by angle brackets
+		/// </summary>
+		/// <value>The rule name parser.</value>
 		protected SequenceParser RuleNameParser { get; private set; }
 
+		/// <summary>
+		/// Gets the parsed rules
+		/// </summary>
+		/// <value>The rules.</value>
 		public Dictionary<string, Parser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
 
 		public BnfGrammar(bool enhanced = true)

@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Defines the top level parser (a grammar) used to parse text
+	/// </summary>
 	public class Grammar : UnaryParser
 	{
 		bool initialized;
@@ -34,13 +37,23 @@ namespace Eto.Parse
 
 		public bool Trace { get; set; }
 
-		protected Grammar(Grammar other)
+		/// <summary>
+		/// Initializes a new copy of the <see cref="Eto.Parse.Grammar"/> class
+		/// </summary>
+		/// <param name="other">Other object to copy</param>
+		/// <param name="args">Arguments for the copy</param>
+		protected Grammar(Grammar other, ParserCloneArgs args)
 		{
 			this.EnableMatchEvents = other.EnableMatchEvents;
-			this.Separator = other.Separator != null ? other.Separator.Clone() : null;
+			this.Separator = args.Clone(other.Separator);
 			this.CaseSensitive = other.CaseSensitive;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Eto.Parse.Grammar"/> class
+		/// </summary>
+		/// <param name="name">Name of the grammar</param>
+		/// <param name="rule">Top level grammar rule</param>
 		public Grammar(string name = null, Parser rule = null)
 			: base(name, rule)
 		{
@@ -48,12 +61,24 @@ namespace Eto.Parse
 			EnableMatchEvents = true;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Eto.Parse.Grammar"/> class
+		/// </summary>
+		/// <param name="rule">Top level grammar rule</param>
 		public Grammar(Parser rule)
 			: this(null, rule)
 		{
 		}
 
-		public void Initialize()
+		/// <summary>
+		/// Initializes this instance for parsing
+		/// </summary>
+		/// <remarks>
+		/// Initialization (usually) occurs only once, and should only be called after
+		/// the grammar is fully defined. This will be called automatically the first
+		/// time you call the <see cref="Match"/> method.
+		/// </remarks>
+		protected void Initialize()
 		{
 			Initialize(new ParserInitializeArgs(this));
 			initialized = true;
@@ -77,7 +102,7 @@ namespace Eto.Parse
 				{
 					matches = args.Pop();
 				}
-				args.Root = new GrammarMatch(this, scanner, match.Index, match.Length, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
+				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
 				return match;
 			}
 			else
@@ -126,6 +151,11 @@ namespace Eto.Parse
 					scanner.Advance(1);
 			}
 			return matches;
+		}
+
+		public override Parser Clone(ParserCloneArgs chain)
+		{
+			return new Grammar(this, chain);
 		}
 	}
 }

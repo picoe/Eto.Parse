@@ -11,6 +11,7 @@ namespace Eto.Parse.Parsers
 		public int Maximum { get; set; }
 
 		public Parser Until { get; set; }
+		public bool CaptureUntil { get; set; }
 
 		protected RepeatParser(RepeatParser other, ParserCloneArgs args)
 			: base(other, args)
@@ -18,12 +19,20 @@ namespace Eto.Parse.Parsers
 			Minimum = other.Minimum;
 			Maximum = other.Maximum;
 			Until = args.Clone(other.Until);
+			CaptureUntil = other.CaptureUntil;
 			Separator = args.Clone(other.Separator);
 		}
 
 		public RepeatParser()
 		{
 			Maximum = Int32.MaxValue;
+			Separator = DefaultSeparator;
+		}
+
+		public RepeatParser(int minimum, int maximum = Int32.MaxValue)
+		{
+			Minimum = minimum;
+			Maximum = maximum;
 			Separator = DefaultSeparator;
 		}
 
@@ -55,7 +64,8 @@ namespace Eto.Parse.Parsers
 						var stopMatch = Until.Parse(args);
 						if (stopMatch.Success)
 						{
-							scanner.SetPosition(stopMatch.Index);
+							if (!CaptureUntil)
+								scanner.SetPosition(stopMatch.Index);
 							return match;
 						}
 					}

@@ -63,7 +63,7 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public override IEnumerable<Parser> Children(ParserChain args)
+		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
 		{
 			if (args.Push(this))
 			{

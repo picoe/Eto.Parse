@@ -39,7 +39,8 @@ namespace Eto.Parse.Parsers
 			var pos = args.Scanner.Position;
 			var separator = Separator ?? args.Grammar.Separator;
 			var match = new ParseMatch(pos, 0);
-			for (int i = 0; i < Items.Count; i++)
+			var count = Items.Count;
+			for (int i = 0; i < count; i++)
 			{
 				var sepMatch = args.NoMatch;
 				if (i > 0 && separator != null)

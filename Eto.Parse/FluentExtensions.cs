@@ -4,6 +4,9 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Extensions for fluent API to define a grammar
+	/// </summary>
 	public static class FluentParserExtensions
 	{
 		public static SequenceParser Then(this Parser parser, params Parser[] parsers)
@@ -76,6 +79,13 @@ namespace Eto.Parse
 			return parser;
 		}
 
+		public static RepeatParser Until(this RepeatParser parser, Parser until, bool captureUntil)
+		{
+			parser.Until = until;
+			parser.CaptureUntil = captureUntil;
+			return parser;
+		}
+
 		public static OptionalParser Optional(this Parser parser)
 		{
 			return new OptionalParser(parser);
@@ -98,19 +108,17 @@ namespace Eto.Parse
 			return new AlternativeParser(left, right) { Reusable = true };
 		}
 
-		public static Parser Named(this Parser parser, string name, Action<Match> matched = null, Action<Match> preMatch = null)
+		public static Parser Named(this Parser parser, string name)
 		{
 			var unary = new UnaryParser(parser);
 			unary.Name = name ?? Guid.NewGuid().ToString();
-			if (matched != null)
-				unary.Matched += match => {
-					matched(match);
-				};
-			if (preMatch != null)
-				unary.PreMatch += match => {
-					preMatch(match);
-				};
 			return unary;
+		}
+
+		public static Parser WithName(this Parser parser, string name)
+		{
+			parser.Name = name;
+			return parser;
 		}
 
 		public static T Separate<T>(this T parser)

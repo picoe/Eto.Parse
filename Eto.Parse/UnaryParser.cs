@@ -8,10 +8,10 @@ namespace Eto.Parse
 	{
 		public Parser Inner { get; set; }
 
-		protected UnaryParser(UnaryParser other, ParserCloneArgs chain)
-			: base(other, chain)
+		protected UnaryParser(UnaryParser other, ParserCloneArgs args)
+			: base(other, args)
 		{
-			Inner = chain.Clone(other.Inner);
+			Inner = args.Clone(other.Inner);
 		}
 
 		public override string DescriptiveName
@@ -86,9 +86,9 @@ namespace Eto.Parse
 				return args.EmptyMatch;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new UnaryParser(this, chain);
+			return new UnaryParser(this, args);
 		}
 
 		public override bool IsLeftRecursive(ParserContainsArgs args)
@@ -109,7 +109,7 @@ namespace Eto.Parse
 				return false;
 		}
 
-		public override IEnumerable<Parser> Children(ParserChain args)
+		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
 		{
 			if (Inner != null && args.Push(this))
 			{

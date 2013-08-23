@@ -14,11 +14,6 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
-		}
-
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Advance(1);

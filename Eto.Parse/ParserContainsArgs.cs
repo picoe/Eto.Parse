@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Arguments to determine if a parser is contained within another
+	/// </summary>
 	public class ParserContainsArgs : ParserChain
 	{
 		public Parser Parser { get; private set; }

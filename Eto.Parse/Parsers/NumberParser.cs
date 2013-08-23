@@ -118,11 +118,6 @@ namespace Eto.Parse.Parsers
 		{
 			return new NumberParser(this, chain);
 		}
-
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
-		}
 	}
 }
 

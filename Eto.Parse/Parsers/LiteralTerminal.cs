@@ -55,10 +55,5 @@ namespace Eto.Parse.Parsers
 		{
 			return new LiteralTerminal(this, chain);
 		}
-
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
-		}
 	}
 }

@@ -1,0 +1,35 @@
+
+# Header 1 
+
+## Header 2
+
+### Header 3
+
+##Header with no leading space
+
+## Header with space after  
+
+##   Header with lots of space 
+
+
+
+## Header with many lines before and after
+
+
+
+## Header Before Paragraph
+Some paragraph
+
+
+# Header with ending hash #
+
+## Header with ending hash2 ####
+
+### Header with ending hash and space #  
+
+### Header with ending hash and text ### some text
+
+
+# One Header
+## Next to another
+### And another

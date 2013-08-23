@@ -58,11 +58,6 @@ namespace Eto.Parse.Parsers
 			throw new ArgumentOutOfRangeException("Match value is invalid");
 		}
 
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
-		}
-
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;

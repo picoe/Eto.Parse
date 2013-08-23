@@ -49,10 +49,5 @@ namespace Eto.Parse.Parsers
 			scanner.SetPosition(pos);
 			return args.NoMatch;
 		}
-
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
-		}
 	}
 }

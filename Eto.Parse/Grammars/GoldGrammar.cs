@@ -8,6 +8,14 @@ using Eto.Parse.Writers;
 
 namespace Eto.Parse.Grammars
 {
+	/// <summary>
+	/// Grammar to build a parser grammar using Gold Meta-Language
+	/// </summary>
+	/// <remarks>
+	/// See http://goldparser.org/doc/grammars/
+	/// 
+	/// This grammar is not thread-safe.
+	/// </remarks>
 	public class GoldGrammar : Grammar
 	{
 		GoldDefinition definition;
@@ -331,7 +339,6 @@ namespace Eto.Parse.Grammars
 		public void ToCode(string grammar, TextWriter writer, string className = "GeneratedGrammar")
 		{
 			var definition = Build(grammar);
-			definition.Grammar.Initialize();
 			var iw = new IndentedTextWriter(writer, "    ");
 
 			iw.WriteLine("/* Date Created: {0}, Source:", DateTime.Now);

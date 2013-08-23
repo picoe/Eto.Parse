@@ -1,0 +1,11 @@
+
+Some [Direct Link](http://example.com)
+
+Some [Direct Link With Title](http://example.com "With Title")
+
+Some [Referenced Link] [1]
+
+[1]: http://example.com/reference
+[2]: http://example.com/this?is=a&reference
+[3]: http://example.com/this?is=a&reference "Some title"
+[5]: http://example.com/this?is=a&reference (Some title 3)

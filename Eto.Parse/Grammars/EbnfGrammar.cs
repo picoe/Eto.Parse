@@ -9,6 +9,14 @@ using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Grammars
 {
+	/// <summary>
+	/// Grammar to build a parser grammar using Extended Backus-Naur Form
+	/// </summary>
+	/// <remarks>
+	/// See http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form
+	/// 
+	/// This grammar is not thread-safe.
+	/// </remarks>
 	public class EbnfGrammar : Grammar
 	{
 		Dictionary<string, Parser> parserLookup;

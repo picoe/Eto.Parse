@@ -42,7 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Eto.Parse.Tests\Eto.Parse.Tests.csproj
+		StartupItem = Eto.Parse.TestSpeed\Eto.Parse.TestSpeed.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

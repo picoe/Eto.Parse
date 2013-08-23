@@ -8,15 +8,48 @@ namespace Eto.Parse
 	{
 		MatchCollection matches;
 		static Match empty;
+		ParseMatch parseMatch;
 
 		public static Match EmptyMatch
 		{
-			get { return empty ?? (empty = new Match(null, null, -1, -1, new MatchCollection())); }
+			get { return empty ?? (empty = new Match(null, null, null, new ParseMatch(-1, -1), new MatchCollection())); }
 		}
 
 		public MatchCollection Matches
 		{
 			get { return matches ?? (matches = new MatchCollection()); }
+		}
+
+		public Scanner Scanner { get; private set; }
+
+		public object Value { get { return Success ? Parser.GetValue(this) : null; } }
+
+		public string StringValue { get { return Convert.ToString(Value); } }
+
+		public string Text { get { return Success ? Scanner.SubString(Index, Length) : null; } }
+
+		public string Name { get; private set; }
+
+		public Parser Parser { get; private set; }
+
+		public object Tag { get; set; }
+
+		public int Index { get { return parseMatch.Index; } }
+
+		public int Length { get { return parseMatch.Length; } }
+
+		public bool Success { get { return parseMatch.Success; } }
+
+		public bool Empty { get { return parseMatch.Empty; } }
+
+
+		internal Match(string name, Parser parser, Scanner scanner, ParseMatch parseMatch, MatchCollection matches)
+		{
+			this.Name = name;
+			this.Parser = parser;
+			this.Scanner = scanner;
+			this.parseMatch = parseMatch;
+			this.matches = matches;
 		}
 
 		public IEnumerable<Match> Find(string id, bool deep = false)
@@ -38,29 +71,6 @@ namespace Eto.Parse
 			}
 		}
 
-		public Scanner Scanner { get; private set; }
-
-		public object Value { get { return Success ? Parser.GetValue(this) : null; } }
-
-		public string StringValue { get { return Convert.ToString(Value); } }
-
-		public string Text { get { return Success ? Scanner.SubString(Index, Length) : null; } }
-
-		public string Name { get { return this.Parser != null ? this.Parser.Name : null; } }
-
-		public Parser Parser { get; private set; }
-
-		public object Tag { get; set; }
-
-		internal Match(Parser parser, Scanner scanner, int index, int length, MatchCollection matches)
-		{
-			this.Parser = parser;
-			this.Scanner = scanner;
-			this.Index = index;
-			this.Length = length;
-			this.matches = matches;
-		}
-
 		internal void TriggerPreMatch()
 		{
 			if (matches != null)
@@ -79,14 +89,6 @@ namespace Eto.Parse
 		{
 			return Text ?? string.Empty;
 		}
-
-		public int Index { get; private set; }
-
-		public int Length { get; private set; }
-
-		public bool Success { get { return Length >= 0; } }
-
-		public bool Empty { get { return Length == 0; } }
 
 		public static bool operator true(Match match)
 		{

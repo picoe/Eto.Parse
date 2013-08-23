@@ -2,27 +2,25 @@ Eto.Parse
 =========
 ### A recursive descent LL(k) parser framework for .NET
 
-Discussion
-----------
+Links
+-----
 
 * Join the [forums](http://groups.google.com/group/eto-parse)
 * Chat in [#eto.parse](http://webchat.freenode.net/?channels=eto.parse) on freenode
+* Download using [nuget](https://www.nuget.org/packages/Eto.Parse/) with Visual Studio or [Xamarin Studio nuget addin](https://github.com/mrward/monodevelop-nuget-addin)
 
 Description
 -----------
 
-Eto.Parse is a highly optimized recursive decent parser framework that can be used to create parsers for complex grammars that go beyond the capability of regular expressions.
+Eto.Parse is a highly optimized recursive decent parser framework that can be used to create parsers for [context-free grammars](http://en.wikipedia.org/wiki/Context-free_grammar) that go beyond the capability of regular expressions.
 
-You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
+You can use [BNF](https://en.wikipedia.org/wiki/Backus–Naur_Form), [EBNF](http://en.wikipedia.org/wiki/Extended_Backus–Naur_Form), or [Gold Meta-Language](http://goldparser.org/doc/grammars) grammars to define your parser, code them directly using a [Fluent API](http://en.wikipedia.org/wiki/Fluent_interface), or use shorthand operators (or a mix of each).
 
 ### Why not use RegEx?
 
-This is a very valid question. Regular Expressions work great when the syntax is not complex, but fall short especially when dealing with any recursive syntax using some form of brackets or grouping concepts. 
+Regular Expressions work great when the syntax is not complex, but fall short especially when dealing with any recursive syntax using some form of brackets or grouping concepts. 
 
 For example, creating a math parser using RegEx cannot validate (directly) that there are matching brackets.  E.g. "((1+2)*3)", or "{ 'my': 'value', 'is' : {'recursive': true } }"
-
-What's so great about Eto.Parse?
---------------------------------
 
 ### Matching
 
@@ -30,7 +28,7 @@ The framework has been put together to get at the relevant values as easily as p
 
 ### Left Recursion
 
-One rather cumbersome issue to deal with using recursive descent parsers is [left recursion](http://en.wikipedia.org/wiki/Left_recursion). Eto.Parse automatically identifies left recursive grammars and will parse them with no issues by transforming into a repeating pattern.
+One rather cumbersome issue to deal with using recursive descent parsers is [left recursion](http://en.wikipedia.org/wiki/Left_recursion). Eto.Parse automatically identifies left recursive grammars and will parse them with no issues by transforming them into a repeating pattern.
 
 Performance
 -----------
@@ -39,20 +37,22 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Framework       | Parsing | Diff         | Warmup | Diff--------------- | ------- | ------------ | ------ | ------------Eto.Parse       |  0.398s | 1x           | 0.045s | 1xNewtonsoft.Json |  0.255s | 1.56x Faster | 0.063s | 1.41x SlowerIrony           |  2.568s | 6.46x Slower | 0.270s | 6.04x Slower
+Framework        | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse        |  0.397s |     1.57x        |  0.050s |     1.00xNewtonsoft Json  |  0.253s |     1.00x        |  0.064s |     1.29xIrony            |  2.434s |     9.63x        |  0.261s |     5.25xGold Parser      | 33.444s |   132.30x        |  0.409s |     8.23x
+(Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
-### Memory
+### Memory & Objects
 
-Framework       | Allocated | Diff       | # Objects | Diff
---------------- | --------- | ---------- | --------- | ----------
-Eto.Parse       | 47.22 MB  | 1x         | 1470682   | 1x
-Newtonsoft.Json | 109.39 MB | 2.32x More | 2176326   | 1.48x More
-Irony           | 440.21 MB | 9.32x More | 9572011   | 6.51x More
+Framework        |  Allocated  | More than best | # Objects | More than best
+---------------- | ----------: | :------------: | --------: | :------------:
+Eto.Parse        |    49.94 MB |    1.00x       |   1540828 |    1.00x
+Newtonsoft.Json  |   109.39 MB |    2.19x       |   2176395 |    1.41x
+Irony            |   440.21 MB |    8.82x       |   9572011 |    6.21x
+Gold Parser      | 4,609.45 MB |   92.30x       | 121366066 |   78.77x
 
 Example
 -------
 
-For example, the following defines a simple hello world parser in fluent API:
+For example, the following defines a simple hello world parser in **Fluent API**:
 
 	// optional repeating whitespace
 	var ws = Terminals.WhiteSpace.Repeat(0);
@@ -73,7 +73,7 @@ For example, the following defines a simple hello world parser in fluent API:
 		.SeparatedBy(ws)
 	);
 
-Or using shorthand operators:
+Or using **shorthand operators**:
 
 	// optional repeating whitespace
 	var ws = -Terminals.WhiteSpace;
@@ -90,7 +90,7 @@ Or using shorthand operators:
 		ws & Terminals.End
 	);
 
-Or, using EBNF:
+Or, using **EBNF**:
 
 	var grammar = new EbnfGrammar().Build(@"
 	(* := is an extension to define a literal with no whitespace between repeats and sequences *)

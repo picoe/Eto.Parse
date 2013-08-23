@@ -8,10 +8,22 @@ using System.Diagnostics;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Base parser class to define a parsing rule
+	/// </summary>
+	/// <remarks>
+	/// All parsers should derive from this class to define the various ways to parse text.
+	/// There are other base parsers that define base functionality such as a <see cref="ListParser"/>
+	/// for parsers that contain a list of children parsers, or <see cref="UnaryParser"/> for parsers
+	/// that contain a single child.
+	/// </remarks>
 	public abstract partial class Parser : ICloneable
 	{
 		string name;
-		bool? addError;
+		bool addError;
+		bool addErrorSet;
+
+		#region Properties
 
 		/// <summary>
 		/// Gets or sets the name of the match added to the match result tree
@@ -35,11 +47,15 @@ namespace Eto.Parse
 			set
 			{
 				name = value;
-				if (addError == null && name != null)
+				if (!addErrorSet && name != null)
 					addError = true;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the default separator to use for parsers that support a separator
+		/// </summary>
+		/// <value>The default separator.</value>
 		public static Parser DefaultSeparator { get; set; }
 
 		/// <summary>
@@ -48,42 +64,16 @@ namespace Eto.Parse
 		/// <value><c>true</c> to add errors; otherwise, <c>false</c>.</value>
 		public bool AddError
 		{
-			get { return addError ?? false; }
-			set { addError = value; }
+			get { return addError; }
+			set { addError = value; addErrorSet = true; }
 		}
 
 		internal bool Reusable { get; set; }
 
 		/// <summary>
-		/// Gets an enumeration of all child parsers of this instance
+		/// Gets a name of the parser used to describe its intent, used for the error message or display tree
 		/// </summary>
-		public IEnumerable<Parser> Children()
-		{
-			return Children(new ParserChain());
-		}
-
-		/// <summary>
-		/// Gets an enumeration of all child parsers of this instance
-		/// </summary>
-		/// <remarks>
-		/// Implementors of parsers should implement this, and call <see cref="ParserChain.Push"/> and <see cref="ParserChain.Pop"/>
-		/// before calling the Children method of contained parsers.
-		/// </remarks>
-		/// <param name="args">Arguments to get the children</param>
-		public abstract IEnumerable<Parser> Children(ParserChain args);
-
-		/// <summary>
-		/// Gets the error message to display for this parser
-		/// </summary>
-		/// <remarks>
-		/// By default, this will use the DescriptiveName
-		/// </remarks>
-		/// <returns>The error message to display when not matched</returns>
-		public virtual string GetErrorMessage()
-		{
-			return DescriptiveName;
-		}
-
+		/// <value>The descriptive name</value>
 		public virtual string DescriptiveName
 		{
 			get
@@ -98,25 +88,46 @@ namespace Eto.Parse
 			}
 		}
 
+		#endregion
+
+		#region Events
+
+		/// <summary>
+		/// Event to handle when this parser is matched
+		/// </summary>
+		/// <remarks>
+		/// This event is fired only for matches that have a <see cref="Name"/> defined.
+		/// </remarks>
 		public event Action<Match> Matched;
 
+		/// <summary>
+		/// Raises the <see cref="Matched"/> event
+		/// </summary>
+		/// <param name="match">Match</param>
 		protected virtual void OnMatched(Match match)
 		{
 			if (Matched != null)
 				Matched(match);
 		}
+		
+		internal void TriggerMatch(Match match)
+		{
+			OnMatched(match);
+		}
 
+		/// <summary>
+		/// Event to handle before this parser is matched
+		/// </summary>
 		public event Action<Match> PreMatch;
 
+		/// <summary>
+		/// Raises the <see cref="PreMatch"/> event
+		/// </summary>
+		/// <param name="match">Match</param>
 		protected virtual void OnPreMatch(Match match)
 		{
 			if (PreMatch != null)
 				PreMatch(match);
-		}
-
-		internal void TriggerMatch(Match match)
-		{
-			OnMatched(match);
 		}
 
 		internal void TriggerPreMatch(Match match)
@@ -124,16 +135,67 @@ namespace Eto.Parse
 			OnPreMatch(match);
 		}
 
+		#endregion
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Eto.Parse.Parser"/> class.
+		/// </summary>
 		public Parser()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new copy of the <see cref="Eto.Parse.Parser"/> class
+		/// </summary>
+		/// <param name="other">Parser to copy</param>
+		/// <param name="args">Arguments for the copy</param>
 		protected Parser(Parser other, ParserCloneArgs args)
 		{
 			AddError = other.AddError;
 			args.Add(other, this);
 		}
 
+		/// <summary>
+		/// Gets an enumeration of all child parsers of this instance
+		/// </summary>
+		public IEnumerable<Parser> Children()
+		{
+			return Children(new ParserChildrenArgs());
+		}
+
+		/// <summary>
+		/// Gets an enumeration of all child parsers of this instance
+		/// </summary>
+		/// <remarks>
+		/// Implementors of parsers should implement this, and call <see cref="ParserChain.Push"/> and <see cref="ParserChain.Pop"/>
+		/// before calling the Children method of contained parsers.
+		/// </remarks>
+		/// <param name="args">Arguments to get the children</param>
+		public virtual IEnumerable<Parser> Children(ParserChildrenArgs args)
+		{
+			yield break;
+		}
+
+		/// <summary>
+		/// Gets the error message to display for this parser
+		/// </summary>
+		/// <remarks>
+		/// By default, this will use the DescriptiveName
+		/// </remarks>
+		/// <returns>The error message to display when not matched</returns>
+		public virtual string GetErrorMessage()
+		{
+			return DescriptiveName;
+		}
+
+		/// <summary>
+		/// Parses the input at the current position
+		/// </summary>
+		/// <remarks>
+		/// Implementors of a Parser should implement <see cref="InnerParse"/> to perform the logic of their parser.
+		/// </remarks>
+		/// <param name="args">Parsing arguments</param>
+		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
 		public ParseMatch Parse(ParseArgs args)
 		{
 			//var trace = args.Grammar.Trace;
@@ -162,7 +224,7 @@ namespace Eto.Parse
 				var match = InnerParse(args);
 				if (match.Success)
 				{
-					args.PopMatch(this, match);
+					args.PopMatch(this, match, Name);
 					return match;
 				}
 
@@ -173,25 +235,65 @@ namespace Eto.Parse
 			}
 		}
 
+		/// <summary>
+		/// Override to implement the main parsing logic for this parser
+		/// </summary>
+		/// <remarks>
+		/// Never call this method directly, always call <see cref="Parse"/> when calling the parse routines.
+		/// </remarks>
+		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
+		/// <param name="args">Arguments.</param>
+		protected abstract ParseMatch InnerParse(ParseArgs args);
+
+		/// <summary>
+		/// Called to initialize the parser when used in a grammar
+		/// </summary>
+		/// <remarks>
+		/// This is used to perform certain tasks like caching information for performance, or to deal with
+		/// things like left recursion in the grammar.
+		/// </remarks>
+		/// <param name="args">Initialization arguments</param>
 		public virtual void Initialize(ParserInitializeArgs args)
 		{
 		}
 
+		/// <summary>
+		/// Gets a value indicating that the specified <paramref name="parser"/> is contained within this instance
+		/// </summary>
+		/// <param name="parser">Parser to search for</param>
 		public bool Contains(Parser parser)
 		{
 			return Contains(new ParserContainsArgs(parser));
 		}
 
+		/// <summary>
+		/// Gets a value indicating that the specified <paramref name="parser"/> is contained within this instance
+		/// </summary>
+		/// <param name="args">Contains arguments</param>
 		public virtual bool Contains(ParserContainsArgs args)
 		{
 			return args.Parser == this;
 		}
 
+		/// <summary>
+		/// Determines whether this instance is left recursive with the specified parser
+		/// </summary>
+		/// <returns><c>true</c> if this instance is left recursive the specified parser; otherwise, <c>false</c>.</returns>
+		/// <param name="parser">Parser.</param>
 		public bool IsLeftRecursive(Parser parser)
 		{
 			return IsLeftRecursive(new ParserContainsArgs(parser));
 		}
 
+		/// <summary>
+		/// Determines whether this instance is left recursive with the specified parser
+		/// </summary>
+		/// <remarks>
+		/// This variant can be overridden by implementors to determine left recursion. Use the <paramref name="args"/>
+		/// to ensure infinite recursion does not occur using Push/Pop.
+		/// </remarks>
+		/// <returns><c>true</c> if this instance is left recursive the specified parser; otherwise, <c>false</c>.</returns>
+		/// <param name="args">Arguments for finding the left recursion</param>
 		public virtual bool IsLeftRecursive(ParserContainsArgs args)
 		{
 			return object.ReferenceEquals(args.Parser, this);
@@ -212,8 +314,6 @@ namespace Eto.Parse
 		{
 			get { return Find(parserId).FirstOrDefault(); }
 		}
-
-		protected abstract ParseMatch InnerParse(ParseArgs args);
 
 		public Parser Clone()
 		{

@@ -10,14 +10,35 @@ namespace Eto.Parse.Parsers
 	{
 		string quoteCharString;
 		char[] quoteCharacters;
+		string endQuoteCharString;
+		char[] endQuoteCharacters;
 
 		public char[] QuoteCharacters
+		{
+			get { return BeginQuoteCharacters; }
+			set
+			{
+				BeginQuoteCharacters = EndQuoteCharacters = value;
+			}
+		}
+
+		public char[] BeginQuoteCharacters
 		{
 			get { return quoteCharacters; }
 			set
 			{
 				quoteCharacters = value;
 				quoteCharString = value != null ? new string(value) : null;
+			}
+		}
+
+		public char[] EndQuoteCharacters
+		{
+			get { return endQuoteCharacters; }
+			set
+			{
+				endQuoteCharacters = value;
+				endQuoteCharString = value != null ? new string(value) : null;
 			}
 		}
 
@@ -54,7 +75,7 @@ namespace Eto.Parse.Parsers
 					var quoteIndex = quoteCharString.IndexOf(val[0]);
 					if (quoteIndex >= 0)
 					{
-						var quoteChar = quoteCharString[quoteIndex];
+						var quoteChar = endQuoteCharString[quoteIndex];
 						if (val.Length >= 2 && val[val.Length - 1] == quoteChar)
 						{
 							val = val.Substring(1, val.Length - 2);
@@ -80,7 +101,7 @@ namespace Eto.Parse.Parsers
 				var quoteIndex = quoteCharString.IndexOf(source[pos]);
 				if (quoteIndex >= 0)
 				{
-					quoteChar = quoteCharString[quoteIndex];
+					quoteChar = endQuoteCharString[quoteIndex];
 					if (source.Length >= 2 && source[source.Length - 1] == quoteChar)
 					{
 						pos++;
@@ -93,7 +114,7 @@ namespace Eto.Parse.Parsers
 			while (pos < length)
 			{
 				char c = source[pos];
-				if (parseDoubleQuote && pos < source.Length - 1 && quoteCharString.IndexOf(c) >= 0)
+				if (parseDoubleQuote && pos < source.Length - 1 && endQuoteCharString.IndexOf(c) >= 0)
 				{
 					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
 					pos++;
@@ -206,7 +227,8 @@ namespace Eto.Parse.Parsers
 		protected StringParser(StringParser other, ParserCloneArgs args)
 			: base(other, args)
 		{
-			this.QuoteCharacters = other.QuoteCharacters != null ? (char[])other.QuoteCharacters.Clone() : null;
+			this.BeginQuoteCharacters = other.BeginQuoteCharacters != null ? (char[])other.BeginQuoteCharacters.Clone() : null;
+			this.EndQuoteCharacters = other.EndQuoteCharacters != null ? (char[])other.EndQuoteCharacters.Clone() : null;
 			this.AllowDoubleQuote = other.AllowDoubleQuote;
 			this.AllowEscapeCharacters = other.AllowEscapeCharacters;
 			this.AllowNonQuoted = other.AllowNonQuoted;
@@ -231,9 +253,10 @@ namespace Eto.Parse.Parsers
 				if (!scanner.ReadChar(out ch))
 					return args.NoMatch;
 
-				if (quoteCharString.IndexOf(ch) >= 0)
+				var quoteIndex = quoteCharString.IndexOf(ch);
+				if (quoteIndex >= 0)
 				{
-					char quote = ch;
+					char quote = endQuoteCharString[quoteIndex];
 					bool isEscape = false;
 					for (;;)
 					{
@@ -281,11 +304,6 @@ namespace Eto.Parse.Parsers
 		public override Parser Clone(ParserCloneArgs chain)
 		{
 			return new StringParser(this, chain);
-		}
-
-		public override IEnumerable<Parser> Children(ParserChain args)
-		{
-			yield break;
 		}
 	}
 }
