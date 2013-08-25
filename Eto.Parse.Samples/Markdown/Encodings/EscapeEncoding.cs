@@ -7,16 +7,19 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class EscapeEncoding : MarkdownReplacement
+	public class EscapeEncoding : AlternativeParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "escape"; } }
-
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public EscapeEncoding()
 		{
-			return (("&" & ~(+Terminals.Letter & ";")) | "<").WithName(Name);
+			Name = "escape";
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		public void Initialize(MarkdownGrammar grammar)
+		{
+			this.Add(("&" & ~(+Terminals.Letter & ";")), "<");
+		}
+
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			if (match.Text == "<")
 				args.Output.Append("&lt;");
@@ -25,6 +28,13 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			else
 				args.Output.Append(match.Text);
 		}
+
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
 
 		//static Regex apersands = new Regex(@"&(?!((#[0-9]+)|(#[xX][a-fA-F0-9]+)|([a-zA-Z][a-zA-Z0-9]*));)",  RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 		//static Regex ltangles = new Regex(@"<(?![A-Za-z/?\$!])", RegexOptions.Compiled | RegexOptions.ExplicitCapture);

@@ -7,9 +7,25 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class CodeEncoding : MarkdownReplacement
+	public class CodeEncoding : AlternativeParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "code"; } }
+		public CodeEncoding()
+		{
+			Name = "code";
+		}
+
+		public void Initialize(MarkdownGrammar grammar)
+		{
+			var parens = +Terminals.Literal("`");
+			Add(new BalancedParser { Surrounding = parens }, (parens & new RepeatParser().Until(Terminals.Literal("`"), true) & parens));
+		}
+
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
 
 		public class BalancedParser : Parser
 		{
@@ -29,14 +45,14 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 						if (scanner.Advance(1) == -1)
 						{
 							scanner.SetPosition(pos);
-							return args.NoMatch;
+							return ParseMatch.None;
 						}
 						length++;
 					}
 					length += str.Length;
 					return new ParseMatch(pos, length);
 				}
-				return args.NoMatch;
+				return ParseMatch.None;
 			}
 
 			public override Parser Clone(ParserCloneArgs args)
@@ -45,15 +61,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			}
 		}
 
-		public override Parser GetParser(MarkdownGrammar grammar)
-		{
-			var parens = +Terminals.Literal("`");
-			var code = new BalancedParser { Surrounding = parens } | (parens & new RepeatParser().Until(Terminals.Literal("`"), true) & parens);
-			code.Name = "code";
-			return code;
-		}
-
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			var text = match.Text;
 			int start = 0;

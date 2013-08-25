@@ -13,12 +13,14 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 		public struct HtmlTest
 		{
 			public string Text { get; set; }
+
 			public string Html { get; set; }
 		}
 
 		public HtmlTest[] HtmlTests
 		{
-			get {
+			get
+			{
 				if (tests == null)
 				{
 					var markdownTests = new MarkdownTests();

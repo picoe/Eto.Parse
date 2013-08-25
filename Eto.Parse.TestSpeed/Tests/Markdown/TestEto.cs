@@ -1,5 +1,6 @@
 using System;
 using Eto.Parse.Samples.Markdown;
+using Eto.Parse.Tests.Markdown;
 
 namespace Eto.Parse.TestSpeed.Tests.Markdown
 {
@@ -20,6 +21,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 			{
 				var test = tests[testNum];
 				var generated = markdown.Transform(test.Text);
+				MarkdownTests.CompareHtml(test.Html, generated);
 			}
 		}
 

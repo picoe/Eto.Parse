@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
+using Eto.Parse.Tests.Markdown;
 
 namespace Eto.Parse.TestSpeed.Tests.Markdown
 {
@@ -22,7 +23,8 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 			for (int testNum = 0; testNum < tests.Length; testNum++)
 			{
 				var test = tests[testNum];
-				markdown.Transform(test.Text);
+				var generated = markdown.Transform(test.Text);
+				MarkdownTests.CompareHtml(test.Html, generated);
 			}
 		}
 

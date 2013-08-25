@@ -8,11 +8,14 @@ using System.Net;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class LinkEncoding : MarkdownReplacement
+	public class LinkEncoding : AlternativeParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "link"; } }
+		public LinkEncoding()
+		{
+			Name = "link";
+		}
 
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public void Initialize(MarkdownGrammar grammar)
 		{
 			var name = "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("name") & "]";
 			var reference = ~(Terms.sporht) & "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("ref") & "]";
@@ -21,10 +24,17 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			var openLink = (+Terminals.Set(") \t").Inverse().Except(Terms.eol)).WithName("link");
 			var link = "(" & (enclosedLink | openLink) & ~(Terms.ws & title) & ")";
 
-			return (enclosedLink | (name & (reference | (link & ~(Terms.ows & title))))).WithName(Name);
+			Add(enclosedLink, name & (reference | (link & ~(Terms.ows & ~(Terms.eol & Terms.ows) & title))));
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
+
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			Match link, name; 
 			var count = match.Matches.Count;
@@ -50,7 +60,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			}
 			else
 			{
-				url = link.StringValue;
+				url = link.Text;
 				if (count > 2)
 					title = match.Matches[2].StringValue;
 				else
@@ -68,7 +78,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 					args.Output.Append("\"");
 				}
 				args.Output.Append(">");
-				args.Encoding.Replace(name.StringValue, args);
+				args.Encoding.Replace(name.Text, args);
 				args.Output.Append("</a>");
 			}
 		}

@@ -10,27 +10,35 @@ namespace Eto.Parse.Samples.Markdown
 {
 	public class ReplacementParser : AlternativeParser
 	{
-		Dictionary<string, MarkdownReplacement> replacements;
+		Dictionary<string, IMarkdownReplacement> replacements;
 
-		public MarkdownReplacement GetReplacement(string name)
+		public IMarkdownReplacement GetReplacement(string name)
 		{
 			return replacements[name];
 		}
 
 		public T GetReplacement<T>()
-			where T: MarkdownReplacement
+			where T: IMarkdownReplacement
 		{
 			return replacements.Values.OfType<T>().FirstOrDefault();
 		}
 
-		public ReplacementParser(MarkdownGrammar grammar, IEnumerable<MarkdownReplacement> replacements)
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			this.replacements = new Dictionary<string, MarkdownReplacement>();
+			return base.InnerParse(args);
+		}
+		#endif
+
+		public ReplacementParser(MarkdownGrammar grammar, IEnumerable<IMarkdownReplacement> replacements)
+		{
+			this.replacements = new Dictionary<string, IMarkdownReplacement>();
 
 			foreach (var replacement in replacements)
 			{
 				this.replacements.Add(replacement.Name, replacement);
-				this.Add(replacement.GetParser(grammar));
+				replacement.Initialize(grammar);
+				this.Add((Parser)replacement);
 			}
 		}
 	}

@@ -7,28 +7,33 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Sections
 {
-	public class ReferenceSection : MarkdownReplacement
+	public class ReferenceSection : SequenceParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "ref"; } }
-
 		public ReferenceSection()
 		{
-			this.AddLinesBefore = false;
+			Name = "ref";
 		}
 
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public void Initialize(MarkdownGrammar grammar)
 		{
-			var prefix = "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("id") & "]:";
+			var prefix = "[" & (+Terminals.Set("]\n\r").Inverse()).WithName("id") & "]:";
 			var link = (+Terminals.WhiteSpace.Inverse()).WithName("link");
 			var title = new StringParser { Name = "title", BeginQuoteCharacters = "\"'(".ToCharArray(), EndQuoteCharacters = "\"')".ToCharArray() };
 
-			return (Terms.sp.Repeat(0, 3) & prefix & Terms.ows & link & ~(Terms.ows & title)).WithName(Name) & (+Terms.blankLine | Terms.eof);
+			Add(Terms.sp.Repeat(0, 3), prefix, Terms.ows, link, Terms.ows, ~title, +Terms.blankLine | Terms.eof);
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			// blank!
 		}
+
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
 
 		public void AddReference(Match match, MarkdownReplacementArgs args)
 		{

@@ -21,20 +21,12 @@ namespace Eto.Parse.Samples.Markdown
 		public MarkdownEncoding Encoding { get; set; }
 	}
 
-	public abstract class MarkdownReplacement
+	public interface IMarkdownReplacement
 	{
-		public bool AddLinesBefore { get; protected set; }
+		string Name { get; }
 
-		public MarkdownReplacement()
-		{
-			AddLinesBefore = true;
-		}
+		void Initialize(MarkdownGrammar grammar);
 
-		public abstract string Name { get; }
-
-		public abstract Parser GetParser(MarkdownGrammar grammar);
-
-		public abstract void Replace(Match match, MarkdownReplacementArgs args);
+		void Replace(Match match, MarkdownReplacementArgs args);
 	}
-	
 }

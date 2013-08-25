@@ -14,7 +14,7 @@ namespace Eto.Parse.Samples.Markdown
 		ReplacementParser replacements;
 		MarkdownEncoding encoding;
 
-		public IEnumerable<MarkdownReplacement> GetReplacements()
+		public IEnumerable<IMarkdownReplacement> GetReplacements()
 		{
 			yield return new HtmlSection();
 			yield return new HeaderSection();
@@ -73,13 +73,7 @@ namespace Eto.Parse.Samples.Markdown
 		public void WriteReplacement(Match match, MarkdownReplacementArgs args)
 		{
 			var replacement = replacements.GetReplacement(match.Name);
-			if (args.Output.Length > 0 && replacement.AddLinesBefore)
-			{
-				args.Output.AppendLine();
-			}
 			replacement.Replace(match, args);
-			if (replacement.AddLinesBefore)
-				args.Output.AppendLine();
 		}
 	}
 }

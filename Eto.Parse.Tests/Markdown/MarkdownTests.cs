@@ -28,7 +28,7 @@ namespace Eto.Parse.Tests.Markdown
 			Assert.AreEqual(html.Replace("\n", ""), generatedHtml.Replace("\n", "").Replace("\r", ""));
 		}
 
-		public void CompareHtml(string html, string generatedHtml)
+		public static void CompareHtml(string html, string generatedHtml)
 		{
 			Assert.AreEqual(html.Replace("\n", ""), generatedHtml.Replace("\n", "").Replace("\r", ""));
 		}

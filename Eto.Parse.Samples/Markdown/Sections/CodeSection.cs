@@ -7,24 +7,33 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Sections
 {
-	public class CodeSection : MarkdownReplacement
+	public class CodeSection : RepeatParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "code"; } }
+		public CodeSection()
+		{
+			Name = "code";
+		}
 
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public void Initialize(MarkdownGrammar grammar)
 		{
 			var indent = (Terms.sp * 4) | Terms.ht;
 
 			var content = -indent & new RepeatParser().Until(Terms.ows & (Terms.eol | Terms.eof));
 			var line = indent & content & -Terms.sp;
-			var code = (+line).SeparatedBy(Terms.eol).Until(Terms.EndOfSection(line.Not()), true);
-			code.Name = Name;
+			Inner = line;
+			this.Minimum = 1;
+			this.SeparatedBy(Terms.eol).Until(Terms.EndOfSection(line.Not()), true);
 			content.Name = "content";
-
-			return code;
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
+
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<pre><code>");
 			var count = match.Matches.Count;
@@ -32,7 +41,8 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			{
 				args.Output.AppendLine(match.Matches[i].Text);
 			}
-			args.Output.Append("</code></pre>");
+			args.Output.AppendLine("</code></pre>");
+			args.Output.AppendLine();
 		}
 	}
 	

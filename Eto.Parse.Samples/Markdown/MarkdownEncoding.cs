@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Eto.Parse.Parsers;
 using Eto.Parse.Samples.Markdown.Encodings;
+using System.Linq;
 
 namespace Eto.Parse.Samples.Markdown
 {
@@ -12,13 +13,14 @@ namespace Eto.Parse.Samples.Markdown
 	{
 		ReplacementParser replacements;
 
-		IEnumerable<MarkdownReplacement> Replacements
+		IEnumerable<IMarkdownReplacement> Replacements
 		{
 			get
 			{
 				yield return new HtmlEncoding();
 				yield return new LinkEncoding();
 				yield return new BoldEncoding();
+				yield return new ItalicEncoding();
 				yield return new CodeEncoding();
 				yield return new EscapeEncoding();
 			}
@@ -28,45 +30,45 @@ namespace Eto.Parse.Samples.Markdown
 			: base("encoding")
 		{
 			EnableMatchEvents = false;
+			AllowPartialMatch = true;
 
 			replacements = new ReplacementParser(grammar, Replacements);
 
 			replacements.Add(Terminals.AnyChar);
 
 			Inner = +replacements;
+			SetError<Parser>(false);
 		}
 
 		public void Replace(string text, MarkdownReplacementArgs args)
 		{
 			if (string.IsNullOrEmpty(text))
 				return;
+			/**/
 			var match = Match(text);
 			if (match.Success)
 			{
-				ReplaceEncoding(text, match, args);
+				ReplaceEncoding(text, match.Matches, args);
+				return;
 			}
-			else
-				args.Output.Append(text);
-		}
-
-		public string Replace(string text)
-		{
-			var args = new MarkdownReplacementArgs
+			/**
+			var matches = Matches(text);
+			if (matches.Count > 0)
 			{
-				Output = new StringBuilder(),
-				Encoding = this
-			};
-			Replace(text, args);
-			return args.Output.ToString();
+				ReplaceEncoding(text, matches, args);
+				return;
+			}
+			/**/
+			args.Output.Append(text);
 		}
 
-		void ReplaceEncoding(string text, Match match, MarkdownReplacementArgs args)
+		void ReplaceEncoding(string text, MatchCollection matches, MarkdownReplacementArgs args)
 		{
 			int last = 0;
-			var count = match.Matches.Count;
+			var count = matches.Count;
 			for (int i = 0; i < count; i++)
 			{
-				var replacementMatch = match.Matches[i];
+				var replacementMatch = matches[i];
 				var replacement = replacements.GetReplacement(replacementMatch.Name);
 
 				if (replacementMatch.Index > last)

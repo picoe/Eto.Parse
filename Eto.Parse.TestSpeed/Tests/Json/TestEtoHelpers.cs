@@ -14,7 +14,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		}
 		public override void Warmup(JsonTestSuite suite)
 		{
-			var obj = JsonObject.Parse(suite.Json);
+			JsonObject.Parse(suite.Json);
 		}
 
 		public override void PerformTest(JsonTestSuite suite, StringBuilder output)

@@ -1,16 +1,29 @@
 using System;
 using System.Text;
+using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class HtmlEncoding : MarkdownReplacement
+	public class HtmlEncoding : SequenceParser, IMarkdownReplacement
 	{
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public HtmlEncoding()
 		{
-			return new HtmlElementParser { Name = Name, MatchContent = true } & -Terms.blankLine;
+			Name = "html";
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		public void Initialize(MarkdownGrammar grammar)
+		{
+			Add(new HtmlElementParser { Name = Name, MatchContent = true }, -Terms.blankLine);
+		}
+
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			return base.InnerParse(args);
+		}
+		#endif
+
+		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			int last = 0;
 			var text = match.Text;
@@ -29,8 +42,6 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			if (last < text.Length)
 				args.Output.Append(text.Substring(last, text.Length - last));
 		}
-
-		public override string Name { get { return "htmlcontent"; } }
 	}
 }
 

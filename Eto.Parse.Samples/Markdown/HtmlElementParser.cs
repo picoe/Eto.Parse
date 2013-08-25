@@ -32,7 +32,7 @@ namespace Eto.Parse.Samples.Markdown
 						if (first && !char.IsLetter(ch))
 						{
 							scanner.SetPosition(pos);
-							return args.NoMatch;
+							return ParseMatch.None;
 						}
 						first = false;
 						tagNameBuilder.Append(ch);
@@ -51,7 +51,7 @@ namespace Eto.Parse.Samples.Markdown
 						if (ch != '>')
 						{
 							scanner.SetPosition(pos);
-							return args.NoMatch;
+							return ParseMatch.None;
 						}
 						if (prev == '/') // self closing
 						{
@@ -100,7 +100,7 @@ namespace Eto.Parse.Samples.Markdown
 				}
 				scanner.SetPosition(pos);
 			}
-			return args.NoMatch;
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

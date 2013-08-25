@@ -36,8 +36,8 @@ namespace Eto.Parse.Samples.Markdown
 
 		static Terms()
 		{
-			sporht = sp | ht;
-			eol = cr & lf | cr | lf;
+			sporht = Terminals.Set(" \t");
+			eol = Terminals.Literal("\r\n") | cr | lf;
 			word = +ch;
 			ws = +(sporht);
 			ows = -(sporht);

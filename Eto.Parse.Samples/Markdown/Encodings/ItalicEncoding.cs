@@ -7,33 +7,32 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class BoldEncoding : SequenceParser, IMarkdownReplacement
+	public class ItalicEncoding : SequenceParser, IMarkdownReplacement
 	{
-		public bool AddLinesBefore { get { return true; } }
-
-		public BoldEncoding()
+		public ItalicEncoding()
 		{
-			Name = "bold";
+			Name = "italic";
 		}
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			Add("**", new RepeatParser(1).Until("**"), "**");
+			Add("*", new RepeatParser(1).Until("*" | Terms.eolorf), "*");
 		}
 
-#if PERF_TEST
+		#if PERF_TEST
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			return base.InnerParse(args);
 		}
-#endif
+		#endif
 
 		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
-			args.Output.Append("<strong>");
+			args.Output.Append("<em>");
 			var text = match.Text;
-			args.Encoding.Replace(text.Substring(2, text.Length - 4) , args);
-			args.Output.Append("</strong>");
+			args.Encoding.Replace(text.Substring(1, text.Length - 2) , args);
+			args.Output.Append("</em>");
 		}
 	}
+	
 }

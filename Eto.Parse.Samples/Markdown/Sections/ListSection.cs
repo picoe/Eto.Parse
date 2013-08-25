@@ -3,59 +3,69 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Sections
 {
-	public class ListSection : MarkdownReplacement
+	public class ListSection : RepeatParser, IMarkdownReplacement
 	{
-		public override string Name { get { return "list"; } }
+		public ListSection()
+		{
+			Name = "list";
+		}
 
-		public override Parser GetParser(MarkdownGrammar grammar)
+		public void Initialize(MarkdownGrammar grammar)
 		{
 			var prefix = Terms.sp.Repeat(0, 3);
 			var star = ((Parser)"*" | "-" | "+").WithName("star");
 			var num = (+Terminals.Digit).WithName("num") & ".";
-			var content = new RepeatParser(1).Until(Terms.ows & (Terms.eol | Terms.eof), true);
+			var content = new RepeatParser(1).Until(Terms.ows & Terms.eolorf, true);
+			content.Name = "content";
 			var line = (prefix & (num | star) & Terms.ows & content).WithName("line");
 			var spacing = (-Terms.blankLine).WithName("spacing");
 			var lineWithSpacing = line & Terms.blankLine & spacing;
-			var list = (+lineWithSpacing).Until(Terms.EndOfSection(line.Not()), true).WithName(Name);
-			content.Name = "content";
-			return list;
+			Inner = lineWithSpacing;
+			Minimum = 1;
+			this.Until(Terms.EndOfSection(line.Not()), true);
 		}
 
-		public override void Replace(Match match, MarkdownReplacementArgs args)
+		#if PERF_TEST
+		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			args.Output.AppendLine("<ul>");
-			string prefix = null;
+			return base.InnerParse(args);
+		}
+		#endif
+
+		public void Replace(Match match, MarkdownReplacementArgs args)
+		{
 			string suffix = null;
 			bool lastSpace = false;
 			var count = match.Matches.Count;
 			for (int i = 0; i < count; i++)
 			{
 				var item = match.Matches[i];
-				if (prefix == null)
+				if (i == 0)
 				{
-					if (item.Matches["num"])
+					if (item["num"])
 					{
-						prefix = "<ol>";
+						args.Output.AppendLine("<ol>");
 						suffix = "</ol>";
 					}
 					else
 					{
-						prefix = "<li>";
-						suffix = "</li>";
+						args.Output.AppendLine("<ul>");
+						suffix = "</ul>";
 					}
 				}
 				var addSpace = i < count - 1 && item["spacing"].Length > 0;
-				args.Output.Append(prefix);
+				args.Output.Append("<li>");
 				if (addSpace || lastSpace)
 					args.Output.Append("<p>");
 				var content = item.Matches["content"];
 				args.Encoding.Replace(content.Text, args);
 				if (addSpace || lastSpace)
 					args.Output.Append("</p>");
-				args.Output.AppendLine(suffix);
+				args.Output.AppendLine("</li>");
 				lastSpace = addSpace;
 			}
-			args.Output.AppendLine("</ul>");
+			args.Output.AppendLine(suffix);
+			args.Output.AppendLine();
 		}
 	}
 }

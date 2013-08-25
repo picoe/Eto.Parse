@@ -18,7 +18,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		public override void Warmup(JsonTestSuite suite)
 		{
 			grammar = new Eto.Parse.Samples.Json.JsonGrammar();
-			var match = grammar.Match(suite.Json);
+			grammar.Match(suite.Json);
 		}
 
 		public override void PerformTest(JsonTestSuite suite, StringBuilder output)
