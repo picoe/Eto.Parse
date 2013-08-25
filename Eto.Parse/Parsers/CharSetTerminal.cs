@@ -46,9 +46,10 @@ namespace Eto.Parse.Parsers
 			}
 			else
 			{
+				ch = char.ToLowerInvariant(ch);
 				for (int i = 0; i < lowerCharacters.Length; i++)
 				{
-					if (lowerCharacters[i] == char.ToLowerInvariant(ch))
+					if (lowerCharacters[i] == ch)
 						return true;
 				}
 			}

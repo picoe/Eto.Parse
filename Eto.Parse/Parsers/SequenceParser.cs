@@ -33,37 +33,52 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (Items.Count == 0)
-				throw new InvalidOperationException("There are no items in this sequence");
-
 			var pos = args.Scanner.Position;
 			var separator = Separator ?? args.Grammar.Separator;
 			var match = new ParseMatch(pos, 0);
 			var count = Items.Count;
-			for (int i = 0; i < count; i++)
+			if (separator != null)
 			{
-				var sepMatch = args.NoMatch;
-				if (i > 0 && separator != null)
+				var sepMatch = ParseMatch.None;
+				for (int i = 0; i < count; i++)
 				{
-					sepMatch = separator.Parse(args);
-					if (!sepMatch.Success)
+					if (i > 0)
+					{
+						sepMatch = separator.Parse(args);
+						if (!sepMatch.Success)
+						{
+							args.Scanner.SetPosition(pos);
+							return sepMatch;
+						}
+					}
+
+					var parser = Items[i];
+					var childMatch = parser.Parse(args);
+					if (!childMatch.Success)
 					{
 						args.Scanner.SetPosition(pos);
-						return sepMatch;
+						return childMatch;
 					}
-				}
+					if (sepMatch.Success && !childMatch.Empty)
+						match.Length += sepMatch.Length;
 
-				var parser = Items[i];
-				var childMatch = parser.Parse(args);
-				if (!childMatch.Success)
+					match.Length += childMatch.Length;
+				}
+			}
+			else
+			{
+				for (int i = 0; i < count; i++)
 				{
-					args.Scanner.SetPosition(pos);
-					return childMatch;
-				}
-				if (sepMatch.Success && !childMatch.Empty)
-					match.Length += sepMatch.Length;
+					var parser = Items[i];
+					var childMatch = parser.Parse(args);
+					if (!childMatch.Success)
+					{
+						args.Scanner.SetPosition(pos);
+						return childMatch;
+					}
 
-				match.Length += childMatch.Length;
+					match.Length += childMatch.Length;
+				}
 			}
 
 			return match;
@@ -77,6 +92,8 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
+			if (Items.Count == 0)
+				throw new InvalidOperationException("There are no items in this sequence");
 			if (args.Push(this))
 			{
 				var leftItem = Items[0];
@@ -95,6 +112,10 @@ namespace Eto.Parse.Parsers
 				{
 					item.Initialize(args);
 				}
+
+				if (Separator != null)
+					Separator.Initialize(args);
+
 				args.Pop(this);
 			}
 		}

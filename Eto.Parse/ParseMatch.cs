@@ -8,6 +8,8 @@ namespace Eto.Parse
 		int index;
 		int length;
 
+		public static readonly ParseMatch None = new ParseMatch(-1, -1);
+
 		public int Index { get { return index; } }
 
 		public int Length { get { return length; } set { length = value; } }

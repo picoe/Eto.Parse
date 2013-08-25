@@ -19,6 +19,7 @@ namespace Eto.Parse
 	/// </remarks>
 	public abstract partial class Parser : ICloneable
 	{
+		bool hasNamedChildren;
 		string name;
 		bool addError;
 		bool addErrorSet;
@@ -65,7 +66,11 @@ namespace Eto.Parse
 		public bool AddError
 		{
 			get { return addError; }
-			set { addError = value; addErrorSet = true; }
+			set
+			{
+				addError = value;
+				addErrorSet = true;
+			}
 		}
 
 		internal bool Reusable { get; set; }
@@ -78,8 +83,8 @@ namespace Eto.Parse
 		{
 			get
 			{
-				if (this.Name != null)
-					return this.Name;
+				if (this.name != null)
+					return this.name;
 				var type = GetType();
 				var name = type.Name;
 				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
@@ -87,6 +92,8 @@ namespace Eto.Parse
 				return name;
 			}
 		}
+
+		protected bool HasNamedChildren { get { return hasNamedChildren; } }
 
 		#endregion
 
@@ -109,7 +116,7 @@ namespace Eto.Parse
 			if (Matched != null)
 				Matched(match);
 		}
-		
+
 		internal void TriggerMatch(Match match)
 		{
 			OnMatched(match);
@@ -134,9 +141,7 @@ namespace Eto.Parse
 		{
 			OnPreMatch(match);
 		}
-
 		#endregion
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Eto.Parse.Parser"/> class.
 		/// </summary>
@@ -198,27 +203,21 @@ namespace Eto.Parse
 		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
 		public ParseMatch Parse(ParseArgs args)
 		{
-			//var trace = args.Grammar.Trace;
-			//if (trace)
-			//	Trace.WriteLine(string.Format("{0}, {1}", args.Scanner.Position, this.DescriptiveName));
-
-			if (Name == null)
+			if (!hasNamedChildren || name == null)
 			{
 				var match = InnerParse(args);
 				if (match.Success)
 				{
-					//if (trace)
-					//	Trace.WriteLine(string.Format("SUCCESS: {0}, {1}", args.Scanner.Position, this.DescriptiveName));
+					if (name != null)
+						args.AddMatch(this, match, Name);
 					return match;
 				}
 
-				//if (trace)
-				//	Trace.WriteLine(string.Format("FAILED: {0}", this.DescriptiveName));
 				if (AddError)
 					args.AddError(this);
 				return match;
 			}
-			else
+			else 
 			{
 				args.Push();
 				var match = InnerParse(args);
@@ -255,6 +254,7 @@ namespace Eto.Parse
 		/// <param name="args">Initialization arguments</param>
 		public virtual void Initialize(ParserInitializeArgs args)
 		{
+			hasNamedChildren = Children().Any(r => r.Name != null);
 		}
 
 		/// <summary>

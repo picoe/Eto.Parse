@@ -23,10 +23,10 @@ namespace Eto.Parse.Parsers
 			if (match.Success)
 			{
 				args.Scanner.SetPosition(pos);
-				return Inverse ? args.NoMatch : args.EmptyMatch;
+				return Inverse ? ParseMatch.None : args.EmptyMatch;
 			}
 			else
-				return Inverse ? args.EmptyMatch : args.NoMatch;
+				return Inverse ? args.EmptyMatch : ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

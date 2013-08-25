@@ -31,7 +31,7 @@ namespace Eto.Parse.Parsers
 			else
 			{
 				args.Scanner.SetPosition(pos);
-				return args.NoMatch;
+				return ParseMatch.None;
 			}
 		}
 

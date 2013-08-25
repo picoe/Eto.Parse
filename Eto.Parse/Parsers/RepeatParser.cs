@@ -8,9 +8,11 @@ namespace Eto.Parse.Parsers
 		public Parser Separator { get; set; }
 
 		public int Minimum { get; set; }
+
 		public int Maximum { get; set; }
 
 		public Parser Until { get; set; }
+
 		public bool CaptureUntil { get; set; }
 
 		protected RepeatParser(RepeatParser other, ParserCloneArgs args)
@@ -45,6 +47,19 @@ namespace Eto.Parse.Parsers
 			Separator = DefaultSeparator;
 		}
 
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (args.Push(this))
+			{
+				if (Separator != null)
+					Separator.Initialize(args);
+				if (Until != null)
+					Until.Initialize(args);
+				args.Pop(this);
+			}
+		}
+
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
@@ -54,7 +69,7 @@ namespace Eto.Parse.Parsers
 
 			var separator = Separator ?? args.Grammar.Separator;
 			// retrieve up to the maximum number
-			var sepMatch = args.NoMatch;
+			var sepMatch = ParseMatch.None;
 			if (Inner != null)
 			{
 				while (count < Maximum)
@@ -116,7 +131,7 @@ namespace Eto.Parse.Parsers
 			if (count < Minimum)
 			{
 				scanner.SetPosition(pos);
-				return args.NoMatch;
+				return ParseMatch.None;
 			}
 
 			return match;

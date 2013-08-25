@@ -251,7 +251,7 @@ namespace Eto.Parse.Parsers
 			if (AllowQuoted)
 			{
 				if (!scanner.ReadChar(out ch))
-					return args.NoMatch;
+					return ParseMatch.None;
 
 				var quoteIndex = quoteCharString.IndexOf(ch);
 				if (quoteIndex >= 0)
@@ -298,7 +298,7 @@ namespace Eto.Parse.Parsers
 					return new ParseMatch(pos, length);
 			}
 
-			return args.NoMatch;
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

@@ -105,7 +105,7 @@ namespace Eto.Parse.Parsers
 		{
 			if (groupParser != null)
 				return groupParser.Parse(args);
-			return args.NoMatch;
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

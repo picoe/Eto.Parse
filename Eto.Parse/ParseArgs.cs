@@ -13,8 +13,7 @@ namespace Eto.Parse
 	/// </remarks>
 	public class ParseArgs
 	{
-		SlimStack<MatchCollection> nodes = new SlimStack<MatchCollection>(50);
-		SlimStack<MatchCollection> reusableMatches = new SlimStack<MatchCollection>(10);
+		SlimStack<MatchCollection> nodes;
 		List<Parser> errors = new List<Parser>();
 
 		public GrammarMatch Root { get; internal set; }
@@ -31,11 +30,12 @@ namespace Eto.Parse
 
 		public string ErrorName { get; private set; }
 
-		public ParseArgs(Grammar grammar, Scanner scanner)
+		internal ParseArgs(Grammar grammar, Scanner scanner, SlimStack<MatchCollection> nodes)
 		{
 			Grammar = grammar;
 			Scanner = scanner;
 			CaseSensitive = grammar.CaseSensitive;
+			this.nodes = nodes ?? new SlimStack<MatchCollection>(50);
 		}
 
 		public bool IsRoot
@@ -56,17 +56,10 @@ namespace Eto.Parse
 		/// Creates a non-match when a parser fails to match
 		/// </summary>
 		/// <value>The non-match</value>
+		[Obsolete("Use ParseMatch.None instead")]
 		public ParseMatch NoMatch
 		{
-			get { return new ParseMatch(-1, -1); }
-		}
-
-		MatchCollection CreateTempMatchCollection()
-		{
-			if (reusableMatches.Count > 0)
-				return reusableMatches.Pop();
-			else
-				return new MatchCollection();
+			get { return ParseMatch.None; }
 		}
 
 		/// <summary>
@@ -118,7 +111,7 @@ namespace Eto.Parse
 		/// </remarks>
 		public void PopSuccess()
 		{
-			var last = nodes.Pop();
+			var last = nodes.PopKeep();
 			if (last != null)
 			{
 				var node = nodes.Last;
@@ -126,13 +119,26 @@ namespace Eto.Parse
 				{
 					node.AddRange(last);
 					last.Clear();
-					reusableMatches.Push(last);
 				}
 				else
 				{
 					nodes.Last = last;
+					nodes[nodes.Count] = null;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Clears the matches of the current match tree node
+		/// </summary>
+		/// <remarks>
+		/// Used instead of doing a PopFailed() then another Push(), like an Alternative parser
+		/// </remarks>
+		public void ClearMatches()
+		{
+			var last = nodes.Last;
+			if (last != null)
+				last.Clear();
 		}
 
 		/// <summary>
@@ -143,11 +149,10 @@ namespace Eto.Parse
 		/// </remarks>
 		public void PopFailed()
 		{
-			var last = nodes.Pop();
+			var last = nodes.PopKeep();
 			if (last != null)
 			{
 				last.Clear();
-				reusableMatches.Push(last);
 			}
 		}
 
@@ -160,17 +165,30 @@ namespace Eto.Parse
 		{
 			// always successful here, assume at least two or more nodes
 			var last = nodes.Pop();
-			var namedMatch = new Match(name, parser, Scanner, match, last);
 
 			if (nodes.Count > 0)
 			{
 				var node = nodes.Last;
 				if (node == null)
 				{
-					node = CreateTempMatchCollection();
+					node = new MatchCollection();
 					nodes.Last = node;
 				}
-				node.Add(namedMatch);
+				node.Add(new Match(name, parser, Scanner, match, last));
+			}
+		}
+
+		public void AddMatch(Parser parser, ParseMatch match, string name)
+		{
+			if (nodes.Count > 0)
+			{
+				var node = nodes.Last;
+				if (node == null)
+				{
+					node = new MatchCollection();
+					nodes.Last = node;
+				}
+				node.Add(new Match(name, parser, Scanner, match, null));
 			}
 		}
 	}

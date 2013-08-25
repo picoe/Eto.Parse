@@ -42,12 +42,12 @@ namespace Eto.Parse.Parsers
 			var scanner = args.Scanner;
 			char ch;
 			var pos = scanner.Position;
-			if (scanner.ReadChar(out ch) && Test(ch, caseSensitive) != Inverse)
+			if (!scanner.ReadChar(out ch) || Test(ch, caseSensitive) == Inverse)
 			{
-				return new ParseMatch(pos, 1);
+				scanner.SetPosition(pos);
+				return ParseMatch.None;
 			}
-			scanner.SetPosition(pos);
-			return args.NoMatch;
+			return new ParseMatch(pos, 1);
 		}
 	}
 }

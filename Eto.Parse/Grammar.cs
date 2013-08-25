@@ -1,6 +1,7 @@
 using System;
 using Eto.Parse.Scanners;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Eto.Parse
 {
@@ -9,6 +10,7 @@ namespace Eto.Parse
 	/// </summary>
 	public class Grammar : UnaryParser
 	{
+		SlimStack<SlimStack<MatchCollection>> reusableMatches = new SlimStack<SlimStack<MatchCollection>>();
 		bool initialized;
 
 		/// <summary>
@@ -91,18 +93,32 @@ namespace Eto.Parse
 				var scanner = args.Scanner;
 				var pos = scanner.Position;
 				args.Push();
-				var match = (Inner != null) ? Inner.Parse(args) : args.EmptyMatch;
+				var match = Inner.Parse(args);
 				MatchCollection matches = null;
 				if (match.Success && !AllowPartialMatch && !scanner.IsEof)
 				{
+					args.PopFailed();
 					scanner.SetPosition(pos);
-					match = args.NoMatch;
+					match = ParseMatch.None;
 				}
 				else
 				{
 					matches = args.Pop();
 				}
-				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, args.Errors.Distinct().ToArray());
+
+				IEnumerable<Parser> errors = Enumerable.Empty<Parser>();
+				if (!match.Success)
+				{
+					var errorList = new List<Parser>(args.Errors.Count);
+					foreach (var error in args.Errors)
+					{
+						if (!errorList.Contains(error))
+							errorList.Add(error);
+					}
+					errors = errorList;
+				}
+
+				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, errors);
 				return match;
 			}
 			else
@@ -111,17 +127,19 @@ namespace Eto.Parse
 
 		public GrammarMatch Match(string value)
 		{
-			value.ThrowIfNull("value");
+			//value.ThrowIfNull("value");
 			return Match(new StringScanner(value));
 		}
 
 		public GrammarMatch Match(Scanner scanner)
 		{
-			scanner.ThrowIfNull("scanner");
-			var args = new ParseArgs(this, scanner);
+			//scanner.ThrowIfNull("scanner");
+			var nodes = reusableMatches.Count > 0 ? reusableMatches.Pop() : new SlimStack<MatchCollection>(50);
+			var args = new ParseArgs(this, scanner, nodes);
 			if (!initialized)
 				Initialize();
 			Parse(args);
+			reusableMatches.Push(nodes);
 			var root = args.Root;
 
 			if (root.Success && EnableMatchEvents)
@@ -142,13 +160,17 @@ namespace Eto.Parse
 		{
 			scanner.ThrowIfNull("scanner");
 			var matches = new MatchCollection();
-			while (!scanner.IsEof)
+			var eof = scanner.IsEof;
+			while (!eof)
 			{
 				var match = Match(scanner);
 				if (match.Success)
-					matches.Add(match);
+				{
+					matches.AddRange(match.Matches);
+					eof = scanner.IsEof;
+				}
 				else
-					scanner.Advance(1);
+					eof = scanner.Advance(1) == -1;
 			}
 			return matches;
 		}

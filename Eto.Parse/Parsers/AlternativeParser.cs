@@ -43,21 +43,40 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var count = Items.Count;
-			for (int i = 0; i < count; i++)
+			if (HasNamedChildren)
 			{
-				var parser = Items[i];
-				if (parser == null)
-					return args.EmptyMatch;
 				args.Push();
-				var match = parser.Parse(args);
-				if (match.Success)
+				for (int i = 0; i < count; i++)
 				{
-					args.PopSuccess();
-					return match;
+					var parser = Items[i];
+					if (parser == null)
+					{
+						args.PopFailed();
+						return args.EmptyMatch;
+					}
+					var match = parser.Parse(args);
+					if (match.Success)
+					{
+						args.PopSuccess();
+						return match;
+					}
+					args.ClearMatches();
 				}
 				args.PopFailed();
 			}
-			return args.NoMatch;
+			else
+			{
+				for (int i = 0; i < count; i++)
+				{
+					var parser = Items[i];
+					if (parser == null)
+						return args.EmptyMatch;
+					var match = parser.Parse(args);
+					if (match.Success)
+						return match;
+				}
+			}
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

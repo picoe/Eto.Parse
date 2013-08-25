@@ -42,8 +42,13 @@ namespace Eto.Parse
 		public void PushDefault()
 		{
 			if (count == base.Count)
-				base.Insert(count, default(T));
+				base.Add(default(T));
 			count++;
+		}
+
+		public T PopKeep()
+		{
+			return base[--count];
 		}
 
 		public T Pop()

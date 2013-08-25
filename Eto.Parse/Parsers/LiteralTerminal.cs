@@ -48,7 +48,7 @@ namespace Eto.Parse.Parsers
 			if (scanner.ReadString(Value, caseSensitive))
 				return new ParseMatch(pos, Value.Length);
 
-			return args.NoMatch;
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

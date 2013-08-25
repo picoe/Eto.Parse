@@ -20,7 +20,7 @@ namespace Eto.Parse.Parsers
 			if (args.Scanner.IsEof)
 				return args.EmptyMatch;
 			else
-				return args.NoMatch;
+				return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

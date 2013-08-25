@@ -7,13 +7,9 @@ namespace Eto.Parse
 	public class Match
 	{
 		MatchCollection matches;
-		static Match empty;
 		ParseMatch parseMatch;
 
-		public static Match EmptyMatch
-		{
-			get { return empty ?? (empty = new Match(null, null, null, new ParseMatch(-1, -1), new MatchCollection())); }
-		}
+		internal static readonly Match EmptyMatch = new Match(null, null, null, new ParseMatch(-1, -1), new MatchCollection());
 
 		public MatchCollection Matches
 		{

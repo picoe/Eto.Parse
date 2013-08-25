@@ -79,7 +79,7 @@ namespace Eto.Parse.Parsers
 						return new ParseMatch(pos, val.Length);
 				}
 			}
-			return args.NoMatch;
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

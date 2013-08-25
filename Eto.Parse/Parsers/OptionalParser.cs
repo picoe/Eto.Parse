@@ -25,18 +25,30 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			args.Push();
-			var match = Inner.Parse(args);
-
-			if (match.Success)
+			if (!HasNamedChildren)
 			{
-				args.PopSuccess();
-				return match;
+				var match = Inner.Parse(args);
+
+				if (match.Success)
+					return match;
+				else
+					return args.EmptyMatch;
 			}
 			else
 			{
-				args.PopFailed();
-				return args.EmptyMatch;
+				args.Push();
+				var match = Inner.Parse(args);
+
+				if (match.Success)
+				{
+					args.PopSuccess();
+					return match;
+				}
+				else
+				{
+					args.PopFailed();
+					return args.EmptyMatch;
+				}
 			}
 		}
 

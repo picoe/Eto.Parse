@@ -68,7 +68,7 @@ namespace Eto.Parse.Parsers
 				if (!hasNext)
 				{
 					scanner.SetPosition(pos);
-					return args.NoMatch;
+					return ParseMatch.None;
 				}
 				if (ch == '-' || ch == '+')
 				{
@@ -103,7 +103,7 @@ namespace Eto.Parse.Parsers
 				else if (!foundNumber)
 				{
 					scanner.SetPosition(pos);
-					return args.NoMatch;
+					return ParseMatch.None;
 				}
 				else
 					break;
