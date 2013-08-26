@@ -3,7 +3,7 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Parsers
 {
-	public class EolTerminal : CharTerminal
+	public class EolTerminal : Parser
 	{
 		protected EolTerminal(EolTerminal other, ParserCloneArgs args)
 			: base(other, args)
@@ -14,14 +14,32 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override bool Test(char ch, bool caseSensitive)
-		{
-			return ch == '\n' || ch == '\r';
-		}
-
-		protected override string CharName
+		public override string DescriptiveName
 		{
 			get { return "EOL"; }
+		}
+
+		protected override ParseMatch InnerParse(ParseArgs args)
+		{
+			var scanner = args.Scanner;
+			var pos = scanner.Position;
+			char ch;
+			if (!scanner.ReadChar(out ch))
+				return ParseMatch.None;
+			if (ch == '\n')
+				return new ParseMatch(pos, 1);
+			if (ch == '\r')
+			{
+				if (!scanner.ReadChar(out ch))
+					return new ParseMatch(pos, 1);
+				if (ch == '\n')
+					return new ParseMatch(pos, 2);
+				scanner.SetPosition(pos + 1);
+				return new ParseMatch(pos, 1);
+			}
+
+			scanner.SetPosition(pos);
+			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

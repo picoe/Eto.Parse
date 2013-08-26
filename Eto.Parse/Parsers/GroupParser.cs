@@ -46,7 +46,7 @@ namespace Eto.Parse.Parsers
 		void SetBlock()
 		{
 			if (start != null && end != null)
-				blockSeq = start & (-Terminals.AnyChar).Until(end) & end;
+				blockSeq = start & new RepeatParser().Until(end, true);
 			else
 				blockSeq = null;
 		}
@@ -54,7 +54,7 @@ namespace Eto.Parse.Parsers
 		void SetLine()
 		{
 			if (line != null)
-				lineSeq = line & -!Terminals.Eol;
+				lineSeq = line & new RepeatParser().Until(Terminals.Eol);
 			else
 				lineSeq = null;
 		}

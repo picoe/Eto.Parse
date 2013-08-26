@@ -16,7 +16,7 @@ namespace Eto.Parse
 		public static CharTerminal Punctuation { get { return new PunctuationTerminal(); } }
 		public static CharTerminal ControlCodes { get { return new ControlTerminal(); } }
 		public static CharTerminal Symbol { get { return new SymbolTerminal(); } }
-		public static CharTerminal Eol { get { return new EolTerminal(); } }
+		public static Parser Eol { get { return new EolTerminal(); } }
 		public static CharTerminal Set(params int[] chars) { return new CharSetTerminal(chars.Select(r => (char)r).ToArray()) { Reusable = true }; }
 		public static CharTerminal Set(params char[] chars) { return new CharSetTerminal(chars); }
 		public static CharTerminal Set(string chars) { return new CharSetTerminal(chars.ToCharArray()); }
