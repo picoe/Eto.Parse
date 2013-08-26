@@ -7,7 +7,7 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class BoldEncoding : SequenceParser, IMarkdownReplacement
+	public class BoldEncoding : AlternativeParser, IMarkdownReplacement
 	{
 		public bool AddLinesBefore { get { return true; } }
 
@@ -18,7 +18,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			Add("**", new RepeatParser(1).Until("**"), "**");
+			Add("**" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("**" & Terminals.Literal("*").Not()) | Terms.eolorf) & "**");
+			Add("__" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("__" & Terminals.Literal("_").Not()) | Terms.eolorf) & "__");
 		}
 
 #if PERF_TEST
@@ -31,8 +32,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<strong>");
-			var text = match.Text;
-			args.Encoding.Replace(text.Substring(2, text.Length - 4) , args);
+			args.Encoding.Replace(args, match, 2, -4);
 			args.Output.Append("</strong>");
 		}
 	}

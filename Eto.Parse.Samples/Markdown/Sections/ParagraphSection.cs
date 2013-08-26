@@ -17,14 +17,14 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var linePost = -Terms.sp;
 			var linePre = Terms.sp.Repeat(0, 3);
-			var content = Terms.words & linePost;
+			var linePost = -Terms.sp;
+			var content = linePre & Terms.words & linePost;
 			content.Name = "content";
-			var line =  linePre & content;
+			var line = content;
 			Inner = line;
 			this.Minimum = 1;
-			this.SeparatedBy(Terms.eol).Until(Terms.EndOfSection(), true);
+			this.SeparatedBy(Terms.eol).Until((Terms.eol & Terminals.Set("#>").NonCaptured()) | Terms.EndOfSection(minLines:2), true);
 		}
 
 		#if PERF_TEST
@@ -40,12 +40,15 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			var count = match.Matches.Count;
 			for (int i = 0; i < count; i++)
 			{
+				var text = match.Matches[i].Text;
 				if (i > 0)
-					args.Output.AppendLine();
-				args.Encoding.Replace(match.Matches[i].Text, args);
+					args.Output.AppendUnixLine();
+				else
+					text = text.TrimStart();
+				args.Encoding.Replace(args, text);
 			}
-			args.Output.AppendLine("</p>");
-			args.Output.AppendLine();
+			args.Output.AppendUnixLine("</p>");
+			args.Output.AppendUnixLine();
 		}
 	}
 }

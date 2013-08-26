@@ -16,15 +16,30 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			this.Add(("&" & ~(+Terminals.Letter & ";")), "<");
+			this.Add(("&" & ~(+Terminals.Letter & ";")), Terminals.Set("<>\""), Terminals.Literal("\\") & Terminals.Set("&><\\`*_{}[]()#+-.!"));
 		}
 
 		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
-			if (match.Text == "<")
+			var ch = match.Text[0];
+			if (ch == '<')
 				args.Output.Append("&lt;");
-			else if (match.Text == "&")
+			else if (ch == '>')
+				args.Output.Append("&gt;");
+			else if (ch == '\"')
+				args.Output.Append("&quot;");
+			else if (ch == '&')
 				args.Output.Append("&amp;");
+			else if (ch == '\\')
+			{
+				ch = match.Text[1];
+				if (ch == '<')
+					args.Output.Append("&lt;");
+				else if (ch == '>')
+					args.Output.Append("&gt;");
+				else
+					args.Output.Append(match.Text[1]);
+			}
 			else
 				args.Output.Append(match.Text);
 		}
@@ -35,17 +50,6 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			return base.InnerParse(args);
 		}
 		#endif
-
-		//static Regex apersands = new Regex(@"&(?!((#[0-9]+)|(#[xX][a-fA-F0-9]+)|([a-zA-Z][a-zA-Z0-9]*));)",  RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-		//static Regex ltangles = new Regex(@"<(?![A-Za-z/?\$!])", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-
-		public static string Encode(string val)
-		{
-			//val = apersands.Replace(val, "&amp;");
-			//val = ltangles.Replace(val, "&lt;");
-			return val;
-		}
-
 
 	}
 	

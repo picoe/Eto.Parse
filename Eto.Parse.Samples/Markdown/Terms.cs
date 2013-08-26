@@ -14,35 +14,33 @@ namespace Eto.Parse.Samples.Markdown
 		public static Parser ht = Terminals.Literal("\t");
 		public static Parser cr = Terminals.Literal("\r");
 		public static Parser lf = Terminals.Literal("\n");
-		public static Parser eol;
+		public static Parser eol = Terminals.Eol;
 		public static Parser eof = Terminals.End;
+		public static Parser ch = !Terminals.Set(" \r\n\t");
+		public static Parser sporht = Terminals.Set(" \t");
 		public static Parser eolorf;
-		public static Parser ch = !Terminals.Set(0xA, 0xD, 0x9, 0x20);
 		public static Parser blankLine;
 
 		public static Parser word;
 		public static Parser words;
 		public static Parser ws;
 		public static Parser ows;
-		public static Parser sporht;
 
-		public static Parser EndOfSection(Parser suffix = null)
+		public static Parser EndOfSection(Parser suffix = null, int? minLines = null)
 		{
 			if (suffix != null)
-				return (+blankLine & suffix) | eol & eof | eof;
+				return (blankLine.Repeat(minLines ?? 1) & suffix) | eol & eof | eof;
 			else
-				return blankLine.Repeat(2) | eol & eof | eof;
+				return blankLine.Repeat(minLines ?? 2) | eol & eof | eof;
 		}
 
 		static Terms()
 		{
-			sporht = Terminals.Set(" \t");
-			eol = Terminals.Literal("\r\n") | cr | lf;
 			word = +ch;
 			ws = +(sporht);
 			ows = -(sporht);
-			blankLine = ows & eol;
-			eolorf = eol | eof;
+			blankLine = (ows & eol).Separate();
+			eolorf = Terminals.Eol | eof;
 			words = (+word).SeparatedBy(ws);
 		}
 	}

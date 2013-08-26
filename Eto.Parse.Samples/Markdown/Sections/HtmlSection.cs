@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using Eto.Parse.Parsers;
+using Eto.Parse.Samples.Markdown.Encodings;
 
 namespace Eto.Parse.Samples.Markdown.Sections
 {
@@ -25,8 +26,11 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
-			args.Output.AppendLine(match.Text);
-			args.Output.AppendLine();
+			var text = match.Matches[0].Text;
+			if (text.StartsWith("<script") || text.Contains("javascript:"))
+				args.Output.AppendUnixLine(MarkdownEncoding.Encode(text));
+			else
+				args.Output.AppendUnixLine(text);
 		}
 	}
 }

@@ -7,7 +7,7 @@ using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings
 {
-	public class ItalicEncoding : SequenceParser, IMarkdownReplacement
+	public class ItalicEncoding : AlternativeParser, IMarkdownReplacement
 	{
 		public ItalicEncoding()
 		{
@@ -16,7 +16,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			Add("*", new RepeatParser(1).Until("*" | Terms.eolorf), "*");
+			Add("*" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("*" & Terminals.Literal("*").Not()) | Terms.eolorf) & "*");
+			Add("_" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("_" & Terminals.Literal("_").Not()) | Terms.eolorf) & "_");
 		}
 
 		#if PERF_TEST
@@ -29,8 +30,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		public void Replace(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<em>");
-			var text = match.Text;
-			args.Encoding.Replace(text.Substring(1, text.Length - 2) , args);
+			args.Encoding.Replace(args, match, 1, -2);
 			args.Output.Append("</em>");
 		}
 	}

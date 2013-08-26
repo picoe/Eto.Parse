@@ -16,8 +16,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var parens = +Terminals.Literal("`");
-			Add(new BalancedParser { Surrounding = parens }, (parens & new RepeatParser().Until(Terminals.Literal("`"), true) & parens));
+			var parens = +(Terminals.Set("\\").Not() & Terminals.Literal("`"));
+			Add(new BalancedParser { Surrounding = parens }/*, (parens & new RepeatParser().Until(Terminals.Literal("`"), true) & parens)*/);
 		}
 
 		#if PERF_TEST
@@ -76,10 +76,15 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			args.Output.Append("<code>");
 			if (start > count)
 				args.Output.Append(text.Substring(0, start - count));
-			args.Output.Append(text.Substring(start, len));
+			args.Output.Append(Encode(text.Substring(start, len).Trim(' ')));
 			if (end > count)
 				args.Output.Append(text.Substring(start + len, end - count));
 			args.Output.Append("</code>");
+		}
+
+		public static string Encode(string code)
+		{
+			return code.Replace("&", "&amp;").Replace(">", "&gt;").Replace("<", "&lt;").Replace("\"", "&quot;").Replace("\t", "    ");
 		}
 	}
 	

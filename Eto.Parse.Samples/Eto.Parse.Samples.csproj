@@ -57,6 +57,9 @@
     <Compile Include="Markdown\Sections\ReferenceSection.cs" />
     <Compile Include="Markdown\Sections\ListSection.cs" />
     <Compile Include="Markdown\Encodings\ItalicEncoding.cs" />
+    <Compile Include="Markdown\Extensions.cs" />
+    <Compile Include="Markdown\Sections\BlockQuoteSection.cs" />
+    <Compile Include="Markdown\Sections\HrSection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

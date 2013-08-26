@@ -17,14 +17,14 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var name = "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("name") & "]";
-			var reference = ~(Terms.sporht) & "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("ref") & "]";
+			var name = ~Terminals.Literal("!") & "[" & (+Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("name") & "]";
+			var reference = ~(Terms.sporht) & ~Terms.eol & "[" & (-Terminals.Set(']').Inverse().Except(Terms.eol)).WithName("ref") & "]";
 			var title = new StringParser { Name = "title", BeginQuoteCharacters = "\"'(".ToCharArray(), EndQuoteCharacters = "\"')".ToCharArray() };
 			var enclosedLink = new StringParser { Name = "link", BeginQuoteCharacters = "<".ToCharArray(), EndQuoteCharacters = ">".ToCharArray() };
 			var openLink = (+Terminals.Set(") \t").Inverse().Except(Terms.eol)).WithName("link");
-			var link = "(" & (enclosedLink | openLink) & ~(Terms.ws & title) & ")";
+			var link = "(" & (enclosedLink | openLink) & ~((Terms.ws | (Terms.ows & Terms.eol & Terms.ows)) & title) & ")";
 
-			Add(enclosedLink, name & (reference | (link & ~(Terms.ows & ~(Terms.eol & Terms.ows) & title))));
+			Add(enclosedLink, name & ~(reference | link) );
 		}
 
 		#if PERF_TEST
@@ -39,7 +39,9 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			Match link, name; 
 			var count = match.Matches.Count;
 			if (count == 1)
+			{
 				link = name = match.Matches[0];
+			}
 			else
 			{
 				name = match.Matches[0];
@@ -48,9 +50,12 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			MarkdownReference reference;
 			string url;
 			string title;
-			if (link.Name == "ref")
+			if (link.Name == "ref" || link.Name == "name")
 			{
-				if (args.References.TryGetValue(link.Text, out reference))
+				var linkValue = link.StringValue;
+				if (string.IsNullOrEmpty(linkValue))
+					linkValue = name.StringValue;
+				if (args.References.TryGetValue(linkValue, out reference))
 				{
 					url = reference.Url;
 					title = reference.Title;
@@ -60,7 +65,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			}
 			else
 			{
-				url = link.Text;
+				url = link.StringValue;
 				if (count > 2)
 					title = match.Matches[2].StringValue;
 				else
@@ -68,18 +73,41 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			}
 			if (url != null)
 			{
-				args.Output.Append("<a href=\"");
-				args.Output.Append(EscapeEncoding.Encode(MarkdownEncoding.HtmlAttributeEncode(url)));
+				var isImage = match.Scanner.SubString(match.Index, 1) == "!";
+				if (isImage)
+					args.Output.Append("<img src=\"");
+				else
+					args.Output.Append("<a href=\"");
+				args.Output.Append(MarkdownEncoding.EncodeAttribute(url));
 				args.Output.Append("\"");
+				if (isImage)
+				{
+					var alt = name.StringValue;
+					if (!string.IsNullOrEmpty(alt))
+					{
+						args.Output.Append(" alt=\"");
+						args.Output.Append(MarkdownEncoding.EncodeAttribute(alt));
+						args.Output.Append("\"");
+					}
+				}
 				if (!string.IsNullOrEmpty(title))
 				{
 					args.Output.Append(" title=\"");
-					args.Output.Append(EscapeEncoding.Encode(MarkdownEncoding.HtmlAttributeEncode(title)));
+					args.Output.Append(MarkdownEncoding.EncodeAttribute(title));
 					args.Output.Append("\"");
 				}
-				args.Output.Append(">");
-				args.Encoding.Replace(name.Text, args);
-				args.Output.Append("</a>");
+				if (isImage)
+					args.Output.Append(" />");
+				else
+				{
+					args.Output.Append(">");
+					args.Encoding.Replace(args, name.StringValue);
+					args.Output.Append("</a>");
+				}
+			}
+			else
+			{
+				args.Output.Append(match.Text);
 			}
 		}
 	}

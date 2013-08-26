@@ -16,12 +16,14 @@ namespace Eto.Parse.Samples.Markdown
 
 		public IEnumerable<IMarkdownReplacement> GetReplacements()
 		{
-			yield return new HtmlSection();
+			yield return new CodeSection();
 			yield return new HeaderSection();
+			yield return new HrSection();
 			yield return new ListSection();
+			yield return new BlockQuoteSection();
+			yield return new HtmlSection();
 			yield return new ReferenceSection();
 			yield return new ParagraphSection();
-			yield return new CodeSection();
 		}
 
 		public ReplacementParser Replacements { get { return replacements; } }
@@ -32,8 +34,9 @@ namespace Eto.Parse.Samples.Markdown
 			EnableMatchEvents = false;
 			encoding = new MarkdownEncoding(this);
 			replacements = new ReplacementParser(this, GetReplacements());
+			replacements.Add(Terminals.AnyChar);
 
-			this.Inner = -Terms.blankLine & -replacements & -Terminals.WhiteSpace;
+			this.Inner = -replacements;
 			SetError<Parser>(false);
 		}
 
@@ -51,7 +54,7 @@ namespace Eto.Parse.Samples.Markdown
 				return args.Output.ToString();
 			}
 			else
-				throw new ArgumentOutOfRangeException("markdown", match.ErrorMessage);
+				return markdown;
 		}
 
 		void WriteSection(Match match, MarkdownReplacementArgs args)

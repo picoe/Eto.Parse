@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 using Eto.Parse.Parsers;
+using Eto.Parse.Samples.Markdown.Encodings;
 
 namespace Eto.Parse.Samples.Markdown.Sections
 {
@@ -16,14 +17,14 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var indent = (Terms.sp * 4) | Terms.ht;
+			var indent = Terminals.Literal("    ") | Terms.ht;
 
-			var content = -indent & new RepeatParser().Until(Terms.ows & (Terms.eol | Terms.eof));
-			var line = indent & content & -Terms.sp;
+			var content = new RepeatParser().Until(Terms.eolorf);
+			content.Name = "content";
+			var line = indent & content;
 			Inner = line;
 			this.Minimum = 1;
-			this.SeparatedBy(Terms.eol).Until(Terms.EndOfSection(line.Not()), true);
-			content.Name = "content";
+			this.SeparatedBy(+(Terms.ows & Terms.eol.Named("sep"))).Until(Terms.EndOfSection(line.Not()), true);
 		}
 
 		#if PERF_TEST
@@ -39,10 +40,15 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			var count = match.Matches.Count;
 			for (int i = 0; i < count; i++)
 			{
-				args.Output.AppendLine(match.Matches[i].Text);
+				var line = match.Matches[i];
+				if (line.Name == "sep")
+					args.Output.AppendUnixLine();
+				else
+					args.Output.Append(CodeEncoding.Encode(line.Text));
 			}
-			args.Output.AppendLine("</code></pre>");
-			args.Output.AppendLine();
+			args.Output.AppendUnixLine();
+			args.Output.AppendUnixLine("</code></pre>");
+			args.Output.AppendUnixLine();
 		}
 	}
 	

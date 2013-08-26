@@ -15,14 +15,14 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			var prefix = Terms.sp.Repeat(0, 3);
 			var star = ((Parser)"*" | "-" | "+").WithName("star");
 			var num = (+Terminals.Digit).WithName("num") & ".";
-			var content = new RepeatParser(1).Until(Terms.ows & Terms.eolorf, true);
+			var content = new RepeatParser(1).Until(Terms.ows & Terms.eolorf);
 			content.Name = "content";
 			var line = (prefix & (num | star) & Terms.ows & content).WithName("line");
 			var spacing = (-Terms.blankLine).WithName("spacing");
 			var lineWithSpacing = line & Terms.blankLine & spacing;
 			Inner = lineWithSpacing;
 			Minimum = 1;
-			this.Until(Terms.EndOfSection(line.Not()), true);
+			this.Until(Terms.EndOfSection(line.Not()));
 		}
 
 		#if PERF_TEST
@@ -44,12 +44,12 @@ namespace Eto.Parse.Samples.Markdown.Sections
 				{
 					if (item["num"])
 					{
-						args.Output.AppendLine("<ol>");
+						args.Output.AppendUnixLine("<ol>");
 						suffix = "</ol>";
 					}
 					else
 					{
-						args.Output.AppendLine("<ul>");
+						args.Output.AppendUnixLine("<ul>");
 						suffix = "</ul>";
 					}
 				}
@@ -58,14 +58,15 @@ namespace Eto.Parse.Samples.Markdown.Sections
 				if (addSpace || lastSpace)
 					args.Output.Append("<p>");
 				var content = item.Matches["content"];
-				args.Encoding.Replace(content.Text, args);
+				args.Encoding.Replace(args, content);
 				if (addSpace || lastSpace)
 					args.Output.Append("</p>");
-				args.Output.AppendLine("</li>");
+				args.Output.AppendUnixLine("</li>");
 				lastSpace = addSpace;
 			}
-			args.Output.AppendLine(suffix);
-			args.Output.AppendLine();
+			args.Output.AppendUnixLine(suffix);
+			args.Output.AppendUnixLine();
+			args.Output.AppendUnixLine();
 		}
 	}
 }

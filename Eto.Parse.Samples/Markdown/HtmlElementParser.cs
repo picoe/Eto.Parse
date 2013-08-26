@@ -17,17 +17,39 @@ namespace Eto.Parse.Samples.Markdown
 			var pos = scanner.Position;
 			int length = 0;
 			char ch;
-			bool done;
+			bool hasChar;
 
 			if (scanner.ReadChar(out ch))
 			{
 				if (ch == '<')
 				{
+					hasChar = scanner.ReadChar(out ch);
+					if (hasChar && ch == '!')
+					{
+						length = 7;
+						// read comment
+						if (scanner.ReadString("--", true))
+						{
+							while (!scanner.ReadString("-->", true))
+							{
+								length++;
+								if (scanner.Advance(1) == -1)
+								{
+									scanner.SetPosition(pos);
+									return ParseMatch.None;
+								}
+							}
+							return new ParseMatch(pos, length);
+						}
+						scanner.SetPosition(pos);
+						return ParseMatch.None;
+
+					}
 					tagNameBuilder.Clear();
 					tagNameBuilder.Append("</");
 					length++;
 					var first = true;
-					while (done = scanner.ReadChar(out ch) && char.IsLetter(ch))
+					while (char.IsLetter(ch) && hasChar)
 					{
 						if (first && !char.IsLetter(ch))
 						{
@@ -37,13 +59,14 @@ namespace Eto.Parse.Samples.Markdown
 						first = false;
 						tagNameBuilder.Append(ch);
 						length++;
+						hasChar = scanner.ReadChar(out ch);
 					}
-					if (!done)
+					if (hasChar && (ch == ' ' || ch == '>'))
 					{
 						tagNameBuilder.Append('>');
 						length++;
 						char prev = ch;
-						while (ch != '>' && (done = scanner.ReadChar(out ch)))
+						while (ch != '>' && (hasChar = scanner.ReadChar(out ch)))
 						{
 							length++;
 							prev = ch;
@@ -58,9 +81,9 @@ namespace Eto.Parse.Samples.Markdown
 							return new ParseMatch(pos, length);
 						}
 
-						if (!done)
+						if (hasChar)
 						{
-							if (MatchContent)
+							if (MatchContent && Name != null)
 								args.Push();
 							var start = pos + length;
 							var contentLength = 0;
@@ -75,8 +98,7 @@ namespace Eto.Parse.Samples.Markdown
 								{
 									if (MatchContent && contentLength > 0)
 									{
-										args.PopMatch(this, new ParseMatch(start, contentLength), "content");
-										args.Push();
+										args.AddMatch(this, new ParseMatch(start, contentLength), "content");
 									}
 									var inner = Parse(args);
 									if (!inner.Success)
@@ -87,14 +109,17 @@ namespace Eto.Parse.Samples.Markdown
 								}
 							}
 							length += tagName.Length;
+							var match = new ParseMatch(pos, length);
 							if (MatchContent)
 							{
 								if (contentLength > 0)
-									args.PopMatch(this, new ParseMatch(start, contentLength), "content");
-								else
-									args.PopSuccess();
+								{
+									args.AddMatch(this, new ParseMatch(start, contentLength), "content");
+								}
+								if (Name != null)
+									args.PopMatch(this, match, Name);
 							}
-							return new ParseMatch(pos, length);
+							return match;
 						}
 					}
 				}
