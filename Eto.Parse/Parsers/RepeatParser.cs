@@ -13,6 +13,8 @@ namespace Eto.Parse.Parsers
 
 		public Parser Until { get; set; }
 
+		public bool SkipUntil { get; set; }
+
 		public bool CaptureUntil { get; set; }
 
 		protected RepeatParser(RepeatParser other, ParserCloneArgs args)
@@ -21,6 +23,7 @@ namespace Eto.Parse.Parsers
 			Minimum = other.Minimum;
 			Maximum = other.Maximum;
 			Until = args.Clone(other.Until);
+			SkipUntil = other.SkipUntil;
 			CaptureUntil = other.CaptureUntil;
 			Separator = args.Clone(other.Separator);
 		}
@@ -79,7 +82,9 @@ namespace Eto.Parse.Parsers
 						var stopMatch = Until.Parse(args);
 						if (stopMatch.Success)
 						{
-							if (!CaptureUntil)
+							if (CaptureUntil)
+								match.Length += stopMatch.Length;
+							else if (!SkipUntil)
 								scanner.SetPosition(stopMatch.Index);
 							return match;
 						}
@@ -115,7 +120,10 @@ namespace Eto.Parse.Parsers
 						var stopMatch = Until.Parse(args);
 						if (stopMatch.Success)
 						{
-							scanner.SetPosition(stopMatch.Index);
+							if (CaptureUntil)
+								match.Length += stopMatch.Length;
+							else if (!SkipUntil)
+								scanner.SetPosition(stopMatch.Index);
 							return match;
 						}
 					}

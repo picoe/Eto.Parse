@@ -79,10 +79,11 @@ namespace Eto.Parse
 			return parser;
 		}
 
-		public static RepeatParser Until(this RepeatParser parser, Parser until, bool captureUntil)
+		public static RepeatParser Until(this RepeatParser parser, Parser until, bool skip = false, bool capture = false)
 		{
 			parser.Until = until;
-			parser.CaptureUntil = captureUntil;
+			parser.SkipUntil = skip;
+			parser.CaptureUntil = capture;
 			return parser;
 		}
 
