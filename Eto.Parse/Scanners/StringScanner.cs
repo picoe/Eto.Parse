@@ -17,10 +17,22 @@ namespace Eto.Parse.Scanners
 			get { return value[Position]; }
 		}
 
+		public string Value
+		{
+			get { return value; }
+		}
+
 		public StringScanner(string value)
 		{
 			this.value = value;
 			this.length = value.Length;
+		}
+
+		public StringScanner(string value, int index, int length)
+		{
+			this.value = value;
+			this.Position = index;
+			this.length = length;
 		}
 
 		public override bool ReadChar(out char ch)
