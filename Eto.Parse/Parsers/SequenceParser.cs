@@ -6,6 +6,7 @@ namespace Eto.Parse.Parsers
 {
 	public class SequenceParser : ListParser, ISeparatedParser
 	{
+		Parser separator;
 		public Parser Separator { get; set; }
 
 		protected SequenceParser(SequenceParser other, ParserCloneArgs chain)
@@ -34,7 +35,6 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
-			var separator = Separator ?? args.Grammar.Separator;
 			var match = new ParseMatch(pos, 0);
 			var count = Items.Count;
 			if (separator != null)
@@ -92,6 +92,7 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
+			separator = Separator ?? args.Grammar.Separator;
 			if (Items.Count == 0)
 				throw new InvalidOperationException("There are no items in this sequence");
 			if (args.Push(this))

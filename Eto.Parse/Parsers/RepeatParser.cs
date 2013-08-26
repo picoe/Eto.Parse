@@ -5,6 +5,7 @@ namespace Eto.Parse.Parsers
 {
 	public class RepeatParser : UnaryParser, ISeparatedParser
 	{
+		Parser separator;
 		public Parser Separator { get; set; }
 
 		public int Minimum { get; set; }
@@ -61,6 +62,7 @@ namespace Eto.Parse.Parsers
 					Until.Initialize(args);
 				args.Pop(this);
 			}
+			separator = Separator ?? args.Grammar.Separator;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -70,7 +72,6 @@ namespace Eto.Parse.Parsers
 			var pos = scanner.Position;
 			var match = new ParseMatch(pos, 0);
 
-			var separator = Separator ?? args.Grammar.Separator;
 			// retrieve up to the maximum number
 			var sepMatch = ParseMatch.None;
 			if (Inner != null)
