@@ -23,7 +23,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -715,11 +715,5 @@
     </None>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <ItemGroup>
-    <Folder Include="Parsers\" />
-    <Folder Include="Grammars\" />
-    <Folder Include="Markdown\" />
-    <Folder Include="Markdown\tests\" />
-    <Folder Include="Markdown\tests\simple\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

@@ -32,7 +32,7 @@ namespace Eto.Parse.Tests.Grammars
 			);
 
 			var match = grammar.Match(input);
-			Assert.IsTrue(match.Success);
+			Assert.IsTrue(match.Success, match.ErrorMessage);
 			Assert.AreEqual("hello", match["first"]["value"].Text);
 			Assert.AreEqual("parsing world", match["second"]["value"].Text);
 		}

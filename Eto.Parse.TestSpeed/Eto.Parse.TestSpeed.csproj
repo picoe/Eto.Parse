@@ -36,6 +36,7 @@
     <ConsolePause>false</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;</DefineConstants>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,10 +101,5 @@
     <None Include="Tests\Json\Gold\JSON.grm" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <ItemGroup>
-    <Folder Include="Tests\" />
-    <Folder Include="Tests\Markdown\" />
-    <Folder Include="Tests\Json\" />
-    <Folder Include="Tests\Json\Gold\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
