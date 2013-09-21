@@ -40,6 +40,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\AutocompleteTests.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Parsers\StringParserTests.cs" />
     <Compile Include="Grammars\BnfTests.cs" />
