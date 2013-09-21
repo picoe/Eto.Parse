@@ -26,13 +26,13 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			var level = Math.Min(match.Matches[0].Length, 6);
 			args.Output.Append("<h");
 			args.Output.Append(level);
 			args.Output.Append(">");
-			args.Encoding.Replace(args, match.Matches[1]);
+			args.Encoding.Transform(args, match.Matches[1]);
 			args.Output.Append("</h");
 			args.Output.Append(level);
 			args.Output.AppendUnixLine(">");

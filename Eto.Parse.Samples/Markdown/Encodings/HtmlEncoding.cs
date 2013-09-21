@@ -23,7 +23,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			var html = match.Matches[0];
 			var text = html.Text;
@@ -40,14 +40,14 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 				var content = matches[i];
 				if (content.Index - match.Index > last)
 				{
-					args.Output.Append(text.Substring(last, content.Index - match.Index - last));
+					args.Output.Append(text, last, content.Index - match.Index - last);
 				}
 				last = content.Index - match.Index + content.Length;
 
-				args.Encoding.Replace(args, content);
+				args.Encoding.Transform(args, content);
 			}
 			if (last < text.Length)
-				args.Output.Append(text.Substring(last, text.Length - last));
+				args.Output.Append(text, last, text.Length - last);
 		}
 	}
 }

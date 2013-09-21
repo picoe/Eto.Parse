@@ -18,8 +18,9 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			Add("**" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("**" & Terminals.Literal("*").Not()) | Terms.eolorf) & "**");
-			Add("__" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("__" & Terminals.Literal("_").Not()) | Terms.eolorf) & "__");
+			var inner = grammar.Encoding.ReplacementsExcept<BoldEncoding>();
+			Add("**" & -Terms.sporht & Terms.sporht.Not() & +((inner | Terminals.AnyChar.Except("**"))) & "**");
+			Add("__" & -Terms.sporht & Terms.sporht.Not() & +((inner | Terminals.AnyChar.Except("__"))) & "__");
 		}
 
 #if PERF_TEST
@@ -29,10 +30,14 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		}
 #endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<strong>");
-			args.Encoding.Replace(args, match, 2, -4);
+			//args.Encoding.Transform(args, match, 2, -4);
+			if (match.HasMatches)
+				args.Encoding.ReplaceEncoding(args, match);
+			else
+				args.Output.Append(match.Scanner.Substring(match.Index + 2, match.Length - 4));
 			args.Output.Append("</strong>");
 		}
 	}

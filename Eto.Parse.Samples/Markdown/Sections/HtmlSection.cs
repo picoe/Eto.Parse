@@ -24,7 +24,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			var text = match.Matches[0].Text;
 			if (text.StartsWith("<script") || text.Contains("javascript:"))

@@ -15,7 +15,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		public void Initialize(MarkdownGrammar grammar)
 		{
 			this.grammar = grammar;
-			var prefix = -Terms.sp & Terminals.Literal(">");
+			var prefix = (grammar.Prefix & -Terms.sp) & Terminals.Literal(">");
 			var value = new RepeatParser(1).Until(Terms.eolorf, true);
 			prefix.Name = "prefix";
 			value.Name = "value";
@@ -30,7 +30,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.AppendUnixLine("<blockquote>");
 			var str = new StringBuilder(match.Length);

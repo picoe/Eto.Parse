@@ -10,6 +10,7 @@ namespace Eto.Parse.Samples.Markdown
 {
 	public class ReplacementParser : AlternativeParser
 	{
+		MarkdownGrammar grammar;
 		Dictionary<string, IMarkdownReplacement> replacements;
 
 		public IMarkdownReplacement GetReplacement(string name)
@@ -30,14 +31,19 @@ namespace Eto.Parse.Samples.Markdown
 		}
 		#endif
 
-		public ReplacementParser(MarkdownGrammar grammar, IEnumerable<IMarkdownReplacement> replacements)
+		public ReplacementParser(MarkdownGrammar grammar)
 		{
+			this.grammar = grammar;
 			this.replacements = new Dictionary<string, IMarkdownReplacement>();
+		}
 
+		public void Add(IEnumerable<IMarkdownReplacement> replacements, bool initReplacements = true)
+		{
 			foreach (var replacement in replacements)
 			{
 				this.replacements.Add(replacement.Name, replacement);
-				replacement.Initialize(grammar);
+				if (initReplacements)
+					replacement.Initialize(grammar);
 				this.Add((Parser)replacement);
 			}
 		}

@@ -16,12 +16,13 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			this.Add(("&" & ~(+Terminals.Letter & ";")), Terminals.Set("<>\""), Terminals.Literal("\\") & Terminals.Set("&><\\`*_{}[]()#+-.!"));
+			this.Add(("&" & ~(+Terminals.Letter & ";")), Terminals.Eol, Terminals.Set("<>\""), Terminals.Literal("\\") & Terminals.Set("&><\\`*_{}[]()#+-.!"));
 		}
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
-			var ch = match.Text[0];
+			var text = match.Text;
+			var ch = text[0];
 			if (ch == '<')
 				args.Output.Append("&lt;");
 			else if (ch == '>')
@@ -30,18 +31,24 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 				args.Output.Append("&quot;");
 			else if (ch == '&')
 				args.Output.Append("&amp;");
+			else if (ch == '\r')
+				args.Output.Append('\n');
+			else if (ch == '\t')
+				args.Output.Append("    ");
 			else if (ch == '\\')
 			{
-				ch = match.Text[1];
+				ch = text[1];
 				if (ch == '<')
 					args.Output.Append("&lt;");
 				else if (ch == '>')
 					args.Output.Append("&gt;");
+				else if (ch == 'r')
+					args.Output.AppendUnixLine();
 				else
-					args.Output.Append(match.Text[1]);
+					args.Output.Append(ch);
 			}
 			else
-				args.Output.Append(match.Text);
+				args.Output.Append(text);
 		}
 
 		#if PERF_TEST

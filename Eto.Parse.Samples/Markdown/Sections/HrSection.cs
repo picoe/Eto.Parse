@@ -26,7 +26,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.AppendUnixLine("<hr />");
 		}

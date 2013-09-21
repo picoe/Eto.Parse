@@ -23,7 +23,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			Add(Terms.sp.Repeat(0, 3), prefix, Terms.ows, link, Terms.ows, ~title, +Terms.blankLine | Terms.eof);
 		}
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			// blank!
 		}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -21,7 +21,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -29,6 +29,13 @@
     <ConsolePause>false</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Perf - Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Perf - Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG; PERF_TEST</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,6 +67,8 @@
     <Compile Include="Markdown\Extensions.cs" />
     <Compile Include="Markdown\Sections\BlockQuoteSection.cs" />
     <Compile Include="Markdown\Sections\HrSection.cs" />
+    <Compile Include="Markdown\Sections\DoubleLineHeaderSection.cs" />
+    <Compile Include="Markdown\Encodings\BreakEncoding.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,10 +77,5 @@
       <Name>Eto.Parse</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Json\" />
-    <Folder Include="Markdown\" />
-    <Folder Include="Markdown\Encodings\" />
-    <Folder Include="Markdown\Sections\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

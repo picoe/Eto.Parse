@@ -35,13 +35,13 @@ namespace Eto.Parse.Samples.Markdown
 								length++;
 								if (scanner.Advance(1) == -1)
 								{
-									scanner.SetPosition(pos);
+									scanner.Position = pos;
 									return ParseMatch.None;
 								}
 							}
 							return new ParseMatch(pos, length);
 						}
-						scanner.SetPosition(pos);
+						scanner.Position = pos;
 						return ParseMatch.None;
 
 					}
@@ -53,7 +53,7 @@ namespace Eto.Parse.Samples.Markdown
 					{
 						if (first && !char.IsLetter(ch))
 						{
-							scanner.SetPosition(pos);
+							scanner.Position = pos;
 							return ParseMatch.None;
 						}
 						first = false;
@@ -73,7 +73,7 @@ namespace Eto.Parse.Samples.Markdown
 						}
 						if (ch != '>')
 						{
-							scanner.SetPosition(pos);
+							scanner.Position = pos;
 							return ParseMatch.None;
 						}
 						if (prev == '/') // self closing
@@ -123,7 +123,7 @@ namespace Eto.Parse.Samples.Markdown
 						}
 					}
 				}
-				scanner.SetPosition(pos);
+				scanner.Position = pos;
 			}
 			return ParseMatch.None;
 		}

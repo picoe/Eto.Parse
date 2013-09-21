@@ -16,8 +16,9 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			Add("*" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("*" & Terminals.Literal("*").Not()) | Terms.eolorf) & "*");
-			Add("_" & -Terms.sporht & Terms.sporht.Not() & new RepeatParser(1).Until(("_" & Terminals.Literal("_").Not()) | Terms.eolorf) & "_");
+			var inner = grammar.Encoding.ReplacementsExcept<ItalicEncoding>();
+			Add("*" & -Terms.sporht & Terms.sporht.Not() & +(inner | Terminals.AnyChar.Except("*")) & "*");
+			Add("_" & -Terms.sporht & Terms.sporht.Not() & +(inner | Terminals.AnyChar.Except("_")) & "_");
 		}
 
 		#if PERF_TEST
@@ -27,10 +28,10 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<em>");
-			args.Encoding.Replace(args, match, 1, -2);
+			args.Encoding.Transform(args, match, 1, -2);
 			args.Output.Append("</em>");
 		}
 	}

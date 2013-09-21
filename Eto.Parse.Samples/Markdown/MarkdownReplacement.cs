@@ -19,6 +19,7 @@ namespace Eto.Parse.Samples.Markdown
 		public Dictionary<string, MarkdownReference> References { get { return references; } }
 		public StringBuilder Output { get; set; }
 		public MarkdownEncoding Encoding { get; set; }
+		public MarkdownGrammar Grammar { get; set; }
 	}
 
 	public interface IMarkdownReplacement
@@ -27,6 +28,6 @@ namespace Eto.Parse.Samples.Markdown
 
 		void Initialize(MarkdownGrammar grammar);
 
-		void Replace(Match match, MarkdownReplacementArgs args);
+		void Transform(Match match, MarkdownReplacementArgs args);
 	}
 }

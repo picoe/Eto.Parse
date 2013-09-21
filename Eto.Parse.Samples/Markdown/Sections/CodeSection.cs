@@ -17,11 +17,9 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var indent = Terminals.Literal("    ") | Terms.ht;
-
 			var content = new RepeatParser().Until(Terms.eolorf);
 			content.Name = "content";
-			var line = indent & content;
+			var line = grammar.Indent & content;
 			Inner = line;
 			this.Minimum = 1;
 			this.SeparatedBy(+(Terms.ows & Terms.eol.Named("sep"))).Until(Terms.EndOfSection(line.Not()), true);
@@ -34,7 +32,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 		#endif
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<pre><code>");
 			var count = match.Matches.Count;

@@ -8,7 +8,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 {
 	public class MarkdownTestSuite : TestSuite
 	{
-		HtmlTest[] tests;
+		HtmlTest[] htmlTests;
 
 		public struct HtmlTest
 		{
@@ -21,28 +21,42 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 		{
 			get
 			{
-				if (tests == null)
+				if (htmlTests == null)
 				{
 					var markdownTests = new MarkdownTests();
 					var testList = new List<HtmlTest>();
-					var testNames = markdownTests.GetTests("simple").ToArray();
-					foreach (var test in testNames)
+
+					var tests = Enumerable.Empty<string>();
+					//tests = tests.Concat(markdownTests.GetTests("blocktests"));
+					//tests = tests.Concat(markdownTests.GetTests("extramode")); // no extra mode yet
+					//tests = tests.Concat(markdownTests.GetTests("mdtest01"));
+					//tests = tests.Concat(markdownTests.GetTests("mdtest11"));
+					//tests = tests.Concat(markdownTests.GetTests("pandoc"));
+					//tests = tests.Concat(markdownTests.GetTests("phpmarkdown"));
+					//tests = tests.Concat(markdownTests.GetTests("safemode"));
+					tests = tests.Concat(markdownTests.GetTests("simple"));
+					//tests = tests.Concat(markdownTests.GetTests("spantests"));
+					//tests = tests.Concat(markdownTests.GetTests("xsstests"));
+					foreach (var name in tests)
 					{
-						var text = File.ReadAllText(Path.Combine(MarkdownTests.BasePath, test + ".text"));
-						var html = File.ReadAllText(Path.Combine(MarkdownTests.BasePath, test + ".html"));
+						var textName = Path.Combine(MarkdownTests.BasePath, name + ".text");
+						if (!File.Exists(textName))
+							textName = Path.Combine(MarkdownTests.BasePath, name + ".txt");
+						var text = File.ReadAllText(textName);
+						var html = File.ReadAllText(Path.Combine(MarkdownTests.BasePath, name + ".html"));
 						testList.Add(new HtmlTest { Text = text, Html = html });
 					}
-					tests = testList.ToArray();
+					htmlTests = testList.ToArray();
 				}
 
-				return tests;
+				return htmlTests;
 			}
 		}
 
 		public MarkdownTestSuite()
 			: base("Markdown")
 		{
-			Iterations = 1000;
+			Iterations = 200;
 		}
 
 		public override IEnumerable<ITest> GetTests()

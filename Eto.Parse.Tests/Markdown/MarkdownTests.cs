@@ -13,7 +13,13 @@ namespace Eto.Parse.Tests.Markdown
 	public class MarkdownTests
 	{
 		public static readonly string BasePath = Path.Combine(Path.GetDirectoryName(typeof(MarkdownTests).Assembly.Location), "Markdown", "tests");
-		MarkdownGrammar grammar = new MarkdownGrammar();
+		MarkdownGrammar grammar;
+
+		[TestFixtureSetUp]
+		public void SetUp()
+		{
+			grammar = new MarkdownGrammar();
+		}
 
 		[Test, TestCaseSource("AllTests")]
 		public void TestFile(string name)
@@ -45,6 +51,12 @@ namespace Eto.Parse.Tests.Markdown
 			html = Regex.Replace(html, "((?<=[>])[ ]+)?[\\n]+([ ]{0,3}(?=[<]))?", "\n", RegexOptions.Compiled);
 			// ignore space between two tags
 			html = Regex.Replace(html, "[>]\\s+[<]", "><", RegexOptions.Compiled);
+			// ignore newline before ending tag
+			html = html.Replace("\n</", "</");
+			// ignore newline after start tag
+			html = html.Replace(">\n", ">");
+			// ignore tabs
+			html = html.Replace("\t", "    ");
 			return html.Trim();
 		}
 

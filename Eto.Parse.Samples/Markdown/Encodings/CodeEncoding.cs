@@ -39,12 +39,12 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 				{
 					var pos = m.Index;
 					var length = m.Length;
-					var str = scanner.SubString(m.Index, m.Length);
+					var str = scanner.Substring(m.Index, m.Length);
 					while (!scanner.ReadString(str, true))
 					{
 						if (scanner.Advance(1) == -1)
 						{
-							scanner.SetPosition(pos);
+							scanner.Position = pos;
 							return ParseMatch.None;
 						}
 						length++;
@@ -61,7 +61,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			}
 		}
 
-		public void Replace(Match match, MarkdownReplacementArgs args)
+		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			var text = match.Text;
 			int start = 0;
@@ -75,10 +75,11 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			var count = Math.Min(start, end);
 			args.Output.Append("<code>");
 			if (start > count)
-				args.Output.Append(text.Substring(0, start - count));
-			args.Output.Append(Encode(text.Substring(start, len).Trim(' ')));
+				args.Output.Append(text, 0, start - count);
+			var lines = text.Substring(start, len).Trim(' ');
+			args.Output.Append(Encode(lines));
 			if (end > count)
-				args.Output.Append(text.Substring(start + len, end - count));
+				args.Output.Append(text, start + len, end - count);
 			args.Output.Append("</code>");
 		}
 
