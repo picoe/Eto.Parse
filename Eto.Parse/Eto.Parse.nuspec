@@ -16,20 +16,13 @@
         You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
     </description>
     <releaseNotes>
-    	Breaking Changes for v1.1:
-    	* Removed NamedParser and moved Name property to base Parser class
-    	* ICharTester removed and all char testers are now derived from Parser directly (via CharTerminal), and names end in 'Terminal'
-    	* Renamed LiteralParser to LiteralTerminal
-    	* RepeatParser's '-' operator changed to '^' to specify the Until parser
-    	* '-' operator is now used for an exception using the ExceptParser (to match ebnf syntax)
-    	* NamedMatch/NamedMatchCollection are now named Match/MatchCollection
-    	* NamedMatch.Value is now equivalent to Match.Text.
-    	
-    	Other changes:
-    	* More fairly significant performance improvements from restructuring
-    	* Match.Value added which gets the appropriate object value from each parser (e.g. a number, boolean, escaped string, etc)
-    	* Added BooleanParser
-    	* Added option for speed test to compare the output of a property in the parsed json string
+    	Changes for v1.2:
+    	* Improved performance by ~10%
+    	* Added GrammarMatch.ChildErrorIndex to give you the actual index of the error
+    	* Fix GrammarMatch.Errors to only include errors that occur on ErrorIndex, not all parents
+    	* EolTerminal now matches \r\n, \n, or \r, not just a singe character
+    	* Add RepeatParser.SkipUntil and CaptureUntil to specify how to deal with the until parser (default is false for both)
+    	* Included xml documentation to give better help for common things (not everything is documented yet)
     </releaseNotes>
     <copyright>Copyright 2013 by Curtis Wensley</copyright>
     <tags>parser generator regex irony grammar fluent yacc lex ebnf bnf gold</tags>
