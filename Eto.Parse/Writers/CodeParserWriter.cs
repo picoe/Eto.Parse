@@ -27,6 +27,7 @@ namespace Eto.Parse.Writers
 				{ typeof(CharSetTerminal), new Code.CharSetWriter() },
 				{ typeof(BooleanTerminal), new Code.BooleanWriter() },
 				{ typeof(CharTerminal), new Code.CharWriter() },
+				{ typeof(SingleCharTerminal), new Code.SingleCharWriter() },
 				{ typeof(LookAheadParser), new Code.InverseWriter<LookAheadParser>() },
 			})
 		{
