@@ -37,17 +37,18 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Framework        | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse        |  0.397s |     1.57x        |  0.050s |     1.00xNewtonsoft Json  |  0.253s |     1.00x        |  0.064s |     1.29xIrony            |  2.434s |     9.63x        |  0.261s |     5.25xGold Parser      | 33.444s |   132.30x        |  0.409s |     8.23x
+Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse-helpers|  0.374s |     1.41x        |  0.068s |     1xNewtonsoft Json  |  0.265s |     1x           |  0.079s |     1.16xIrony            |  2.571s |     9.71x        |  0.269s |     3.97xGold Parser      | 34.107s |   128.74x        |  0.406s |     5.98x
+
 (Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
 ### Memory & Objects
 
 Framework        |  Allocated  | More than best | # Objects | More than best
 ---------------- | ----------: | :------------: | --------: | :------------:
-Eto.Parse        |    49.94 MB |    1.00x       |   1540828 |    1.00x
-Newtonsoft.Json  |   109.39 MB |    2.19x       |   2176395 |    1.41x
-Irony            |   440.21 MB |    8.82x       |   9572011 |    6.21x
-Gold Parser      | 4,609.45 MB |   92.30x       | 121366066 |   78.77x
+Eto.Parse        |    56.89 MB |      1x        | 1541401   |    1x
+Newtonsoft.Json  |   109.39 MB |      1.92x     | 2176395   |    1.41x
+Irony            |   440.21 MB |      7.74x     | 9572011   |    6.21x
+Gold             | 4,609.45 MB |     81.02x     | 121366066 |   78.74x
 
 Example
 -------
