@@ -32,18 +32,21 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
-			caseSensitive = this.CaseSensitive ?? args.Grammar.CaseSensitive;
+			if (args.Push(this))
+			{
+				caseSensitive = this.CaseSensitive ?? args.Grammar.CaseSensitive;
+				args.Pop(this);
+			}
 		}
 
-		public override object GetValue(Match match)
+		public override object GetValue(string text)
 		{
-			var val = match.Text;
 			var compare = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 			if (TrueValues != null)
 			{
 				for (int i = 0; i < TrueValues.Length; i++)
 				{
-					if (string.Equals(val, TrueValues[i], compare))
+					if (string.Equals(text, TrueValues[i], compare))
 						return true;
 				}
 			}
@@ -51,7 +54,7 @@ namespace Eto.Parse.Parsers
 			{
 				for (int i = 0; i < FalseValues.Length; i++)
 				{
-					if (string.Equals(val, FalseValues[i], compare))
+					if (string.Equals(text, FalseValues[i], compare))
 						return false;
 				}
 			}

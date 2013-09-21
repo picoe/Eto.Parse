@@ -115,9 +115,9 @@ namespace Eto.Parse.Parsers
 		
 		public override void Initialize(ParserInitializeArgs args)
 		{
+			base.Initialize(args);
 			if (args.Push(this))
 			{
-				base.Initialize(args);
 				if (line != null)
 					line.Initialize(args);
 				if (start != null)

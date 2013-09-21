@@ -4,12 +4,12 @@ namespace Eto.Parse.Scanners
 {
 	public class StringScanner : Scanner
 	{
-		int length;
+		int end;
 		string value;
 
 		public override bool IsEof
 		{
-			get { return Position >= length; }
+			get { return Position >= end; }
 		}
 		
 		public override char Current
@@ -22,22 +22,27 @@ namespace Eto.Parse.Scanners
 			get { return value; }
 		}
 
+		public string GetContext(int count)
+		{
+			return value.Substring(Position, Math.Min(value.Length - Position, count));
+		}
+
 		public StringScanner(string value)
 		{
 			this.value = value;
-			this.length = value.Length;
+			this.end = value.Length;
 		}
 
 		public StringScanner(string value, int index, int length)
 		{
 			this.value = value;
 			this.Position = index;
-			this.length = length;
+			this.end = index + length;
 		}
 
 		public override bool ReadChar(out char ch)
 		{
-			if (Position < length)
+			if (Position < end)
 			{
 				ch = value[Position];
 				Position ++;
@@ -51,7 +56,7 @@ namespace Eto.Parse.Scanners
 		{
 			var start = Position;
 			var newPos = start + length;
-			if (newPos > this.length)
+			if (newPos > this.end)
 				return -1;
 			Position = newPos;
 			return start;
@@ -61,7 +66,7 @@ namespace Eto.Parse.Scanners
 		{
 			var index = this.Position;
 			var end = index + matchString.Length;
-			if (end <= this.length)
+			if (end <= this.end)
 			{
 				if (caseSensitive)
 				{
@@ -85,11 +90,11 @@ namespace Eto.Parse.Scanners
 			return false;
 		}
 
-		public override string SubString(int offset, int length)
+		public override string Substring(int offset, int length)
 		{
-			if (offset >= this.length)
+			if (offset >= this.end)
 				return null;
-			length = Math.Min(offset + length, this.length) - offset;
+			length = Math.Min(offset + length, this.end) - offset;
 			return value.Substring(offset, length);
 		}
 	}

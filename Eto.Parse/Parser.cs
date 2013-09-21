@@ -257,7 +257,11 @@ namespace Eto.Parse
 		/// <param name="args">Initialization arguments</param>
 		public virtual void Initialize(ParserInitializeArgs args)
 		{
-			hasNamedChildren = Children().Any(r => r.Name != null);
+			if (args.Push(this))
+			{
+				hasNamedChildren = Children().Any(r => r.Name != null);
+				args.Pop(this);
+			}
 		}
 
 		/// <summary>
@@ -330,16 +334,77 @@ namespace Eto.Parse
 			return Clone();
 		}
 
-		public void SetError<T>(bool addError)
-			where T: Parser
+		/// <summary>
+		/// Sets the <see cref="AddError"/> flag on all children of this parser
+		/// </summary>
+		/// <param name="addError">Value to set the AddError flag to</param>
+		/// <param name="name">Name of the parser(s) to match, or null to set all children</param>
+		public void SetError(bool addError, string name = null)
 		{
-			foreach (var item in Children().OfType<T>())
+			var children = Children();
+			if (name != null)
+				children = children.Where(r => r.Name == name);
+			foreach (var item in children)
 				item.AddError = addError;
 		}
 
+		/// <summary>
+		/// Sets the <see cref="AddError"/> flag on all children of this parser
+		/// </summary>
+		/// <param name="addError">Value to set the AddError flag to</param>
+		/// <param name="name">Name of the parser(s) to match, or null to set all children</param>
+		/// <typeparam name="T">The type of parser to update</typeparam>
+		public void SetError<T>(bool addError, string name = null)
+			where T: Parser
+		{
+			var children = Children().OfType<T>();
+			if (name != null)
+				children = children.Where(r => r.Name == name);
+			foreach (var item in children)
+				item.AddError = addError;
+		}
+
+		/// <summary>
+		/// Gets the object value of the parser for the specified match
+		/// </summary>
+		/// <remarks>
+		/// Specialized parsers such as <see cref="Parsers.NumberParser"/>, <see cref="Parsers.StringParser"/>, etc
+		/// can return a type-specific value from its string representation using this method.
+		/// 
+		/// For example, the NumberParser can return an int, decimal, double, etc. and the StringParser
+		/// can process escape sequences or double quoted values.
+		/// 
+		/// To get the value from a specified text fragment, use <see cref="GetValue(string)"/>.
+		/// 
+		/// Implementors of parsers can override this (or preferrably <see cref="GetValue(string)"/>) to
+		/// provide special logic to get the translated object value.
+		/// </remarks>
+		/// <returns>The translated object value from the range specified in the <paramref name="match"/></returns>
+		/// <param name="match">Match to get the object value for</param>
 		public virtual object GetValue(Match match)
 		{
-			return match.Text;
+			return GetValue(match.Text);
+		}
+
+		/// <summary>
+		/// Gets the object value of the parser for the specified text representation
+		/// </summary>
+		/// <remarks>
+		/// Specialized parsers such as <see cref="Parsers.NumberParser"/>, <see cref="Parsers.StringParser"/>, etc
+		/// can return a type-specific value from its string representation using this method.
+		/// 
+		/// For example, the NumberParser can return an int, decimal, double, etc. and the StringParser
+		/// can process escape sequences or double quoted values.
+		/// 
+		/// To get the value from a specified <see cref="Match"/>, use <see cref="GetValue(Match)"/> instead.
+		/// 
+		/// Implementors of parsers can override this to provide special logic to get the translated object value.
+		/// </remarks>
+		/// <returns>The translated object value from the range specified in the <paramref name="match"/></returns>
+		/// <param name="text">Text representation to translate to an object value</param>
+		public virtual object GetValue(string text)
+		{
+			return text;
 		}
 	}
 }

@@ -34,11 +34,11 @@ namespace Eto.Parse.Parsers
 					return new ParseMatch(pos, 1);
 				if (ch == '\n')
 					return new ParseMatch(pos, 2);
-				scanner.SetPosition(pos + 1);
+				scanner.Position = pos + 1;
 				return new ParseMatch(pos, 1);
 			}
 
-			scanner.SetPosition(pos);
+			scanner.Position = pos;
 			return ParseMatch.None;
 		}
 

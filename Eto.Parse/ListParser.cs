@@ -26,13 +26,24 @@ namespace Eto.Parse
 
 		public override IEnumerable<Parser> Find(ParserFindArgs args)
 		{
-			var ret = base.Find(args);
 			if (args.Push(this)) 
 			{
-				ret = ret.Concat(Items.Where(r => r != null).SelectMany(r => r.Find(args)).ToArray());
+				foreach (var item in base.Find(args))
+				{
+					yield return item;
+				}
+				foreach (var item in Items)
+				{
+					if (item != null)
+					{
+						foreach (var  child in item.Find(args))
+							yield return child;
+					}
+				}
+				//ret = ret.Concat(Items.Where(r => r != null).SelectMany(r => r.Find(args)).ToArray());
 				args.Pop(this);
 			}
-			return ret;
+			//return ret;
 		}
 
 		public void InitializeItems(ParserInitializeArgs args)
@@ -68,11 +79,16 @@ namespace Eto.Parse
 			if (args.Push(this))
 			{
 				var items = Items.Where(r => r != null);
-				var childItems = items.SelectMany(r => r.Children(args)).ToArray();
+				foreach (var item in items)
+				{
+					yield return item;
+					foreach (var child in item.Children(args))
+					{
+						yield return child;
+					}
+				}
 				args.Pop(this);
-				return items.Concat(childItems);
 			}
-			return Enumerable.Empty<Parser>();
 		}
 
 		public void Add(params Parser[] parsers)

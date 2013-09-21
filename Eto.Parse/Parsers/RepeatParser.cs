@@ -1,11 +1,14 @@
 using System;
 using Eto.Parse;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
 	public class RepeatParser : UnaryParser, ISeparatedParser
 	{
 		Parser separator;
+		bool skipUntilMatches;
+
 		public Parser Separator { get; set; }
 
 		public int Minimum { get; set; }
@@ -60,17 +63,17 @@ namespace Eto.Parse.Parsers
 					Separator.Initialize(args);
 				if (Until != null)
 					Until.Initialize(args);
+				separator = Separator ?? args.Grammar.Separator;
+				skipUntilMatches = !CaptureUntil || (Until != null && Until.Children().Any(r => r.Name != null));
 				args.Pop(this);
 			}
-			separator = Separator ?? args.Grammar.Separator;
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			int count = 0;
-			var pos = scanner.Position;
-			var match = new ParseMatch(pos, 0);
+			var match = new ParseMatch(scanner.Position, 0);
 
 			// retrieve up to the maximum number
 			var sepMatch = ParseMatch.None;
@@ -80,13 +83,23 @@ namespace Eto.Parse.Parsers
 				{
 					if (Until != null && count >= Minimum)
 					{
-						var stopMatch = Until.Parse(args);
+						ParseMatch stopMatch;
+						if (skipUntilMatches)
+						{
+							args.Push();
+							stopMatch = Until.Parse(args);
+							args.PopFailed();
+						}
+						else
+						{
+							stopMatch = Until.Parse(args);
+						}
 						if (stopMatch.Success)
 						{
 							if (CaptureUntil)
 								match.Length += stopMatch.Length;
 							else if (!SkipUntil)
-								scanner.SetPosition(stopMatch.Index);
+								scanner.Position = stopMatch.Index;
 							return match;
 						}
 					}
@@ -99,17 +112,20 @@ namespace Eto.Parse.Parsers
 					}
 
 					var childMatch = Inner.Parse(args);
-					if (childMatch.FailedOrEmpty)
+					if (childMatch.Length > 0)
 					{
 						if (sepMatch.Success)
-							scanner.SetPosition(sepMatch.Index);
+							match.Length += sepMatch.Length;
+						match.Length += childMatch.Length;
+						count++;
+					}
+					else
+					{
+						if (sepMatch.Success)
+							scanner.Position = sepMatch.Index;
 						break;
 					}
-					if (sepMatch.Success)
-						match.Length += sepMatch.Length;
-					match.Length += childMatch.Length;
 
-					count++;
 				}
 			}
 			else
@@ -118,28 +134,54 @@ namespace Eto.Parse.Parsers
 				{
 					if (Until != null && count >= Minimum)
 					{
-						var stopMatch = Until.Parse(args);
+						ParseMatch stopMatch;
+						if (skipUntilMatches)
+						{
+							args.Push();
+							stopMatch = Until.Parse(args);
+							args.PopFailed();
+						}
+						else
+						{
+							stopMatch = Until.Parse(args);
+						}
 						if (stopMatch.Success)
 						{
 							if (CaptureUntil)
 								match.Length += stopMatch.Length;
 							else if (!SkipUntil)
-								scanner.SetPosition(stopMatch.Index);
+								scanner.Position = stopMatch.Index;
 							return match;
 						}
 					}
 
+					if (separator != null && count > 0)
+					{
+						sepMatch = separator.Parse(args);
+						if (!sepMatch.Success)
+							break;
+					}
+
 					var ofs = scanner.Advance(1);
-					if (ofs == -1)
+					if (ofs >= 0)
+					{
+						if (sepMatch.Success)
+							match.Length += sepMatch.Length;
+						match.Length ++;
+						count++;
+					}
+					else
+					{
+						if (sepMatch.Success)
+							scanner.Position = sepMatch.Index;
 						break;
-					match.Length += 1;
-					count++;
+					}
 				}
 			}
 
 			if (count < Minimum)
 			{
-				scanner.SetPosition(pos);
+				scanner.Position = match.Index;
 				return ParseMatch.None;
 			}
 

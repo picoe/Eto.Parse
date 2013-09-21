@@ -97,7 +97,7 @@ namespace Eto.Parse
 				if (match.Success && !AllowPartialMatch && !scanner.IsEof)
 				{
 					args.PopFailed();
-					scanner.SetPosition(pos);
+					scanner.Position = pos;
 					match = ParseMatch.None;
 				}
 				else

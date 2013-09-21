@@ -49,18 +49,24 @@ namespace Eto.Parse.Parsers
 				for (int i = 0; i < count; i++)
 				{
 					var parser = Items[i];
-					if (parser == null)
+					if (parser != null)
+					{
+						var match = parser.Parse(args);
+						if (!match.Success)
+						{
+							args.ClearMatches();
+						}
+						else
+						{
+							args.PopSuccess();
+							return match;
+						}
+					}
+					else
 					{
 						args.PopFailed();
 						return args.EmptyMatch;
 					}
-					var match = parser.Parse(args);
-					if (match.Success)
-					{
-						args.PopSuccess();
-						return match;
-					}
-					args.ClearMatches();
 				}
 				args.PopFailed();
 			}
@@ -69,11 +75,16 @@ namespace Eto.Parse.Parsers
 				for (int i = 0; i < count; i++)
 				{
 					var parser = Items[i];
-					if (parser == null)
+					if (parser != null)
+					{
+						var match = parser.Parse(args);
+						if (match.Success)
+							return match;
+					}
+					else
+					{
 						return args.EmptyMatch;
-					var match = parser.Parse(args);
-					if (match.Success)
-						return match;
+					}
 				}
 			}
 			return ParseMatch.None;

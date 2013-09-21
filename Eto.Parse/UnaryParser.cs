@@ -48,8 +48,8 @@ namespace Eto.Parse
 		{
 			base.Initialize(args);
 			if (Inner != null && args.Push(this))
-			{
-				Inner.Initialize(args);
+				{
+					Inner.Initialize(args);
 				args.Pop(this);
 			}
 		}
@@ -113,11 +113,13 @@ namespace Eto.Parse
 		{
 			if (Inner != null && args.Push(this))
 			{
-				var ret = new Parser[] { Inner }.Concat(Inner.Children(args).ToArray());
+				yield return Inner;
+				foreach (var child in Inner.Children(args))
+				{
+					yield return child;
+				}
 				args.Pop(this);
-				return ret;
 			}
-			return Enumerable.Empty<Parser>();
 		}
 
 		public override object GetValue(Match match)
@@ -125,6 +127,13 @@ namespace Eto.Parse
 			if (Inner != null)
 				return Inner.GetValue(match);
 			return base.GetValue(match);
+		}
+
+		public override object GetValue(string text)
+		{
+			if (Inner != null)
+				return Inner.GetValue(text);
+			return base.GetValue(text);
 		}
 	}
 }

@@ -37,11 +37,15 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
-			if (ValueType != null)
-				parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
+			if (args.Push(this))
+			{
+				if (ValueType != null)
+					parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
+				args.Pop(this);
+			}
 		}
 
-		public override object GetValue(Match match)
+		public override object GetValue(string text)
 		{
 			var style = NumberStyles.None;
 
@@ -52,7 +56,7 @@ namespace Eto.Parse.Parsers
 			if (AllowExponent)
 				style |= NumberStyles.AllowExponent;
 
-			return parseMethod.Invoke(null, new object[] { match.Text, style });
+			return parseMethod.Invoke(null, new object[] { text, style });
 		}
 
 		protected override ParseMatch InnerParse(ParseArgs args)
@@ -67,7 +71,7 @@ namespace Eto.Parse.Parsers
 				hasNext = scanner.ReadChar(out ch);
 				if (!hasNext)
 				{
-					scanner.SetPosition(pos);
+					scanner.Position = pos;
 					return ParseMatch.None;
 				}
 				if (ch == '-' || ch == '+')
@@ -102,7 +106,7 @@ namespace Eto.Parse.Parsers
 				}
 				else if (!foundNumber)
 				{
-					scanner.SetPosition(pos);
+					scanner.Position = pos;
 					return ParseMatch.None;
 				}
 				else
@@ -110,7 +114,7 @@ namespace Eto.Parse.Parsers
 				len++;
 				hasNext = scanner.ReadChar(out ch);
 			}
-			scanner.SetPosition(pos + len);
+			scanner.Position = pos + len;
 			return new ParseMatch(pos, len);
 		}
 

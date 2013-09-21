@@ -60,34 +60,33 @@ namespace Eto.Parse.Parsers
 			get { return AllowQuoted ? "Quoted String" : "String"; }
 		}
 
-		public override object GetValue(Match match)
+		public override object GetValue(string text)
 		{
-			var val = match.Text;
-			if (val.Length > 0)
+			if (text.Length > 0)
 			{
 				// process escapes using string format with no parameters
 				if (AllowEscapeCharacters)
 				{
-					val = GetEscapedString(val);
+					text = GetEscapedString(text);
 				}
 				else if (AllowQuoted)
 				{
-					var quoteIndex = quoteCharString.IndexOf(val[0]);
+					var quoteIndex = quoteCharString.IndexOf(text[0]);
 					if (quoteIndex >= 0)
 					{
 						var quoteChar = endQuoteCharString[quoteIndex];
-						if (val.Length >= 2 && val[val.Length - 1] == quoteChar)
+						if (text.Length >= 2 && text[text.Length - 1] == quoteChar)
 						{
-							val = val.Substring(1, val.Length - 2);
+							text = text.Substring(1, text.Length - 2);
 						}
 						if (AllowDoubleQuote)
 						{
-							val = val.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
+							text = text.Replace(quoteChar.ToString() + quoteChar, quoteChar.ToString());
 						}
 					}
 				}
 			}
-			return val;
+			return text;
 		}
 
 		string GetEscapedString(string source)
@@ -282,7 +281,7 @@ namespace Eto.Parse.Parsers
 				}
 
 				length = 0;
-				scanner.SetPosition(pos);
+				scanner.Position = pos;
 			}
 
 			if (AllowNonQuoted && NonQuotedLetter != null)

@@ -16,13 +16,18 @@ namespace Eto.Parse
 			get { return matches ?? (matches = new MatchCollection()); }
 		}
 
+		public bool HasMatches
+		{
+			get { return matches != null && matches.Count > 0; }
+		}
+
 		public Scanner Scanner { get; private set; }
 
 		public object Value { get { return Success ? Parser.GetValue(this) : null; } }
 
 		public string StringValue { get { return Convert.ToString(Value); } }
 
-		public string Text { get { return Success ? Scanner.SubString(Index, Length) : null; } }
+		public string Text { get { return Success ? Scanner.Substring(Index, Length) : null; } }
 
 		public string Name { get; private set; }
 
@@ -106,11 +111,27 @@ namespace Eto.Parse
 
 		public IEnumerable<Match> Find(string id, bool deep = false)
 		{
-			var matches = this.Where(r => r.Name == id);
-			if (deep && !matches.Any())
-				return matches.Concat(this.SelectMany(r => r.Find(id, deep)));
-			else
-				return matches;
+			bool found = false;
+			for (int i = 0; i < this.Count; i++)
+			{
+				var item = this[i];
+				if (item.Name == id)
+				{
+					yield return item;
+					found = true;
+				}
+			}
+			if (deep && !found)
+			{
+				for (int i = 0; i < this.Count; i++)
+				{
+					var item = this[i];
+					foreach (var child in item.Find(id, deep))
+					{
+						yield return child;
+					}
+				}
+			}
 		}
 
 		public Match this [string id, bool deep = false]

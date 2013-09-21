@@ -22,7 +22,7 @@ namespace Eto.Parse.Parsers
 			var match = Inner.Parse(args);
 			if (match.Success)
 			{
-				args.Scanner.SetPosition(pos);
+				args.Scanner.Position = pos;
 				return Inverse ? ParseMatch.None : args.EmptyMatch;
 			}
 			else

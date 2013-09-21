@@ -30,7 +30,7 @@ namespace Eto.Parse.Parsers
 				return base.InnerParse(args);
 			else
 			{
-				args.Scanner.SetPosition(pos);
+				args.Scanner.Position = pos;
 				return ParseMatch.None;
 			}
 		}

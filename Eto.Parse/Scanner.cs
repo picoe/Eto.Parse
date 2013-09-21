@@ -4,13 +4,12 @@ namespace Eto.Parse
 {
 	public abstract class Scanner
 	{
-		int position;
+		public int Position { get; set; }
 
-		public int Position { get { return position; } protected set { position = value; } }
-
-		public virtual void SetPosition(int position)
+		[Obsolete("Use Position property instead")]
+		public void SetPosition(int position)
 		{
-			this.position = position;
+			Position = position;
 		}
 
 		public abstract int Advance(int length);
@@ -23,6 +22,12 @@ namespace Eto.Parse
 
 		public abstract bool ReadChar(out char ch);
 
-		public abstract string SubString(int index, int length);
+		public abstract string Substring(int index, int length);
+
+		[Obsolete("Use Substring instead")]
+		public string SubString(int index, int length)
+		{
+			return Substring(index, length);
+		}
 	}
 }
