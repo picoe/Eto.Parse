@@ -1,35 +1,53 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Eto.Parse
 {
 	public class GrammarMatch : Match
 	{
+		IEnumerable<Parser> errors;
+
 		public int ErrorIndex { get; private set; }
 
-		public IEnumerable<Parser> Errors { get; private set; }
+		public int ChildErrorIndex { get; private set; }
 
-		public GrammarMatch(Grammar grammar, Scanner scanner, ParseMatch match, MatchCollection matches, int errorIndex, IEnumerable<Parser> errors)
+		public IEnumerable<Parser> Errors { get { return errors ?? Enumerable.Empty<Parser>(); } }
+
+		public GrammarMatch(Grammar grammar, Scanner scanner, ParseMatch match, MatchCollection matches, int errorIndex, int childErrorIndex, IEnumerable<Parser> errors)
 			: base(grammar.Name, grammar, scanner, match, matches)
 		{
-			this.Errors = errors;
+			this.errors = errors;
 			this.ErrorIndex = errorIndex;
+			this.ChildErrorIndex = childErrorIndex;
 		}
 
-		public string GetErrorContext(int count, string indicator = ">>>")
+		public string GetContext(int index, int count, string indicator = ">>>")
 		{
-			var before = Scanner.SubString(Math.Max(0, ErrorIndex - count), (int)Math.Min(ErrorIndex, count));
-			var after = Scanner.SubString(ErrorIndex, count);
+			if (index < 0)
+				throw new ArgumentOutOfRangeException("index", "Index must be greater or equal to zero");
+			var before = Scanner.Substring(Math.Max(0, index - count), (int)Math.Min(index, count));
+			var after = Scanner.Substring(index, count);
 			return before + indicator + after;
 		}
 
 		public string ErrorMessage
 		{
-			get {
-				var context = GetErrorContext(10);
+			get
+			{
+				var sb = new StringBuilder();
+				if (ErrorIndex >= 0)
+					sb.AppendLine(string.Format("Index={0}, Context=\"{1}\"", ErrorIndex, GetContext(ErrorIndex, 10)));
+				if (ChildErrorIndex >= 0 && ChildErrorIndex != ErrorIndex)
+					sb.AppendLine(string.Format("ChildIndex={0}, Context=\"{1}\"", ChildErrorIndex, GetContext(ChildErrorIndex, 10)));
 				var messages = string.Join("\n", Errors.Select(r => r.GetErrorMessage()));
-				return string.Format("Index={0}, Context=\"{1}\"\nExpected:\n{2}", ErrorIndex, context, messages);
+				if (!string.IsNullOrEmpty(messages))
+				{
+					sb.AppendLine("Expected:");
+					sb.AppendLine(messages);
+				}
+				return sb.ToString();
 			}
 		}
 	}

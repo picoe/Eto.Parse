@@ -10,7 +10,6 @@ namespace Eto.Parse
 	/// </summary>
 	public class Grammar : UnaryParser
 	{
-		SlimStack<SlimStack<MatchCollection>> reusableMatches = new SlimStack<SlimStack<MatchCollection>>();
 		bool initialized;
 
 		/// <summary>
@@ -106,8 +105,8 @@ namespace Eto.Parse
 					matches = args.Pop();
 				}
 
-				IEnumerable<Parser> errors = Enumerable.Empty<Parser>();
-				if (!match.Success)
+				IEnumerable<Parser> errors = null;
+				if (args.Errors != null)
 				{
 					var errorList = new List<Parser>(args.Errors.Count);
 					foreach (var error in args.Errors)
@@ -118,7 +117,7 @@ namespace Eto.Parse
 					errors = errorList;
 				}
 
-				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, errors);
+				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, args.ChildErrorIndex, errors);
 				return match;
 			}
 			else
@@ -134,12 +133,11 @@ namespace Eto.Parse
 		public GrammarMatch Match(Scanner scanner)
 		{
 			//scanner.ThrowIfNull("scanner");
-			var nodes = reusableMatches.Count > 0 ? reusableMatches.Pop() : new SlimStack<MatchCollection>(50);
-			var args = new ParseArgs(this, scanner, nodes);
+			var args = new ParseArgs(this, scanner);
+
 			if (!initialized)
 				Initialize();
 			Parse(args);
-			reusableMatches.Push(nodes);
 			var root = args.Root;
 
 			if (root.Success && EnableMatchEvents)

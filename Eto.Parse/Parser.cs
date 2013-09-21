@@ -203,21 +203,22 @@ namespace Eto.Parse
 		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
 		public ParseMatch Parse(ParseArgs args)
 		{
-			if (!hasNamedChildren || name == null)
+			if (Name == null || !hasNamedChildren)
 			{
 				var match = InnerParse(args);
 				if (match.Success)
 				{
-					if (name != null)
+					if (Name != null)
 						args.AddMatch(this, match, Name);
 					return match;
 				}
-
 				if (AddError)
 					args.AddError(this);
+				else
+					args.SetChildError();
 				return match;
 			}
-			else 
+			else
 			{
 				args.Push();
 				var match = InnerParse(args);
@@ -230,6 +231,8 @@ namespace Eto.Parse
 				args.PopFailed();
 				if (AddError)
 					args.AddError(this);
+				else
+					args.SetChildError();
 				return match;
 			}
 		}

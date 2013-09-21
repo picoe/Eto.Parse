@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Eto.Parse.Parsers;
 
 namespace Eto.Parse
 {
 	/// <summary>
-	/// Arguments for parsing
+	/// Arguments used for each parse operation
 	/// </summary>
 	/// <remarks>
 	/// This is used during the parsing process to track the current match tree, errors, scanner, etc.
@@ -16,29 +17,82 @@ namespace Eto.Parse
 		SlimStack<MatchCollection> nodes;
 		List<Parser> errors = new List<Parser>();
 
+		/// <summary>
+		/// Gets the root match when the grammar is matched
+		/// </summary>
 		public GrammarMatch Root { get; internal set; }
 
+		/// <summary>
+		/// Gets the current scanner used to parse the text
+		/// </summary>
+		/// <value>The scanner</value>
 		public Scanner Scanner { get; private set; }
 
+		/// <summary>
+		/// Gets the current grammar being parsed
+		/// </summary>
+		/// <value>The grammar.</value>
 		public Grammar Grammar { get; private set; }
 
+		/// <summary>
+		/// Gets the index of the last parser error (if any), or -1 if the error has not been set
+		/// </summary>
+		/// <remarks>
+		/// Use the <see cref="Errors"/> collection to get the list of parsers that had an invalid match
+		/// at this position.
+		/// 
+		/// Only parsers with the <see cref="Parser.AddError"/> flag turned on will cause the error
+		/// index to be updated to the position of where that parser started from.
+		/// 
+		/// To get where the actual error occurred, see <see cref="ErrorContextIndex"/>, which gives
+		/// you the exact position where the first failure occurred.
+		/// 
+		/// Alternatively, for debugging purposes you can turn on AddError for all parsers by using
+		/// <see cref="Parser.SetError"/> 
+		/// </remarks>
+		/// <value>The index of the error.</value>
 		public int ErrorIndex { get; private set; }
 
-		public bool CaseSensitive { get; private set; }
+		/// <summary>
+		/// Gets the index of where the error action
+		/// </summary>
+		/// <value>The index of the error context.</value>
+		public int ChildErrorIndex { get; private set; }
 
+		/// <summary>
+		/// Gets the list of parsers that failed a match at the specicified <see cref="ErrorIndex"/>
+		/// </summary>
+		/// <remarks>
+		/// This is only added to when the <see cref="Parser.AddError"/> boolean value is true, and failed to match.
+		/// 
+		/// For example, if you have a SequenceParser with <see cref="AddError"/> set to true, but none of its children,
+		/// then even when some of the children match (but not all otherwise there wouldn't be an error), then
+		/// the child won't be added to this list, only the parent.
+		/// 
+		/// The <see cref="ErrorIndex"/> will also indicate the position that the *parent* failed to match, not the
+		/// child.  To get the child index, use <see cref="ChildErrorIndex"/>
+		/// </remarks>
+		/// <value>The list of parsers that have errors</value>
 		public List<Parser> Errors { get { return errors; } }
 
-		public string ErrorName { get; private set; }
-
-		internal ParseArgs(Grammar grammar, Scanner scanner, SlimStack<MatchCollection> nodes)
+		internal ParseArgs(Grammar grammar, Scanner scanner)
 		{
+			ErrorIndex = -1;
+			ChildErrorIndex = -1;
 			Grammar = grammar;
 			Scanner = scanner;
-			CaseSensitive = grammar.CaseSensitive;
-			this.nodes = nodes ?? new SlimStack<MatchCollection>(50);
+			nodes = new SlimStack<MatchCollection>(50);
 		}
 
-		public bool IsRoot
+		internal void Reset(Scanner scanner)
+		{
+			Scanner = scanner;
+			ErrorIndex = -1;
+			ChildErrorIndex = -1;
+			errors.Clear();
+		}
+
+		internal bool IsRoot
 		{
 			get { return nodes.Count <= 1; }
 		}
@@ -73,8 +127,21 @@ namespace Eto.Parse
 			{
 				ErrorIndex = pos;
 				errors.Clear();
+				errors.Add(parser);
 			}
-			errors.Add(parser);
+			else if (pos == ErrorIndex)
+			{
+				errors.Add(parser);
+			}
+			ChildErrorIndex = Math.Max(ChildErrorIndex, pos);
+		}
+
+		/// <summary>
+		/// Sets the child error index for parsers that have <see cref="Parser.AddError"/> set to false
+		/// </summary>
+		public void SetChildError()
+		{
+			ChildErrorIndex = Math.Max(ChildErrorIndex, Scanner.Position);
 		}
 
 		/// <summary>
@@ -156,8 +223,13 @@ namespace Eto.Parse
 			}
 		}
 
+		public void PopKeep()
+		{
+			nodes.PopKeep();
+		}
+
 		/// <summary>
-		/// Pops a succesful named match
+		/// Pops a succesful named match node, and adds it to the parent match node
 		/// </summary>
 		/// <param name="parser">Parser with the name to add to the match tree</param>
 		/// <param name="match">Match to add to the match tree</param>
@@ -178,6 +250,15 @@ namespace Eto.Parse
 			}
 		}
 
+		/// <summary>
+		/// Adds a match to the current result match node
+		/// </summary>
+		/// <remarks>
+		/// This is used to add a parse match to the result match tree
+		/// </remarks>
+		/// <param name="parser">Parser for the match</param>
+		/// <param name="match">Parse match indicating the position and length of the match</param>
+		/// <param name="name">Name of this match (usually the Parser.Match value)</param>
 		public void AddMatch(Parser parser, ParseMatch match, string name)
 		{
 			if (nodes.Count > 0)
