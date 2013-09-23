@@ -135,7 +135,7 @@ namespace Eto.Parse.Parsers
 					else
 						this.Items.Add(+secondParser);
 				}
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 
@@ -149,11 +149,11 @@ namespace Eto.Parse.Parsers
 				{
 					if (item != null && item.IsLeftRecursive(args))
 					{
-						args.Pop(this);
+						args.Pop();
 						return true;
 					}
 				}
-				args.Pop(this);
+				args.Pop();
 			}
 			return false;
 		}

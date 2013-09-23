@@ -59,12 +59,11 @@ namespace Eto.Parse
 		}
 
 		/// <summary>
-		/// Pop the specified parser from the chain
+		/// Pop the last parser from the chain
 		/// </summary>
-		/// <param name="parser">Parser to pop</param>
-		public void Pop(Parser parser)
+		public void Pop()
 		{
-			parents.Remove(parser);
+			parents.RemoveAt(parents.Count - 1);
 		}
 
 		/// <summary>

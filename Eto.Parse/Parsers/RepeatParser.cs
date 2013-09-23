@@ -65,7 +65,7 @@ namespace Eto.Parse.Parsers
 					Until.Initialize(args);
 				separator = Separator ?? args.Grammar.Separator;
 				skipUntilMatches = !CaptureUntil || (Until != null && Until.Children().Any(r => r.Name != null));
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 
@@ -73,7 +73,8 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			int count = 0;
-			var match = new ParseMatch(scanner.Position, 0);
+			var pos = scanner.Position;
+			int length = 0;
 
 			// retrieve up to the maximum number
 			var sepMatch = ParseMatch.None;
@@ -97,10 +98,10 @@ namespace Eto.Parse.Parsers
 						if (stopMatch.Success)
 						{
 							if (CaptureUntil)
-								match.Length += stopMatch.Length;
+								length += stopMatch.Length;
 							else if (!SkipUntil)
 								scanner.Position = stopMatch.Index;
-							return match;
+							return new ParseMatch(pos, length);
 						}
 					}
 
@@ -115,8 +116,8 @@ namespace Eto.Parse.Parsers
 					if (childMatch.Length > 0)
 					{
 						if (sepMatch.Success)
-							match.Length += sepMatch.Length;
-						match.Length += childMatch.Length;
+							length += sepMatch.Length;
+						length += childMatch.Length;
 						count++;
 					}
 					else
@@ -148,10 +149,10 @@ namespace Eto.Parse.Parsers
 						if (stopMatch.Success)
 						{
 							if (CaptureUntil)
-								match.Length += stopMatch.Length;
+								length += stopMatch.Length;
 							else if (!SkipUntil)
 								scanner.Position = stopMatch.Index;
-							return match;
+							return new ParseMatch(pos, length);
 						}
 					}
 
@@ -166,8 +167,8 @@ namespace Eto.Parse.Parsers
 					if (ofs >= 0)
 					{
 						if (sepMatch.Success)
-							match.Length += sepMatch.Length;
-						match.Length ++;
+							length += sepMatch.Length;
+						length ++;
 						count++;
 					}
 					else
@@ -181,11 +182,11 @@ namespace Eto.Parse.Parsers
 
 			if (count < Minimum)
 			{
-				scanner.Position = match.Index;
+				scanner.Position = pos;
 				return ParseMatch.None;
 			}
 
-			return match;
+			return new ParseMatch(pos, length);
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

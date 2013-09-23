@@ -42,9 +42,11 @@ namespace Eto.Parse.Scanners
 
 		public override int ReadChar()
 		{
-			if (Position < end)
+			var pos = Position;
+			if (pos < end)
 			{
-				return value[Position++];
+				Position = pos + 1;
+				return value[pos];
 			}
 			return -1;
 		}
@@ -53,10 +55,12 @@ namespace Eto.Parse.Scanners
 		{
 			var start = Position;
 			var newPos = start + length;
-			if (newPos > this.end)
-				return -1;
-			Position = newPos;
-			return start;
+			if (newPos <= end)
+			{
+				Position = newPos;
+				return start;
+			}
+			return -1;
 		}
 
 		public override bool ReadString(string matchString, bool caseSensitive)
@@ -72,6 +76,8 @@ namespace Eto.Parse.Scanners
 						if (value[index++] != matchString[i])
 							return false;
 					}
+					Position = end;
+					return true;
 				}
 				else
 				{
@@ -80,19 +86,21 @@ namespace Eto.Parse.Scanners
 						if (char.ToLowerInvariant(value[index++]) != char.ToLowerInvariant(matchString[i]))
 							return false;
 					}
+					Position = end;
+					return true;
 				}
-				Position = end;
-				return true;
 			}
 			return false;
 		}
 
 		public override string Substring(int offset, int length)
 		{
-			if (offset >= this.end)
-				return null;
-			length = Math.Min(offset + length, this.end) - offset;
-			return value.Substring(offset, length);
+			if (offset < end)
+			{
+				length = Math.Min(offset + length, end) - offset;
+				return value.Substring(offset, length);
+			}
+			return null;
 		}
 	}
 }

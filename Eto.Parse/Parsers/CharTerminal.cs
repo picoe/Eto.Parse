@@ -32,11 +32,7 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
-			if (args.Push(this))
-			{
-				caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
-				args.Pop(this);
-			}
+			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
 		protected abstract bool Test(char ch, bool caseSensitive);

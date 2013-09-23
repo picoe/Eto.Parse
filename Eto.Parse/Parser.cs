@@ -20,6 +20,7 @@ namespace Eto.Parse
 	public abstract partial class Parser : ICloneable
 	{
 		bool hasNamedChildren;
+		bool useNamed;
 		string name;
 		bool addError;
 		bool addErrorSet;
@@ -203,37 +204,53 @@ namespace Eto.Parse
 		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
 		public ParseMatch Parse(ParseArgs args)
 		{
-			if (Name == null || !hasNamedChildren)
+			if (!useNamed)
 			{
 				var match = InnerParse(args);
-				if (match.Success)
+				if (!match.Success)
 				{
-					if (Name != null)
-						args.AddMatch(this, match, Name);
+					if (!AddError)
+					{
+						args.SetChildError();
+						return match;
+					}
+					else
+					{
+						args.AddError(this);
+						return match;
+					}
+				}
+				else
+				{
+					if (name == null)
+						return match;
+					args.AddMatch(this, match, Name);
 					return match;
 				}
-				if (AddError)
-					args.AddError(this);
-				else
-					args.SetChildError();
-				return match;
 			}
 			else
 			{
 				args.Push();
 				var match = InnerParse(args);
-				if (match.Success)
+				if (!match.Success)
+				{
+					args.PopFailed();
+					if (!AddError)
+					{
+						args.SetChildError();
+						return match;
+					}
+					else
+					{
+						args.AddError(this);
+						return match;
+					}
+				}
+				else
 				{
 					args.PopMatch(this, match, Name);
 					return match;
 				}
-
-				args.PopFailed();
-				if (AddError)
-					args.AddError(this);
-				else
-					args.SetChildError();
-				return match;
 			}
 		}
 
@@ -260,7 +277,8 @@ namespace Eto.Parse
 			if (args.Push(this))
 			{
 				hasNamedChildren = Children().Any(r => r.Name != null);
-				args.Pop(this);
+				useNamed = hasNamedChildren && name != null;
+				args.Pop();
 			}
 		}
 

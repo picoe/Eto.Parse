@@ -32,11 +32,7 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
-			if (args.Push(this))
-			{
-				caseSensitive = this.CaseSensitive ?? args.Grammar.CaseSensitive;
-				args.Pop(this);
-			}
+			caseSensitive = this.CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
 		public override object GetValue(string text)

@@ -35,7 +35,7 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
-			var match = new ParseMatch(pos, 0);
+			var length = 0;
 			var count = Items.Count;
 			if (separator != null)
 			{
@@ -46,7 +46,7 @@ namespace Eto.Parse.Parsers
 					return childMatch;
 				}
 
-				match.Length += childMatch.Length;
+				length += childMatch.Length;
 				for (int i = 1; i < count; i++)
 				{
 					var sepMatch = separator.Parse(args);
@@ -57,8 +57,8 @@ namespace Eto.Parse.Parsers
 						if (childMatch.Success)
 						{
 							if (!childMatch.Empty)
-								match.Length += sepMatch.Length;
-							match.Length += childMatch.Length;
+								length += sepMatch.Length;
+							length += childMatch.Length;
 							continue;
 						}
 					}
@@ -66,7 +66,7 @@ namespace Eto.Parse.Parsers
 					args.Scanner.Position = pos;
 					return ParseMatch.None;
 				}
-				return match;
+				return new ParseMatch(pos, length);
 			}
 			else
 			{
@@ -76,13 +76,13 @@ namespace Eto.Parse.Parsers
 					var childMatch = parser.Parse(args);
 					if (childMatch.Success)
 					{
-						match.Length += childMatch.Length;
+						length += childMatch.Length;
 						continue;
 					}
 					args.Scanner.Position = pos;
 					return ParseMatch.None;
 				}
-				return match;
+				return new ParseMatch(pos, length);
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace Eto.Parse.Parsers
 				if (Separator != null)
 					Separator.Initialize(args);
 
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 
@@ -131,10 +131,10 @@ namespace Eto.Parse.Parsers
 			{
 				var item = Items[0];
 				if (item != null && item.IsLeftRecursive(args)) {
-					args.Pop(this);
+					args.Pop();
 					return true;
 				}
-				args.Pop(this);
+				args.Pop();
 			}
 			return false;
 		}

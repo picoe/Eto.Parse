@@ -124,7 +124,7 @@ namespace Eto.Parse.Parsers
 					start.Initialize(args);
 				if (end != null)
 					end.Initialize(args);
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 

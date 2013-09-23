@@ -40,15 +40,17 @@ namespace Eto.Parse.Parsers
 
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
-			if (Value == null)
+			if (Value != null)
+			{
+				var scanner = args.Scanner;
+				int pos = scanner.Position;
+				if (!scanner.ReadString(Value, caseSensitive))
+					return ParseMatch.None;
+				else
+					return new ParseMatch(pos, Value.Length);
+			}
+			else
 				return args.EmptyMatch;
-
-			var scanner = args.Scanner;
-			int pos = scanner.Position;
-			if (scanner.ReadString(Value, caseSensitive))
-				return new ParseMatch(pos, Value.Length);
-
-			return ParseMatch.None;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

@@ -41,7 +41,7 @@ namespace Eto.Parse.Parsers
 			{
 				if (ValueType != null)
 					parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 

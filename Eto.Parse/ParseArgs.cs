@@ -16,6 +16,7 @@ namespace Eto.Parse
 	{
 		SlimStack<MatchCollection> nodes;
 		List<Parser> errors = new List<Parser>();
+		int childErrorIndex;
 
 		/// <summary>
 		/// Gets the root match when the grammar is matched
@@ -57,7 +58,7 @@ namespace Eto.Parse
 		/// Gets the index of where the error action
 		/// </summary>
 		/// <value>The index of the error context.</value>
-		public int ChildErrorIndex { get; private set; }
+		public int ChildErrorIndex { get { return childErrorIndex; } }
 
 		/// <summary>
 		/// Gets the list of parsers that failed a match at the specicified <see cref="ErrorIndex"/>
@@ -78,7 +79,7 @@ namespace Eto.Parse
 		internal ParseArgs(Grammar grammar, Scanner scanner)
 		{
 			ErrorIndex = -1;
-			ChildErrorIndex = -1;
+			childErrorIndex = -1;
 			Grammar = grammar;
 			Scanner = scanner;
 			nodes = new SlimStack<MatchCollection>(50);
@@ -88,7 +89,7 @@ namespace Eto.Parse
 		{
 			Scanner = scanner;
 			ErrorIndex = -1;
-			ChildErrorIndex = -1;
+			childErrorIndex = -1;
 			errors.Clear();
 		}
 
@@ -133,7 +134,8 @@ namespace Eto.Parse
 			{
 				errors.Add(parser);
 			}
-			ChildErrorIndex = Math.Max(ChildErrorIndex, pos);
+			if (pos > childErrorIndex)
+				childErrorIndex = pos;
 		}
 
 		/// <summary>
@@ -141,7 +143,9 @@ namespace Eto.Parse
 		/// </summary>
 		public void SetChildError()
 		{
-			ChildErrorIndex = Math.Max(ChildErrorIndex, Scanner.Position);
+			var pos = Scanner.Position;
+			if (pos > childErrorIndex)
+				childErrorIndex = pos;
 		}
 
 		/// <summary>

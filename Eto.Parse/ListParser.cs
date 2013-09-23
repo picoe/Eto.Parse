@@ -41,7 +41,7 @@ namespace Eto.Parse
 					}
 				}
 				//ret = ret.Concat(Items.Where(r => r != null).SelectMany(r => r.Find(args)).ToArray());
-				args.Pop(this);
+				args.Pop();
 			}
 			//return ret;
 		}
@@ -65,11 +65,11 @@ namespace Eto.Parse
 				{
 					if (item != null && item.Contains(args))
 					{
-						args.Pop(this);
+						args.Pop();
 						return true;
 					}
 				}
-				args.Pop(this);
+				args.Pop();
 			}
 			return false;
 		}
@@ -87,7 +87,7 @@ namespace Eto.Parse
 						yield return child;
 					}
 				}
-				args.Pop(this);
+				args.Pop();
 			}
 		}
 
