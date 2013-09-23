@@ -23,7 +23,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 
 		public override IEnumerable<ITest> GetTests()
 		{
-			//yield return new TestEtoDirect();
+			//∫yield return new TestEtoDirect();
 			yield return new TestEtoHelpers();
 			yield return new TestNewtonsoft();
 			yield return new TestIrony();
