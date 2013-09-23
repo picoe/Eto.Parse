@@ -23,19 +23,21 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
-			char ch;
-			if (!scanner.ReadChar(out ch))
-				return ParseMatch.None;
-			if (ch == '\n')
-				return new ParseMatch(pos, 1);
-			if (ch == '\r')
+			int ch = scanner.ReadChar();
+			if (ch != -1)
 			{
-				if (!scanner.ReadChar(out ch))
-					return new ParseMatch(pos, 1);
 				if (ch == '\n')
-					return new ParseMatch(pos, 2);
-				scanner.Position = pos + 1;
-				return new ParseMatch(pos, 1);
+					return new ParseMatch(pos, 1);
+				if (ch == '\r')
+				{
+					ch = scanner.ReadChar();
+					if (ch == -1)
+						return new ParseMatch(pos, 1);
+					if (ch == '\n')
+						return new ParseMatch(pos, 2);
+					scanner.Position = pos + 1;
+					return new ParseMatch(pos, 1);
+				}
 			}
 
 			scanner.Position = pos;

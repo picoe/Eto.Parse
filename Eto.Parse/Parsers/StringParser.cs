@@ -245,23 +245,22 @@ namespace Eto.Parse.Parsers
 			int length = 1;
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
-			char ch;
+			int ch;
 
 			if (AllowQuoted)
 			{
-				if (!scanner.ReadChar(out ch))
+				ch = scanner.ReadChar();
+				if (ch == -1)
 					return ParseMatch.None;
 
-				var quoteIndex = quoteCharString.IndexOf(ch);
+				var quoteIndex = quoteCharString.IndexOf((char)ch);
 				if (quoteIndex >= 0)
 				{
 					char quote = endQuoteCharString[quoteIndex];
 					bool isEscape = false;
-					for (;;)
+					ch = scanner.ReadChar();
+					while (ch != -1)
 					{
-						if (!scanner.ReadChar(out ch))
-							break;
-
 						length++;
 						if (AllowEscapeCharacters && ch == '\\')
 							isEscape = true;
@@ -277,6 +276,8 @@ namespace Eto.Parse.Parsers
 						}
 						else
 							isEscape = false;
+
+						ch = scanner.ReadChar();
 					}
 				}
 
@@ -286,12 +287,11 @@ namespace Eto.Parse.Parsers
 
 			if (AllowNonQuoted && NonQuotedLetter != null)
 			{
-				for (;;)
+				var m = NonQuotedLetter.Parse(args);
+				while (m.Length > 0)
 				{
-					var m = NonQuotedLetter.Parse(args);
-					if (!m.Success || m.Length == 0)
-						break;
 					length += m.Length;
+					m = NonQuotedLetter.Parse(args);
 				}
 				if (length > 0)
 					return new ParseMatch(pos, length);

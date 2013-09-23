@@ -63,32 +63,30 @@ namespace Eto.Parse.Parsers
 		{
 			var scanner = args.Scanner;
 			var len = 0;
-			char ch;
-			bool hasNext;
+			int ch;
 			var pos = scanner.Position;
 			if (AllowSign)
 			{
-				hasNext = scanner.ReadChar(out ch);
-				if (!hasNext)
+				ch = scanner.ReadChar();
+				if (ch == -1)
 				{
-					scanner.Position = pos;
 					return ParseMatch.None;
 				}
 				if (ch == '-' || ch == '+')
 				{
 					len++;
-					hasNext = scanner.ReadChar(out ch);
+					ch = scanner.ReadChar();
 				}
 			}
 			else
-				hasNext = scanner.ReadChar(out ch);
+				ch = scanner.ReadChar();
 
 			bool foundNumber = false;
 			bool hasDecimal = false;
 			bool hasExponent = false;
-			while (hasNext)
+			while (ch != -1)
 			{
-				if (char.IsDigit(ch))
+				if (char.IsDigit((char)ch))
 				{
 					foundNumber = true;
 				}
@@ -112,7 +110,7 @@ namespace Eto.Parse.Parsers
 				else
 					break;
 				len++;
-				hasNext = scanner.ReadChar(out ch);
+				ch = scanner.ReadChar();
 			}
 			scanner.Position = pos + len;
 			return new ParseMatch(pos, len);

@@ -40,16 +40,13 @@ namespace Eto.Parse.Scanners
 			this.end = index + length;
 		}
 
-		public override bool ReadChar(out char ch)
+		public override int ReadChar()
 		{
 			if (Position < end)
 			{
-				ch = value[Position];
-				Position ++;
-				return true;
+				return value[Position++];
 			}
-			ch = default(char);
-			return false;
+			return -1;
 		}
 
 		public override int Advance(int length)

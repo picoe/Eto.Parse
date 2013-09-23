@@ -20,7 +20,7 @@ namespace Eto.Parse
 
 		public abstract bool ReadString(string matchString, bool caseSensitive);
 
-		public abstract bool ReadChar(out char ch);
+		public abstract int ReadChar();
 
 		public abstract string Substring(int index, int length);
 

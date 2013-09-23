@@ -44,14 +44,17 @@ namespace Eto.Parse.Parsers
 		protected override ParseMatch InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
-			char ch;
 			var pos = scanner.Position;
-			if (!scanner.ReadChar(out ch) || Test(ch, caseSensitive) == Inverse)
+			int ch = scanner.ReadChar();
+			if (ch != -1)
 			{
+				if (Test((char)ch, caseSensitive) != Inverse)
+				{
+					return new ParseMatch(pos, 1);
+				}
 				scanner.Position = pos;
-				return ParseMatch.None;
 			}
-			return new ParseMatch(pos, 1);
+			return ParseMatch.None;
 		}
 	}
 }
