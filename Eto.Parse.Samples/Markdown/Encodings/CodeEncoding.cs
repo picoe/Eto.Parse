@@ -55,6 +55,16 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 				return ParseMatch.None;
 			}
 
+			public override void Initialize(ParserInitializeArgs args)
+			{
+				base.Initialize(args);
+				if (Surrounding != null && args.Push(this))
+				{
+					Surrounding.Initialize(args);
+					args.Pop();
+				}
+			}
+
 			public override Parser Clone(ParserCloneArgs args)
 			{
 				throw new NotImplementedException();

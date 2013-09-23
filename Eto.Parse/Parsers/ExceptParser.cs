@@ -35,6 +35,16 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (Except != null && args.Push(this))
+			{
+				Except.Initialize(args);
+				args.Pop();
+			}
+		}
+
 		public override Parser Clone(ParserCloneArgs args)
 		{
 			return new ExceptParser(this, args);
