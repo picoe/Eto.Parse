@@ -19,7 +19,7 @@ namespace Eto.Parse
 		public bool EnableMatchEvents { get; set; }
 
 		/// <summary>
-		/// Gets or sets the separator to use for <see cref="RepeatParser"/> and <see cref="SequenceParser"/> if not explicitly defined.
+		/// Gets or sets the separator to use for <see cref="Parsers.RepeatParser"/> and <see cref="Parsers.SequenceParser"/> if not explicitly defined.
 		/// </summary>
 		/// <value>The separator to use inbetween repeats and items of a sequence</value>
 		public Parser Separator { get; set; }
@@ -77,7 +77,7 @@ namespace Eto.Parse
 		/// <remarks>
 		/// Initialization (usually) occurs only once, and should only be called after
 		/// the grammar is fully defined. This will be called automatically the first
-		/// time you call the <see cref="Match"/> method.
+		/// time you call the <see cref="Match(string)"/> method.
 		/// </remarks>
 		protected void Initialize()
 		{
@@ -109,8 +109,9 @@ namespace Eto.Parse
 				if (args.Errors != null)
 				{
 					var errorList = new List<Parser>(args.Errors.Count);
-					foreach (var error in args.Errors)
+					for (int i = 0; i < args.Errors.Count; i++)
 					{
+						var error = args.Errors[i];
 						if (!errorList.Contains(error))
 							errorList.Add(error);
 					}

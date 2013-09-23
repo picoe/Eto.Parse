@@ -44,8 +44,8 @@ namespace Eto.Parse
 		/// Only parsers with the <see cref="Parser.AddError"/> flag turned on will cause the error
 		/// index to be updated to the position of where that parser started from.
 		/// 
-		/// To get where the actual error occurred, see <see cref="ErrorContextIndex"/>, which gives
-		/// you the exact position where the first failure occurred.
+		/// To get where the actual error occurred, see <see cref="ChildErrorIndex"/>, which gives
+		/// you the exact position where the failure occurred.
 		/// 
 		/// Alternatively, for debugging purposes you can turn on AddError for all parsers by using
 		/// <see cref="Parser.SetError"/> 
@@ -223,16 +223,12 @@ namespace Eto.Parse
 			}
 		}
 
-		public void PopKeep()
-		{
-			nodes.PopKeep();
-		}
-
 		/// <summary>
 		/// Pops a succesful named match node, and adds it to the parent match node
 		/// </summary>
 		/// <param name="parser">Parser with the name to add to the match tree</param>
 		/// <param name="match">Match to add to the match tree</param>
+		/// <param name="name">Name to give the match</param>
 		public void PopMatch(Parser parser, ParseMatch match, string name)
 		{
 			// always successful here, assume at least two or more nodes

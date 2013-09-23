@@ -58,7 +58,7 @@ namespace Eto.Parse.Grammars
 
 		/// <summary>
 		/// Gets the expresssions parser to support different expressions. By default, only one expression
-		/// is defined: RuleNameParser & RuleSeparator & RuleParser & EOL
+		/// is defined: RuleNameParser &amp; RuleSeparator &amp; RuleParser &amp; EOL
 		/// </summary>
 		/// <value>The expresssions this parser supports</value>
 		protected AlternativeParser Expresssions { get; private set; }

@@ -30,7 +30,7 @@ namespace Eto.Parse
 		/// Gets or sets the name of the match added to the match result tree
 		/// </summary>
 		/// <remarks>
-		/// When you set this property, it affects the match result tree returned from the <see cref="Grammar.Match"/>
+		/// When you set this property, it affects the match result tree returned from the <see cref="Grammar.Match(string)"/>
 		/// method. Each parser that is named will get a node entry in the match tree if it has succesfully matched
 		/// on the input string.  This allows you to
 		/// 
@@ -274,9 +274,9 @@ namespace Eto.Parse
 		}
 
 		/// <summary>
-		/// Gets a value indicating that the specified <paramref name="parser"/> is contained within this instance
+		/// Gets a value indicating that a parser is contained within this instance
 		/// </summary>
-		/// <param name="args">Contains arguments</param>
+		/// <param name="args">Arguments specifying which parser to search for and recursion</param>
 		public virtual bool Contains(ParserContainsArgs args)
 		{
 			return args.Parser == this;
@@ -400,7 +400,7 @@ namespace Eto.Parse
 		/// 
 		/// Implementors of parsers can override this to provide special logic to get the translated object value.
 		/// </remarks>
-		/// <returns>The translated object value from the range specified in the <paramref name="match"/></returns>
+		/// <returns>The translated object value from the specified <paramref name="text"/></returns>
 		/// <param name="text">Text representation to translate to an object value</param>
 		public virtual object GetValue(string text)
 		{
