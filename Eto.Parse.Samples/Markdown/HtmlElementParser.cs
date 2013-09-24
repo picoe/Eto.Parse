@@ -39,7 +39,6 @@ namespace Eto.Parse.Samples.Markdown
 							}
 							length++;
 						}
-						length += 3;
 						return length;
 					}
 					scanner.Position = pos;
