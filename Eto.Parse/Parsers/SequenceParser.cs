@@ -32,7 +32,7 @@ namespace Eto.Parse.Parsers
 			Separator = DefaultSeparator;
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
 			var length = 0;
@@ -41,32 +41,32 @@ namespace Eto.Parse.Parsers
 			{
 				var parser = Items[0];
 				var childMatch = parser.Parse(args);
-				if (!childMatch.Success)
+				if (childMatch < 0)
 				{
 					return childMatch;
 				}
 
-				length += childMatch.Length;
+				length += childMatch;
 				for (int i = 1; i < count; i++)
 				{
 					var sepMatch = separator.Parse(args);
-					if (sepMatch.Success)
+					if (sepMatch >= 0)
 					{
 						parser = Items[i];
 						childMatch = parser.Parse(args);
-						if (childMatch.Success)
+						if (childMatch >= 0)
 						{
-							if (!childMatch.Empty)
-								length += sepMatch.Length;
-							length += childMatch.Length;
+							if (childMatch > 0)
+								length += sepMatch;
+							length += childMatch;
 							continue;
 						}
 					}
 					// failed
 					args.Scanner.Position = pos;
-					return ParseMatch.None;
+					return -1;
 				}
-				return new ParseMatch(pos, length);
+				return length;
 			}
 			else
 			{
@@ -74,15 +74,15 @@ namespace Eto.Parse.Parsers
 				{
 					var parser = Items[i];
 					var childMatch = parser.Parse(args);
-					if (childMatch.Success)
+					if (childMatch >= 0)
 					{
-						length += childMatch.Length;
+						length += childMatch;
 						continue;
 					}
 					args.Scanner.Position = pos;
-					return ParseMatch.None;
+					return -1;
 				}
-				return new ParseMatch(pos, length);
+				return length;
 			}
 		}
 

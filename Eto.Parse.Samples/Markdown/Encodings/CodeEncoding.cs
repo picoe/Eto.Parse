@@ -21,7 +21,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		}
 
 		#if PERF_TEST
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			return base.InnerParse(args);
 		}
@@ -31,28 +31,27 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		{
 			public Parser Surrounding { get; set; }
 
-			protected override ParseMatch InnerParse(ParseArgs args)
+			protected override int InnerParse(ParseArgs args)
 			{
 				var scanner = args.Scanner;
-				var m = Surrounding.Parse(args);
-				if (m.Success)
+				var pos = scanner.Position;
+				var length = Surrounding.Parse(args);
+				if (length >= 0)
 				{
-					var pos = m.Index;
-					var length = m.Length;
-					var str = scanner.Substring(m.Index, m.Length);
+					var str = scanner.Substring(pos, length);
 					while (!scanner.ReadString(str, true))
 					{
-						if (scanner.Advance(1) == -1)
+						if (scanner.Advance(1) < 0)
 						{
 							scanner.Position = pos;
-							return ParseMatch.None;
+							return -1;
 						}
 						length++;
 					}
 					length += str.Length;
-					return new ParseMatch(pos, length);
+					return length;
 				}
-				return ParseMatch.None;
+				return -1;
 			}
 
 			public override void Initialize(ParserInitializeArgs args)

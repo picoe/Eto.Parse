@@ -59,7 +59,7 @@ namespace Eto.Parse.Parsers
 			return parseMethod.Invoke(null, new object[] { text, style });
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			var len = 0;
@@ -70,7 +70,7 @@ namespace Eto.Parse.Parsers
 				ch = scanner.ReadChar();
 				if (ch == -1)
 				{
-					return ParseMatch.None;
+					return -1;
 				}
 				if (ch == '-' || ch == '+')
 				{
@@ -84,7 +84,7 @@ namespace Eto.Parse.Parsers
 			bool foundNumber = false;
 			bool hasDecimal = false;
 			bool hasExponent = false;
-			while (ch != -1)
+			do
 			{
 				if (char.IsDigit((char)ch))
 				{
@@ -105,15 +105,16 @@ namespace Eto.Parse.Parsers
 				else if (!foundNumber)
 				{
 					scanner.Position = pos;
-					return ParseMatch.None;
+					return -1;
 				}
 				else
 					break;
 				len++;
 				ch = scanner.ReadChar();
 			}
+			while (ch != -1);
 			scanner.Position = pos + len;
-			return new ParseMatch(pos, len);
+			return len;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

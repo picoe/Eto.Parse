@@ -24,7 +24,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		}
 
 #if PERF_TEST
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			return base.InnerParse(args);
 		}
@@ -35,7 +35,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 			args.Output.Append("<strong>");
 			//args.Encoding.Transform(args, match, 2, -4);
 			if (match.HasMatches)
-				args.Encoding.ReplaceEncoding(args, match);
+				args.Encoding.ReplaceEncoding(match.Index + 2, match.Length - 4, match.Scanner, match.Matches, args);
 			else
 				args.Output.Append(match.Scanner.Substring(match.Index + 2, match.Length - 4));
 			args.Output.Append("</strong>");

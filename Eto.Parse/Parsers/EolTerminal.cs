@@ -19,7 +19,7 @@ namespace Eto.Parse.Parsers
 			get { return "EOL"; }
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
@@ -27,21 +27,21 @@ namespace Eto.Parse.Parsers
 			if (ch != -1)
 			{
 				if (ch == '\n')
-					return new ParseMatch(pos, 1);
+					return 1;
 				if (ch == '\r')
 				{
 					ch = scanner.ReadChar();
 					if (ch == -1)
-						return new ParseMatch(pos, 1);
+						return 1;
 					if (ch == '\n')
-						return new ParseMatch(pos, 2);
+						return 2;
 					scanner.Position = pos + 1;
-					return new ParseMatch(pos, 1);
+					return 1;
 				}
 			}
 
 			scanner.Position = pos;
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

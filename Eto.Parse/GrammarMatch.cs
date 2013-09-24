@@ -15,8 +15,8 @@ namespace Eto.Parse
 
 		public IEnumerable<Parser> Errors { get { return errors ?? Enumerable.Empty<Parser>(); } }
 
-		public GrammarMatch(Grammar grammar, Scanner scanner, ParseMatch match, MatchCollection matches, int errorIndex, int childErrorIndex, IEnumerable<Parser> errors)
-			: base(grammar.Name, grammar, scanner, match, matches)
+		public GrammarMatch(Grammar grammar, Scanner scanner, int index, int length, MatchCollection matches, int errorIndex, int childErrorIndex, IEnumerable<Parser> errors)
+			: base(grammar.Name, grammar, scanner, index, length, matches)
 		{
 			this.errors = errors;
 			this.ErrorIndex = errorIndex;

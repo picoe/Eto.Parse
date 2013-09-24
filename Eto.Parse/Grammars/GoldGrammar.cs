@@ -313,7 +313,7 @@ namespace Eto.Parse.Grammars
 			return parser;
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			definition = new GoldDefinition();
 			return base.InnerParse(args);

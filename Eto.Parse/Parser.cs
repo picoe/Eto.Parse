@@ -94,6 +94,18 @@ namespace Eto.Parse
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating that this parser has named children
+		/// </summary>
+		/// <remarks>
+		/// This is useful to know when to use <see cref="ParseArgs.Push"/> before parsing children, and
+		/// <see cref="ParseArgs.PopFailed"/> / <see cref="ParseArgs.PopSuccess"/> after.
+		/// 
+		/// Using Push/Pop methods allow you to keep track of and discard (or keep) child matches based
+		/// on the success or failure.  
+		/// 
+		/// This is set during initialization of the grammar before the first parse is performed.
+		/// </remarks>
 		protected bool HasNamedChildren { get { return hasNamedChildren; } }
 
 		#endregion
@@ -201,13 +213,14 @@ namespace Eto.Parse
 		/// Implementors of a Parser should implement <see cref="InnerParse"/> to perform the logic of their parser.
 		/// </remarks>
 		/// <param name="args">Parsing arguments</param>
-		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
-		public ParseMatch Parse(ParseArgs args)
+		/// <returns>The length of the successfully matched value (can be zero), or -1 if not matched</returns>
+		public int Parse(ParseArgs args)
 		{
 			if (!useNamed)
 			{
+				var pos = args.Scanner.Position;
 				var match = InnerParse(args);
-				if (!match.Success)
+				if (match < 0)
 				{
 					if (!AddError)
 					{
@@ -224,15 +237,16 @@ namespace Eto.Parse
 				{
 					if (name == null)
 						return match;
-					args.AddMatch(this, match, Name);
+					args.AddMatch(this, pos, match, Name);
 					return match;
 				}
 			}
 			else
 			{
 				args.Push();
+				var pos = args.Scanner.Position;
 				var match = InnerParse(args);
-				if (!match.Success)
+				if (match < 0)
 				{
 					args.PopFailed();
 					if (!AddError)
@@ -248,7 +262,7 @@ namespace Eto.Parse
 				}
 				else
 				{
-					args.PopMatch(this, match, Name);
+					args.PopMatch(this, pos, match, Name);
 					return match;
 				}
 			}
@@ -258,11 +272,11 @@ namespace Eto.Parse
 		/// Override to implement the main parsing logic for this parser
 		/// </summary>
 		/// <remarks>
-		/// Never call this method directly, always call <see cref="Parse"/> when calling the parse routines.
+		/// Never call this method directly, always call <see cref="Parse"/> when calling parse routines.
 		/// </remarks>
-		/// <returns>A match struct that specifies the index and position of the match if successful, or a match with -1 length when unsuccessful</returns>
-		/// <param name="args">Arguments.</param>
-		protected abstract ParseMatch InnerParse(ParseArgs args);
+		/// <returns>The length of the successfully matched value (can be zero), or -1 if not matched</returns>
+		/// <param name="args">Parsing arguments</param>
+		protected abstract int InnerParse(ParseArgs args);
 
 		/// <summary>
 		/// Called to initialize the parser when used in a grammar

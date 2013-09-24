@@ -17,6 +17,7 @@ namespace Eto.Parse
 		SlimStack<MatchCollection> nodes;
 		List<Parser> errors = new List<Parser>();
 		int childErrorIndex;
+		int errorIndex;
 
 		/// <summary>
 		/// Gets the root match when the grammar is matched
@@ -52,7 +53,7 @@ namespace Eto.Parse
 		/// <see cref="Parser.SetError"/> 
 		/// </remarks>
 		/// <value>The index of the error.</value>
-		public int ErrorIndex { get; private set; }
+		public int ErrorIndex { get { return errorIndex; } }
 
 		/// <summary>
 		/// Gets the index of where the error action
@@ -78,7 +79,7 @@ namespace Eto.Parse
 
 		internal ParseArgs(Grammar grammar, Scanner scanner)
 		{
-			ErrorIndex = -1;
+			errorIndex = -1;
 			childErrorIndex = -1;
 			Grammar = grammar;
 			Scanner = scanner;
@@ -88,7 +89,7 @@ namespace Eto.Parse
 		internal void Reset(Scanner scanner)
 		{
 			Scanner = scanner;
-			ErrorIndex = -1;
+			errorIndex = -1;
 			childErrorIndex = -1;
 			errors.Clear();
 		}
@@ -102,19 +103,20 @@ namespace Eto.Parse
 		/// Creates an empty (zero length) match at the current position
 		/// </summary>
 		/// <value>A new instance of an empty match</value>
-		public ParseMatch EmptyMatch
+		[Obsolete("Use 0 instead")]
+		public int EmptyMatch
 		{
-			get { return new ParseMatch(Scanner.Position, 0); }
+			get { return 0; }
 		}
 
 		/// <summary>
 		/// Creates a non-match when a parser fails to match
 		/// </summary>
 		/// <value>The non-match</value>
-		[Obsolete("Use ParseMatch.None instead")]
-		public ParseMatch NoMatch
+		[Obsolete("Use -1 instead")]
+		public int NoMatch
 		{
-			get { return ParseMatch.None; }
+			get { return -1; }
 		}
 
 		/// <summary>
@@ -124,13 +126,13 @@ namespace Eto.Parse
 		public void AddError(Parser parser)
 		{
 			var pos = Scanner.Position;
-			if (pos > ErrorIndex)
+			if (pos > errorIndex)
 			{
-				ErrorIndex = pos;
+				errorIndex = pos;
 				errors.Clear();
 				errors.Add(parser);
 			}
-			else if (pos == ErrorIndex)
+			else if (pos == errorIndex)
 			{
 				errors.Add(parser);
 			}
@@ -233,7 +235,7 @@ namespace Eto.Parse
 		/// <param name="parser">Parser with the name to add to the match tree</param>
 		/// <param name="match">Match to add to the match tree</param>
 		/// <param name="name">Name to give the match</param>
-		public void PopMatch(Parser parser, ParseMatch match, string name)
+		public void PopMatch(Parser parser, int index, int length, string name)
 		{
 			// always successful here, assume at least two or more nodes
 			var last = nodes.Pop();
@@ -246,7 +248,7 @@ namespace Eto.Parse
 					node = new MatchCollection();
 					nodes.Last = node;
 				}
-				node.Add(new Match(name, parser, Scanner, match, last));
+				node.Add(new Match(name, parser, Scanner, index, length, last));
 			}
 		}
 
@@ -259,7 +261,7 @@ namespace Eto.Parse
 		/// <param name="parser">Parser for the match</param>
 		/// <param name="match">Parse match indicating the position and length of the match</param>
 		/// <param name="name">Name of this match (usually the Parser.Match value)</param>
-		public void AddMatch(Parser parser, ParseMatch match, string name)
+		public void AddMatch(Parser parser, int index, int length, string name)
 		{
 			if (nodes.Count > 0)
 			{
@@ -269,7 +271,7 @@ namespace Eto.Parse
 					node = new MatchCollection();
 					nodes.Last = node;
 				}
-				node.Add(new Match(name, parser, Scanner, match, null));
+				node.Add(new Match(name, parser, Scanner, index, length, null));
 			}
 		}
 	}

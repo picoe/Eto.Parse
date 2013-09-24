@@ -14,9 +14,9 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
-			return args.EmptyMatch;
+			return 0;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

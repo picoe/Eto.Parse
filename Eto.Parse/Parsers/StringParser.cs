@@ -240,7 +240,7 @@ namespace Eto.Parse.Parsers
 			QuoteCharacters = "\"\'".ToCharArray();
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			int length = 1;
 			var scanner = args.Scanner;
@@ -251,7 +251,7 @@ namespace Eto.Parse.Parsers
 			{
 				ch = scanner.ReadChar();
 				if (ch == -1)
-					return ParseMatch.None;
+					return -1;
 
 				var quoteIndex = quoteCharString.IndexOf((char)ch);
 				if (quoteIndex >= 0)
@@ -269,7 +269,7 @@ namespace Eto.Parse.Parsers
 							if (ch == quote)
 							{
 								if (!AllowDoubleQuote || scanner.IsEof || scanner.Current != quote)
-									return new ParseMatch(pos, length);
+									return length;
 								else
 									isEscape = true;
 							}
@@ -288,16 +288,16 @@ namespace Eto.Parse.Parsers
 			if (AllowNonQuoted && NonQuotedLetter != null)
 			{
 				var m = NonQuotedLetter.Parse(args);
-				while (m.Length > 0)
+				while (m > 0)
 				{
-					length += m.Length;
+					length += m;
 					m = NonQuotedLetter.Parse(args);
 				}
 				if (length > 0)
-					return new ParseMatch(pos, length);
+					return length;
 			}
 
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

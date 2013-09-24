@@ -51,8 +51,8 @@ namespace Eto.Parse.Tests.Markdown
 			html = Regex.Replace(html, "((?<=[>])[ ]+)?[\\n]+([ ]{0,3}(?=[<]))?", "\n", RegexOptions.Compiled);
 			// ignore space between two tags
 			html = Regex.Replace(html, "[>]\\s+[<]", "><", RegexOptions.Compiled);
-			// ignore newline before ending tag
-			html = html.Replace("\n</", "</");
+			// ignore newline before beginning/ending tag
+			html = html.Replace("\n<", "<");
 			// ignore newline after start tag
 			html = html.Replace(">\n", ">");
 			// ignore tabs

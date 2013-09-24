@@ -100,7 +100,6 @@
     <Compile Include="Grammars\GoldGrammar.cs" />
     <Compile Include="Grammars\BnfGrammar.cs" />
     <Compile Include="Writers\Code\GrammarWriter.cs" />
-    <Compile Include="ParseMatch.cs" />
     <Compile Include="Parsers\NumberParser.cs" />
     <Compile Include="Writers\Code\LiteralWriter.cs" />
     <Compile Include="Writers\Display\LiteralWriter.cs" />

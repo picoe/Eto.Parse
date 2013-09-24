@@ -22,16 +22,16 @@ namespace Eto.Parse.Parsers
 			this.Except = except;
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
 			var match = Except.Parse(args);
-			if (!match.Success)
+			if (match < 0)
 				return base.InnerParse(args);
 			else
 			{
 				args.Scanner.Position = pos;
-				return ParseMatch.None;
+				return -1;
 			}
 		}
 

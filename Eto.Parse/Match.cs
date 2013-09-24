@@ -7,9 +7,13 @@ namespace Eto.Parse
 	public class Match
 	{
 		MatchCollection matches;
-		ParseMatch parseMatch;
+		int index;
+		int length;
+		string name;
+		Parser parser;
+		Scanner scanner;
 
-		internal static readonly Match EmptyMatch = new Match(null, null, null, new ParseMatch(-1, -1), new MatchCollection());
+		internal static readonly Match EmptyMatch = new Match(null, null, null, -1, -1, new MatchCollection());
 
 		public MatchCollection Matches
 		{
@@ -21,35 +25,35 @@ namespace Eto.Parse
 			get { return matches != null && matches.Count > 0; }
 		}
 
-		public Scanner Scanner { get; private set; }
+		public Scanner Scanner { get { return scanner; } }
 
-		public object Value { get { return Success ? Parser.GetValue(this) : null; } }
+		public object Value { get { return Success ? parser.GetValue(this) : null; } }
 
 		public string StringValue { get { return Convert.ToString(Value); } }
 
-		public string Text { get { return Success ? Scanner.Substring(Index, Length) : null; } }
+		public string Text { get { return Success ? scanner.Substring(index, length) : null; } }
 
-		public string Name { get; private set; }
+		public string Name { get { return name; } }
 
-		public Parser Parser { get; private set; }
+		public Parser Parser { get { return parser; } }
 
 		public object Tag { get; set; }
 
-		public int Index { get { return parseMatch.Index; } }
+		public int Index { get { return index; } }
 
-		public int Length { get { return parseMatch.Length; } }
+		public int Length { get { return length; } }
 
-		public bool Success { get { return parseMatch.Success; } }
+		public bool Success { get { return length >= 0; } }
 
-		public bool Empty { get { return parseMatch.Empty; } }
+		public bool Empty { get { return length == 0; } }
 
-
-		internal Match(string name, Parser parser, Scanner scanner, ParseMatch parseMatch, MatchCollection matches)
+		internal Match(string name, Parser parser, Scanner scanner, int index, int length, MatchCollection matches)
 		{
-			this.Name = name;
-			this.Parser = parser;
-			this.Scanner = scanner;
-			this.parseMatch = parseMatch;
+			this.name = name;
+			this.parser = parser;
+			this.scanner = scanner;
+			this.index = index;
+			this.length = length;
 			this.matches = matches;
 		}
 

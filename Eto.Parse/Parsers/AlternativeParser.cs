@@ -40,7 +40,7 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var count = Items.Count;
 			if (HasNamedChildren)
@@ -52,7 +52,7 @@ namespace Eto.Parse.Parsers
 					if (parser != null)
 					{
 						var match = parser.Parse(args);
-						if (!match.Success)
+						if (match < 0)
 						{
 							args.ClearMatches();
 						}
@@ -65,7 +65,7 @@ namespace Eto.Parse.Parsers
 					else
 					{
 						args.PopFailed();
-						return args.EmptyMatch;
+						return 0;
 					}
 				}
 				args.PopFailed();
@@ -78,16 +78,16 @@ namespace Eto.Parse.Parsers
 					if (parser != null)
 					{
 						var match = parser.Parse(args);
-						if (match.Success)
+						if (match >= 0)
 							return match;
 					}
 					else
 					{
-						return args.EmptyMatch;
+						return 0;
 					}
 				}
 			}
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

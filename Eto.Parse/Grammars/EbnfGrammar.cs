@@ -212,7 +212,7 @@ namespace Eto.Parse.Grammars
 			}
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
 			if (DefineCommonNonTerminals)

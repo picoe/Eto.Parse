@@ -85,7 +85,7 @@ namespace Eto.Parse
 			initialized = true;
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (args.IsRoot)
 			{
@@ -94,11 +94,11 @@ namespace Eto.Parse
 				args.Push();
 				var match = Inner.Parse(args);
 				MatchCollection matches = null;
-				if (match.Success && !AllowPartialMatch && !scanner.IsEof)
+				if (match >= 0 && !AllowPartialMatch && !scanner.IsEof)
 				{
 					args.PopFailed();
 					scanner.Position = pos;
-					match = ParseMatch.None;
+					match = -1;
 				}
 				else
 				{
@@ -118,7 +118,7 @@ namespace Eto.Parse
 					errors = errorList;
 				}
 
-				args.Root = new GrammarMatch(this, scanner, match, matches, args.ErrorIndex, args.ChildErrorIndex, errors);
+				args.Root = new GrammarMatch(this, scanner, pos, match, matches, args.ErrorIndex, args.ChildErrorIndex, errors);
 				return match;
 			}
 			else
@@ -169,7 +169,7 @@ namespace Eto.Parse
 					eof = scanner.IsEof;
 				}
 				else
-					eof = scanner.Advance(1) == -1;
+					eof = scanner.Advance(1) < 0;
 			}
 			return matches;
 		}

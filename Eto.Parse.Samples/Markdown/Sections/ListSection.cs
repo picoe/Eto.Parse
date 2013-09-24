@@ -16,24 +16,21 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			var prefix = Terms.sp.Repeat(0, 3);
 			var star = ((Parser)"*" | "-" | "+").WithName("star") & Terms.ws;
 			var num = (+Terminals.Digit).WithName("num") & "." & Terms.ows;
-			var start = (grammar.Prefix & prefix & (num | star)).Separate();
+			var start = (prefix & (num | star)).Separate();
 
-			var content = grammar.Encoding.ReplacementsWithAnyChar().Repeat().Until(Terms.blankLine.Repeat(2) | start);
+			var content = grammar.Encoding.ReplacementsWithAnyChar().Repeat().Until(Terms.blankLine & (Terms.blankLine | -Terms.sporht & start));
 			content.Name = "content";
-			var line = (start & content).WithName("line");
-			var spacing = (-Terms.blankLine).WithName("spacing");
-			//var contentLine = -(Terms.indent & (new RepeatParser(1).Until(Terms.ows & Terms.eolorf) & +Terms.blankLine).WithName("line"));
-			//var innercontent = (+Terms.blankLine & +contentLine).Separate().WithName("inner");
+			var line = (grammar.PrefixSpOrHt & start & content & Terms.blankLineOrEof).WithName("line");
 			var inner = grammar.CreateInnerReplacements().WithName("inner");
-			var innercontent = (+Terms.blankLine & inner).Separate();
-			var lineWithSpacing = line & ~innercontent & spacing;
+			var spacing = (-Terms.blankLine).WithName("spacing");
+			var lineWithSpacing = line & ~(-Terms.blankLine & inner) & spacing;
 			Inner = lineWithSpacing;
 			Minimum = 1;
 
 			this.Until(Terms.EndOfSection(line.Not()), capture: true);
 		}
 		#if PERF_TEST
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			return base.InnerParse(args);
 		}
@@ -61,7 +58,8 @@ namespace Eto.Parse.Samples.Markdown.Sections
 				}
 				var inner = item["inner"];
 
-				var addSpace = inner.Success || (i < count - 1 && item["spacing"].Length > 0);
+				var hasInnerList = inner.Success && inner.HasMatches && inner.Matches[0].Name == Name;
+				var addSpace = (inner.Success && !hasInnerList) || (i < count - 1 && item["spacing"].Length > 0);
 				args.Output.Append("<li>");
 				if (addSpace || lastSpace)
 					args.Output.Append("<p>");

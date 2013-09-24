@@ -11,7 +11,7 @@ namespace Eto.Parse.Samples.Markdown
 		StringBuilder tagNameBuilder = new StringBuilder();
 		public bool MatchContent { get; set; }
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
@@ -31,16 +31,16 @@ namespace Eto.Parse.Samples.Markdown
 						while (!scanner.ReadString("-->", true))
 						{
 							length++;
-							if (scanner.Advance(1) == -1)
+							if (scanner.Advance(1) < 0)
 							{
 								scanner.Position = pos;
-								return ParseMatch.None;
+								return -1;
 							}
 						}
-						return new ParseMatch(pos, length);
+						return length;
 					}
 					scanner.Position = pos;
-					return ParseMatch.None;
+					return -1;
 				}
 				tagNameBuilder.Clear();
 				tagNameBuilder.Append("</");
@@ -51,7 +51,7 @@ namespace Eto.Parse.Samples.Markdown
 					if (first && !char.IsLetter((char)ch))
 					{
 						scanner.Position = pos;
-						return ParseMatch.None;
+						return -1;
 					}
 					first = false;
 					tagNameBuilder.Append((char)ch);
@@ -71,11 +71,11 @@ namespace Eto.Parse.Samples.Markdown
 					if (ch != '>')
 					{
 						scanner.Position = pos;
-						return ParseMatch.None;
+						return -1;
 					}
 					if (prev == '/') // self closing
 					{
-						return new ParseMatch(pos, length);
+						return length;
 					}
 
 					if (ch != -1)
@@ -96,33 +96,32 @@ namespace Eto.Parse.Samples.Markdown
 							{
 								if (MatchContent && contentLength > 0)
 								{
-									args.AddMatch(this, new ParseMatch(start, contentLength), "content");
+									args.AddMatch(this, start, contentLength, "content");
 								}
 								var inner = Parse(args);
-								if (!inner.Success)
+								if (inner < 0)
 									break;
-								length += inner.Length;
+								length += inner;
 								start = pos + length;
 								contentLength = 0;
 							}
 						}
 						length += tagName.Length;
-						var match = new ParseMatch(pos, length);
 						if (MatchContent)
 						{
 							if (contentLength > 0)
 							{
-								args.AddMatch(this, new ParseMatch(start, contentLength), "content");
+								args.AddMatch(this, start, contentLength, "content");
 							}
 							if (Name != null)
-								args.PopMatch(this, match, Name);
+								args.PopMatch(this, pos, length, Name);
 						}
-						return match;
+						return length;
 					}
 				}
 			}
 			scanner.Position = pos;
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

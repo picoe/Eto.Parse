@@ -37,7 +37,7 @@ namespace Eto.Parse.Parsers
 
 		protected abstract bool Test(char ch, bool caseSensitive);
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
@@ -46,11 +46,11 @@ namespace Eto.Parse.Parsers
 			{
 				if (Test((char)ch, caseSensitive) != Inverse)
 				{
-					return new ParseMatch(pos, 1);
+					return 1;
 				}
 				scanner.Position = pos;
 			}
-			return ParseMatch.None;
+			return -1;
 		}
 	}
 }

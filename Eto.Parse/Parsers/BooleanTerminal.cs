@@ -57,16 +57,15 @@ namespace Eto.Parse.Parsers
 			throw new ArgumentOutOfRangeException("Match value is invalid");
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
-			var pos = args.Scanner.Position;
 			if (TrueValues != null)
 			{
 				for (int i = 0; i < TrueValues.Length; i++)
 				{
 					var val = TrueValues[i];
 					if (args.Scanner.ReadString(val, caseSensitive))
-						return new ParseMatch(pos, val.Length);
+						return val.Length;
 				}
 			}
 			if (FalseValues != null)
@@ -75,10 +74,10 @@ namespace Eto.Parse.Parsers
 				{
 					var val = FalseValues[i];
 					if (args.Scanner.ReadString(val, caseSensitive))
-						return new ParseMatch(pos, val.Length);
+						return val.Length;
 				}
 			}
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

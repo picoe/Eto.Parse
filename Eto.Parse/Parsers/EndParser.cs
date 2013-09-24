@@ -15,12 +15,12 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (args.Scanner.IsEof)
-				return args.EmptyMatch;
+				return 0;
 			else
-				return ParseMatch.None;
+				return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

@@ -34,7 +34,7 @@ namespace Eto.Parse.Samples.Markdown
 
 		class InnerReplacements : RepeatParser
 		{
-			protected override ParseMatch InnerParse(ParseArgs args)
+			protected override int InnerParse(ParseArgs args)
 			{
 				((MarkdownGrammar)args.Grammar).IndentLevel++;
 				var match = base.InnerParse(args);
@@ -53,6 +53,7 @@ namespace Eto.Parse.Samples.Markdown
 
 		RepeatParser indent;
 		RepeatParser prefix;
+		RepeatParser prefixsp;
 
 		public int IndentLevel
 		{
@@ -60,6 +61,7 @@ namespace Eto.Parse.Samples.Markdown
 			set {
 				indent.Minimum = indent.Maximum = value + 1; 
 				prefix.Minimum = prefix.Maximum = value;
+				prefixsp.Minimum = prefixsp.Maximum = value;
 			}
 		}
 
@@ -67,12 +69,15 @@ namespace Eto.Parse.Samples.Markdown
 
 		public Parser Prefix { get { return prefix; } }
 
+		public Parser PrefixSpOrHt { get { return prefixsp; } }
+
 		public MarkdownGrammar()
 			: base("markdown")
 		{
 			EnableMatchEvents = false;
 			indent = new RepeatParser(Terms.indent, 1, 1);
 			prefix = new RepeatParser(Terms.indent, 0, 0);
+			prefixsp = new RepeatParser(Terms.sporht, 0, 0);
 			encoding = new MarkdownEncoding();
 			encoding.Initialize(this);
 

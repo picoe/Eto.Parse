@@ -23,23 +23,23 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (!HasNamedChildren)
 			{
 				var match = Inner.Parse(args);
 
-				if (match.Success)
+				if (match >= 0)
 					return match;
 				else
-					return args.EmptyMatch;
+					return 0;
 			}
 			else
 			{
 				args.Push();
 				var match = Inner.Parse(args);
 
-				if (match.Success)
+				if (match >= 0)
 				{
 					args.PopSuccess();
 					return match;
@@ -47,7 +47,7 @@ namespace Eto.Parse.Parsers
 				else
 				{
 					args.PopFailed();
-					return args.EmptyMatch;
+					return 0;
 				}
 			}
 		}

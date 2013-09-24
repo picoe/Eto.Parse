@@ -112,7 +112,7 @@ namespace Eto.Parse.Samples.Markdown
 				args.Output.Append(match.Text);
 		}
 
-		void ReplaceEncoding(int index, int end, Scanner scanner, MatchCollection matches, MarkdownReplacementArgs args)
+		public void ReplaceEncoding(int index, int end, Scanner scanner, MatchCollection matches, MarkdownReplacementArgs args)
 		{
 			int last = index;
 			var count = matches.Count;

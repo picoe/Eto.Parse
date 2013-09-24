@@ -69,7 +69,7 @@ namespace Eto.Parse.Parsers
 			}
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			int count = 0;
@@ -77,14 +77,15 @@ namespace Eto.Parse.Parsers
 			int length = 0;
 
 			// retrieve up to the maximum number
-			var sepMatch = ParseMatch.None;
+			var sepMatch = -1;
 			if (Inner != null)
 			{
 				while (count < Maximum)
 				{
+					int curPos = scanner.Position;
 					if (Until != null && count >= Minimum)
 					{
-						ParseMatch stopMatch;
+						int stopMatch;
 						if (skipUntilMatches)
 						{
 							args.Push();
@@ -95,35 +96,35 @@ namespace Eto.Parse.Parsers
 						{
 							stopMatch = Until.Parse(args);
 						}
-						if (stopMatch.Success)
+						if (stopMatch >= 0)
 						{
 							if (CaptureUntil)
-								length += stopMatch.Length;
+								length += stopMatch;
 							else if (!SkipUntil)
-								scanner.Position = stopMatch.Index;
-							return new ParseMatch(pos, length);
+								scanner.Position = curPos;
+							return length;
 						}
 					}
 
 					if (separator != null && count > 0)
 					{
 						sepMatch = separator.Parse(args);
-						if (!sepMatch.Success)
+						if (sepMatch < 0)
 							break;
 					}
 
 					var childMatch = Inner.Parse(args);
-					if (childMatch.Length > 0)
+					if (childMatch > 0)
 					{
-						if (sepMatch.Success)
-							length += sepMatch.Length;
-						length += childMatch.Length;
+						if (sepMatch > 0)
+							length += sepMatch;
+						length += childMatch;
 						count++;
 					}
 					else
 					{
-						if (sepMatch.Success)
-							scanner.Position = sepMatch.Index;
+						if (sepMatch > 0)
+							scanner.Position = curPos;
 						break;
 					}
 
@@ -133,9 +134,10 @@ namespace Eto.Parse.Parsers
 			{
 				while (count < Maximum)
 				{
+					int curPos = scanner.Position;
 					if (Until != null && count >= Minimum)
 					{
-						ParseMatch stopMatch;
+						int stopMatch;
 						if (skipUntilMatches)
 						{
 							args.Push();
@@ -146,35 +148,35 @@ namespace Eto.Parse.Parsers
 						{
 							stopMatch = Until.Parse(args);
 						}
-						if (stopMatch.Success)
+						if (stopMatch >= 0)
 						{
 							if (CaptureUntil)
-								length += stopMatch.Length;
+								length += stopMatch;
 							else if (!SkipUntil)
-								scanner.Position = stopMatch.Index;
-							return new ParseMatch(pos, length);
+								scanner.Position = curPos;
+							return length;
 						}
 					}
 
 					if (separator != null && count > 0)
 					{
 						sepMatch = separator.Parse(args);
-						if (!sepMatch.Success)
+						if (sepMatch < 0)
 							break;
 					}
 
 					var ofs = scanner.Advance(1);
 					if (ofs >= 0)
 					{
-						if (sepMatch.Success)
-							length += sepMatch.Length;
+						if (sepMatch > 0)
+							length += sepMatch;
 						length ++;
 						count++;
 					}
 					else
 					{
-						if (sepMatch.Success)
-							scanner.Position = sepMatch.Index;
+						if (sepMatch > 0)
+							scanner.Position = curPos;
 						break;
 					}
 				}
@@ -183,10 +185,10 @@ namespace Eto.Parse.Parsers
 			if (count < Minimum)
 			{
 				scanner.Position = pos;
-				return ParseMatch.None;
+				return -1;
 			}
 
-			return new ParseMatch(pos, length);
+			return length;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

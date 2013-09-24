@@ -101,11 +101,11 @@ namespace Eto.Parse.Parsers
 			SetInner();
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (groupParser != null)
 				return groupParser.Parse(args);
-			return ParseMatch.None;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

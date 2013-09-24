@@ -38,19 +38,17 @@ namespace Eto.Parse.Parsers
 			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (Value != null)
 			{
-				var scanner = args.Scanner;
-				int pos = scanner.Position;
-				if (!scanner.ReadString(Value, caseSensitive))
-					return ParseMatch.None;
+				if (!args.Scanner.ReadString(Value, caseSensitive))
+					return -1;
 				else
-					return new ParseMatch(pos, Value.Length);
+					return Value.Length;
 			}
 			else
-				return args.EmptyMatch;
+				return 0;
 		}
 
 		public override Parser Clone(ParserCloneArgs chain)

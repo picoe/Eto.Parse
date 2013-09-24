@@ -20,7 +20,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 		}
 
 		#if PERF_TEST
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			return base.InnerParse(args);
 		}

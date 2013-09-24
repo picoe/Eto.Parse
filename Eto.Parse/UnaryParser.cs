@@ -78,12 +78,12 @@ namespace Eto.Parse
 			return base.Find(args);
 		}
 
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			if (Inner != null)
 				return Inner.Parse(args);
 			else
-				return args.EmptyMatch;
+				return 0;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

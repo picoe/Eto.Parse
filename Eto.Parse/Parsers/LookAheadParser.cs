@@ -16,17 +16,17 @@ namespace Eto.Parse.Parsers
 		{
 		}
 		
-		protected override ParseMatch InnerParse(ParseArgs args)
+		protected override int InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
 			var match = Inner.Parse(args);
-			if (match.Success)
+			if (match >= 0)
 			{
 				args.Scanner.Position = pos;
-				return Inverse ? ParseMatch.None : args.EmptyMatch;
+				return Inverse ? -1 : 0;
 			}
 			else
-				return Inverse ? args.EmptyMatch : ParseMatch.None;
+				return Inverse ? 0 : -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)
