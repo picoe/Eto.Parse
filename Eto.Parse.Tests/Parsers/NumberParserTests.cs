@@ -82,6 +82,21 @@ namespace Eto.Parse.Tests.Parsers
 			Assert.IsTrue(match.Success, match.ErrorMessage);
 			CollectionAssert.AreEquivalent(new Int32[] { 123, 123, -123 }, match.Find("str").Select(m => (int)m.Value));
 		}
+
+		[Test]
+		public void TestErrorAtEnd()
+		{
+			var sample = "Num:";
+
+			var grammar = new Grammar();
+			var num = new NumberParser { };
+			grammar.Inner = "Num:" & num.WithName("num");
+
+			var match = grammar.Match(sample);
+			Assert.IsFalse(match.Success, match.ErrorMessage);
+			Assert.AreEqual(sample.Length, match.ErrorIndex, "Error index should be at the end");
+			Assert.AreEqual(sample.Length, match.ChildErrorIndex, "Child error index should be at the end");
+		}
 	}
 }
 

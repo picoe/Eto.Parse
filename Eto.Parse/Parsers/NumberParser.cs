@@ -81,12 +81,6 @@ namespace Eto.Parse.Parsers
 			else
 				ch = scanner.ReadChar();
 
-			if (ch == -1)
-			{
-				scanner.Position = pos;
-				return -1;
-			}
-
 			bool foundNumber = false;
 			bool hasDecimal = false;
 			bool hasExponent = false;
