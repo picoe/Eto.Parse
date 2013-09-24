@@ -16,6 +16,14 @@
         You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
     </description>
     <releaseNotes>
+    	Changes for v1.3:
+    	* Improved performance by another ~9%
+    	* Remove ParseMatch struct
+    	* Parser.Parse/InnerParse now returns a match length only
+    	* Scanner.ReadChar() now returns an int instead of a char/bool combo
+    	* Added Scanner.Peek()
+    	* NumberParser fixes when at the end of the input string
+    	
     	Changes for v1.2:
     	* Improved performance by ~10%
     	* Added GrammarMatch.ChildErrorIndex to give you the actual index of the error
