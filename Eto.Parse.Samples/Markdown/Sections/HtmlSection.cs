@@ -26,8 +26,8 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
-			var text = match.Matches[0].Text;
-			if (text.StartsWith("<script") || text.Contains("javascript:"))
+			var text = match.Text;
+			if (text.Contains("<script") || text.Contains("javascript:"))
 				args.Output.AppendUnixLine(MarkdownEncoding.Encode(text));
 			else
 				args.Output.AppendUnixLine(text);

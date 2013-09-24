@@ -22,6 +22,8 @@ namespace Eto.Parse
 
 		public abstract int ReadChar();
 
+		public abstract int Peek();
+
 		public abstract string Substring(int index, int length);
 
 		[Obsolete("Use Substring instead")]

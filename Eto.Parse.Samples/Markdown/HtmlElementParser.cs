@@ -19,9 +19,11 @@ namespace Eto.Parse.Samples.Markdown
 			int ch;
 
 			ch = scanner.ReadChar();
+			length++;
 			if (ch == '<')
 			{
 				ch = scanner.ReadChar();
+				length++;
 				if (ch == '!')
 				{
 					length = 7;
@@ -30,13 +32,14 @@ namespace Eto.Parse.Samples.Markdown
 					{
 						while (!scanner.ReadString("-->", true))
 						{
-							length++;
 							if (scanner.Advance(1) < 0)
 							{
 								scanner.Position = pos;
 								return -1;
 							}
+							length++;
 						}
+						length += 3;
 						return length;
 					}
 					scanner.Position = pos;
@@ -44,7 +47,6 @@ namespace Eto.Parse.Samples.Markdown
 				}
 				tagNameBuilder.Clear();
 				tagNameBuilder.Append("</");
-				length++;
 				var first = true;
 				while (ch != -1 && char.IsLetter((char)ch))
 				{
@@ -55,18 +57,34 @@ namespace Eto.Parse.Samples.Markdown
 					}
 					first = false;
 					tagNameBuilder.Append((char)ch);
-					length++;
 					ch = scanner.ReadChar();
+					length++;
 				}
 				if (ch == ' ' || ch == '>')
 				{
 					tagNameBuilder.Append('>');
-					length++;
 					int prev = ch;
-					while (ch != '>' && (ch = scanner.ReadChar()) != -1)
+					while (ch != '>' && ch != -1)
 					{
-						length++;
 						prev = ch;
+						if (ch == '\'' || ch == '"')
+						{
+							var quote = ch;
+							ch = scanner.ReadChar();
+							length++;
+							while (ch != quote && ch != -1)
+							{
+								if (ch == '\n')
+								{
+									scanner.Position = pos;
+									return -1;
+								}
+								ch = scanner.ReadChar();
+								length++;
+							}
+						}
+						ch = scanner.ReadChar();
+						length++;
 					}
 					if (ch != '>')
 					{
@@ -87,11 +105,7 @@ namespace Eto.Parse.Samples.Markdown
 						var tagName = tagNameBuilder.ToString();
 						while (!scanner.ReadString(tagName, true))
 						{
-							ch = scanner.ReadChar();
-							if (ch == -1)
-								break;
-							length++;
-							contentLength++;
+							ch = scanner.Peek();
 							if (ch == '<')
 							{
 								if (MatchContent && contentLength > 0)
@@ -100,10 +114,24 @@ namespace Eto.Parse.Samples.Markdown
 								}
 								var inner = Parse(args);
 								if (inner < 0)
-									break;
+								{
+									scanner.Position = pos;
+									return -1;
+								}
 								length += inner;
 								start = pos + length;
 								contentLength = 0;
+								continue;
+							}
+							if (scanner.Advance(1) >= 0)
+							{
+								length++;
+								contentLength++;
+							}
+							else
+							{
+								scanner.Position = pos;
+								return -1;
 							}
 						}
 						length += tagName.Length;

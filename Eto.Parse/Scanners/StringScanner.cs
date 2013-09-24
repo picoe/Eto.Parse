@@ -51,6 +51,16 @@ namespace Eto.Parse.Scanners
 			return -1;
 		}
 
+		public override int Peek()
+		{
+			var pos = Position;
+			if (pos < end)
+			{
+				return value[pos];
+			}
+			return -1;
+		}
+
 		public override int Advance(int length)
 		{
 			var start = Position;
