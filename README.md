@@ -37,7 +37,7 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse-helpers|  0.374s |     1.41x        |  0.068s |     1xNewtonsoft Json  |  0.265s |     1x           |  0.079s |     1.16xIrony            |  2.571s |     9.71x        |  0.269s |     3.97xGold Parser      | 34.107s |   128.74x        |  0.406s |     5.98x
+Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse-direct |  0.330s |     1.29x        |  0.060s |     1.00xNewtonsoft Json  |  0.255s |     1.00x        |  0.082s |     1.36xIrony            |  2.580s |    10.11x        |  0.284s |     4.74xGold Parser      | 35.640s |   139.63x        |  0.422s |     7.06x
 
 (Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
