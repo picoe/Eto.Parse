@@ -3,13 +3,21 @@ using Eto.Parse.Parsers;
 using System.Text;
 using System.Linq;
 using System.Net;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Samples.Markdown
 {
 	public class HtmlElementParser : Parser
 	{
 		StringBuilder tagNameBuilder = new StringBuilder();
+
 		public bool MatchContent { get; set; }
+
+		HashSet<string> voidTags = new HashSet<string>
+		{
+			"area", "base", "br", "col", "command", "embed", "hr", "img", "input",
+			"keygen", "link", "meta", "param", "source", "track", "wbr"
+		};
 
 		protected override int InnerParse(ParseArgs args)
 		{
@@ -32,7 +40,7 @@ namespace Eto.Parse.Samples.Markdown
 					{
 						while (!scanner.ReadString("-->", true))
 						{
-							if (scanner.Advance(1) < 0)
+							if (scanner.ReadChar() == -1)
 							{
 								scanner.Position = pos;
 								return -1;
@@ -45,7 +53,6 @@ namespace Eto.Parse.Samples.Markdown
 					return -1;
 				}
 				tagNameBuilder.Clear();
-				tagNameBuilder.Append("</");
 				var first = true;
 				while (ch != -1 && char.IsLetter((char)ch))
 				{
@@ -59,9 +66,9 @@ namespace Eto.Parse.Samples.Markdown
 					ch = scanner.ReadChar();
 					length++;
 				}
-				if (ch == ' ' || ch == '>')
+				if (ch == ' ' || ch == '>' || ch == '/')
 				{
-					tagNameBuilder.Append('>');
+					var isVoid = voidTags.Contains(tagNameBuilder.ToString());
 					int prev = ch;
 					while (ch != '>' && ch != -1)
 					{
@@ -90,61 +97,61 @@ namespace Eto.Parse.Samples.Markdown
 						scanner.Position = pos;
 						return -1;
 					}
-					if (prev == '/') // self closing
+					if (isVoid || prev == '/') // self closing, or a tag with no content
 					{
 						return length;
 					}
 
-					if (ch != -1)
+					// now, read till the end tag
+					if (MatchContent && Name != null)
+						args.Push();
+					var start = pos + length;
+					var contentLength = 0;
+					tagNameBuilder.Insert(0, "</");
+					tagNameBuilder.Append(">");
+					var tagName = tagNameBuilder.ToString();
+					while (!scanner.ReadString(tagName, true))
 					{
-						if (MatchContent && Name != null)
-							args.Push();
-						var start = pos + length;
-						var contentLength = 0;
-						var tagName = tagNameBuilder.ToString();
-						while (!scanner.ReadString(tagName, true))
+						ch = scanner.Peek();
+						if (ch == '<')
 						{
-							ch = scanner.Peek();
-							if (ch == '<')
+							if (MatchContent && contentLength > 0)
 							{
-								if (MatchContent && contentLength > 0)
-								{
-									args.AddMatch(this, start, contentLength, "content");
-								}
-								var inner = Parse(args);
-								if (inner < 0)
-								{
-									scanner.Position = pos;
-									return -1;
-								}
-								length += inner;
-								start = pos + length;
-								contentLength = 0;
-								continue;
+								args.AddMatch(this, start, contentLength, "content");
 							}
-							if (scanner.Advance(1) >= 0)
-							{
-								length++;
-								contentLength++;
-							}
-							else
+							var inner = Parse(args);
+							if (inner < 0)
 							{
 								scanner.Position = pos;
 								return -1;
 							}
+							length += inner;
+							start = pos + length;
+							contentLength = 0;
+							continue;
 						}
-						length += tagName.Length;
-						if (MatchContent)
+							if (scanner.Advance(1) >= 0)
 						{
-							if (contentLength > 0)
-							{
-								args.AddMatch(this, start, contentLength, "content");
-							}
-							if (Name != null)
-								args.PopMatch(this, pos, length, Name);
+							length++;
+							contentLength++;
 						}
-						return length;
+						else
+						{
+							scanner.Position = pos;
+							return -1;
+						}
 					}
+					length += tagName.Length;
+					if (MatchContent)
+					{
+						if (contentLength > 0)
+						{
+							args.AddMatch(this, start, contentLength, "content");
+						}
+						if (Name != null)
+							args.PopMatch(this, pos, length, Name);
+					}
+					return length;
 				}
 			}
 			scanner.Position = pos;
@@ -156,5 +163,4 @@ namespace Eto.Parse.Samples.Markdown
 			throw new NotImplementedException();
 		}
 	}
-	
 }

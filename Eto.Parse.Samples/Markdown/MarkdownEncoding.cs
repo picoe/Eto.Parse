@@ -60,7 +60,7 @@ namespace Eto.Parse.Samples.Markdown
 			sharedReplacementParser = new ReplacementParser(grammar);
 			sharedReplacementParser.Add(sharedReplacements);
 			replacements = new ReplacementParser(grammar);
-			replacements.Add(GetReplacements());
+			replacements.Add(sharedReplacements, false);
 			replacements.Add(Terminals.AnyChar);
 			Inner = +replacements;
 			SetError<Parser>(false);

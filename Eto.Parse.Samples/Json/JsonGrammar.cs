@@ -28,7 +28,7 @@ namespace Eto.Parse.Samples.Json
 			var jboolean = new BooleanTerminal { Name = "bool", TrueValues = new string[] { "true" }, FalseValues = new string[] { "false" } };
 			var jname = new StringParser { AllowEscapeCharacters = true, Name = "name" };
 			var jnull = new LiteralTerminal { Value = "null", Name = "null" };
-			var comma = Terminals.Literal(",");
+			var comma = Terminals.Set(",");
 			var ws = -Terminals.WhiteSpace;
 
 			// nonterminals (things we're interested in getting back)

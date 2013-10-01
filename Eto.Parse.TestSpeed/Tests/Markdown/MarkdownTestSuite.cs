@@ -12,6 +12,8 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 
 		public struct HtmlTest
 		{
+			public string Name { get; set; }
+
 			public string Text { get; set; }
 
 			public string Html { get; set; }
@@ -44,7 +46,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 							textName = Path.Combine(MarkdownTests.BasePath, name + ".txt");
 						var text = File.ReadAllText(textName);
 						var html = File.ReadAllText(Path.Combine(MarkdownTests.BasePath, name + ".html"));
-						testList.Add(new HtmlTest { Text = text, Html = html });
+						testList.Add(new HtmlTest { Name = name, Text = text, Html = html });
 					}
 					htmlTests = testList.ToArray();
 				}

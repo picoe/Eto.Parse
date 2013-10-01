@@ -9,6 +9,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 {
 	public class ItalicEncoding : AlternativeParser, IMarkdownReplacement
 	{
+		bool inItalic;
+
 		public ItalicEncoding()
 		{
 			Name = "italic";
@@ -16,22 +18,28 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var inner = grammar.Encoding.ReplacementsExcept<ItalicEncoding>();
-			Add("*" & -Terms.sporht & Terms.sporht.Not() & +(inner | Terminals.AnyChar.Except("*")) & "*");
-			Add("_" & -Terms.sporht & Terms.sporht.Not() & +(inner | Terminals.AnyChar.Except("_")) & "_");
+			var inner = grammar.Encoding.Replacements();
+			Add("*" & -Terms.sporht & +((inner | "**" | Terminals.AnyChar.Except(Terminals.Set("*\n\r")))) & "*");
+			Add("_" & -Terms.sporht & +((inner | Terminals.AnyChar.Except(Terminals.Set("_\n\r")))) & "_");
 		}
 
-		#if PERF_TEST
 		protected override int InnerParse(ParseArgs args)
 		{
-			return base.InnerParse(args);
+			if (inItalic)
+				return -1;
+			inItalic = true;
+			var match = base.InnerParse(args);
+			inItalic = false;
+			return match;
 		}
-		#endif
 
 		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<em>");
-			args.Encoding.Transform(args, match, 1, -2);
+			if (match.HasMatches)
+				args.Encoding.ReplaceEncoding(match.Index + 1, match.Index + match.Length - 1, match.Scanner, match.Matches, args);
+			else
+				args.Output.Append(match.Scanner.Substring(match.Index + 1, match.Length - 2));
 			args.Output.Append("</em>");
 		}
 	}

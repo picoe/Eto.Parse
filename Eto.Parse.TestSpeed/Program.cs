@@ -16,7 +16,7 @@ namespace Eto.Parse.TestSpeed
 		{
 			yield return new Tests.Json.JsonTestSuite("(large file)", "sample-large.json");
 
-			yield return new Tests.Json.JsonTestSuite("(small file)", "sample-small.json");
+			yield return new Tests.Json.JsonTestSuite("(small file)", "sample-small.json") { Iterations = 10000 };
 
 			yield return new Tests.Markdown.MarkdownTestSuite();
 		}

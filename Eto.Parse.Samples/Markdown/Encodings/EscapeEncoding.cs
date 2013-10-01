@@ -16,7 +16,7 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			this.Add(("&" & ~(+Terminals.Letter & ";")), Terminals.Eol, Terminals.Set("<>\""), Terminals.Literal("\\") & Terminals.Set("&><\\`*_{}[]()#+-.!"));
+			this.Add("&" & ~(+Terminals.Letter & ";"), Terminals.Set("<>\""), Terminals.Literal("\\") & Terminals.Set("&><\\`*_{}[]()#+-.!"));
 		}
 
 		public void Transform(Match match, MarkdownReplacementArgs args)

@@ -11,6 +11,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 	{
 		public bool AddLinesBefore { get { return true; } }
 
+		bool inBold;
+
 		public BoldEncoding()
 		{
 			Name = "bold";
@@ -18,24 +20,27 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var inner = grammar.Encoding.ReplacementsExcept<BoldEncoding>();
-			Add("**" & -Terms.sporht & Terms.sporht.Not() & +((inner | Terminals.AnyChar.Except("**"))) & "**");
-			Add("__" & -Terms.sporht & Terms.sporht.Not() & +((inner | Terminals.AnyChar.Except("__"))) & "__");
+			var inner = grammar.Encoding.Replacements();
+			Add("**" & -Terms.sporht & +((inner | Terminals.AnyChar.Except(Terminals.Set("*\n\r")))) & "**");
+			Add("__" & -Terms.sporht & +((inner | Terminals.AnyChar.Except(Terminals.Set("_\n\r")))) & "__");
 		}
 
-#if PERF_TEST
 		protected override int InnerParse(ParseArgs args)
 		{
-			return base.InnerParse(args);
+			if (inBold)
+				return -1;
+			inBold = true;
+			var match = base.InnerParse(args);
+			inBold = false;
+			return match;
 		}
-#endif
 
 		public void Transform(Match match, MarkdownReplacementArgs args)
 		{
 			args.Output.Append("<strong>");
 			//args.Encoding.Transform(args, match, 2, -4);
 			if (match.HasMatches)
-				args.Encoding.ReplaceEncoding(match.Index + 2, match.Length - 4, match.Scanner, match.Matches, args);
+				args.Encoding.ReplaceEncoding(match.Index + 2, match.Index + match.Length - 2, match.Scanner, match.Matches, args);
 			else
 				args.Output.Append(match.Scanner.Substring(match.Index + 2, match.Length - 4));
 			args.Output.Append("</strong>");
