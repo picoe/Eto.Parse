@@ -34,9 +34,9 @@ namespace Eto.Parse.Parsers
 			this.Characters = (char[])chars.Clone();
 		}
 
-		protected override bool Test(char ch, bool caseSensitive)
+		protected override bool Test(char ch)
 		{
-			if (caseSensitive)
+			if (TestCaseSensitive)
 			{
 				for (int i = 0; i < characters.Length; i++)
 				{

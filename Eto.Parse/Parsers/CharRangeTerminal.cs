@@ -26,7 +26,7 @@ namespace Eto.Parse.Parsers
 			this.End = end;
 		}
 
-		protected override bool Test(char ch, bool caseSensitive)
+		protected override bool Test(char ch)
 		{
 			return ch >= Start && ch <= End;
 		}

@@ -35,20 +35,21 @@ namespace Eto.Parse.Parsers
 			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
-		protected abstract bool Test(char ch, bool caseSensitive);
+		protected abstract bool Test(char ch);
+
+		protected bool TestCaseSensitive { get { return caseSensitive; } }
 
 		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
-			var pos = scanner.Position;
 			int ch = scanner.ReadChar();
 			if (ch != -1)
 			{
-				if (Test((char)ch, caseSensitive) != Inverse)
+				if (Test((char)ch) != Inverse)
 				{
 					return 1;
 				}
-				scanner.Position = pos;
+				scanner.Position--;
 			}
 			return -1;
 		}

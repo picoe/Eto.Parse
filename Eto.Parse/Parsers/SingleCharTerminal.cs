@@ -34,9 +34,9 @@ namespace Eto.Parse.Parsers
 			this.Character = character;
 		}
 
-		protected override bool Test(char ch, bool caseSensitive)
+		protected override bool Test(char ch)
 		{
-			if (caseSensitive)
+			if (TestCaseSensitive)
 			{
 				return character == ch;
 			}

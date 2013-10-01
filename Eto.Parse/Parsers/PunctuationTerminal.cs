@@ -14,7 +14,7 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		protected override bool Test(char ch, bool caseSensitive)
+		protected override bool Test(char ch)
 		{
 			return Char.IsPunctuation(ch);
 		}
