@@ -12,11 +12,6 @@ namespace Eto.Parse.Scanners
 			get { return Position >= end; }
 		}
 		
-		public override char Current
-		{
-			get { return value[Position]; }
-		}
-
 		public string Value
 		{
 			get { return value; }

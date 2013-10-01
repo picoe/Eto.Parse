@@ -6,17 +6,9 @@ namespace Eto.Parse
 	{
 		public int Position { get; set; }
 
-		[Obsolete("Use Position property instead")]
-		public void SetPosition(int position)
-		{
-			Position = position;
-		}
-
 		public abstract int Advance(int length);
 
 		public abstract bool IsEof { get; }
-
-		public abstract char Current { get; }
 
 		public abstract bool ReadString(string matchString, bool caseSensitive);
 
@@ -26,10 +18,26 @@ namespace Eto.Parse
 
 		public abstract string Substring(int index, int length);
 
+		#region Obsolete
+
 		[Obsolete("Use Substring instead")]
 		public string SubString(int index, int length)
 		{
 			return Substring(index, length);
 		}
+
+		[Obsolete("Use Peek() instead")]
+		public char Current
+		{
+			get { return (char)Peek(); }
+		}
+
+		[Obsolete("Use Position property instead")]
+		public void SetPosition(int position)
+		{
+			Position = position;
+		}
+
+		#endregion
 	}
 }

@@ -268,7 +268,7 @@ namespace Eto.Parse.Parsers
 						{
 							if (ch == quote)
 							{
-								if (!AllowDoubleQuote || scanner.IsEof || scanner.Current != quote)
+								if (!AllowDoubleQuote || scanner.Peek() != quote)
 									return length;
 								else
 									isEscape = true;
