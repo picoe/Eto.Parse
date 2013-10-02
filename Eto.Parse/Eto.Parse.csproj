@@ -147,6 +147,7 @@
     <Compile Include="ParserChildrenArgs.cs" />
     <Compile Include="Parsers\SingleCharTerminal.cs" />
     <Compile Include="Writers\Code\SingleCharWriter.cs" />
+    <Compile Include="Parsers\RepeatCharTerminal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

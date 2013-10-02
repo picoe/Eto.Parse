@@ -1,6 +1,7 @@
 using System;
 using Eto.Parse.Parsers;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Eto.Parse
 {
@@ -68,6 +69,21 @@ namespace Eto.Parse
 		public static LiteralTerminal Literal(string matchValue)
 		{
 			return new LiteralTerminal(matchValue);
+		}
+
+		public static RepeatCharTerminal Repeat(Func<char, bool> test, int minimum, int maximum = int.MaxValue)
+		{
+			return new RepeatCharTerminal(new RepeatCharItem(test, minimum, maximum));
+		}
+
+		public static RepeatCharTerminal Repeat(params RepeatCharItem[] items)
+		{
+			return new RepeatCharTerminal(items);
+		}
+
+		public static RepeatCharTerminal Repeat(IEnumerable<RepeatCharItem> items)
+		{
+			return new RepeatCharTerminal(items);
 		}
 	}
 }

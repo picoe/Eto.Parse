@@ -6,11 +6,8 @@ namespace Eto.Parse.Samples.Markdown
 	{
 		public static Parser sp = Terminals.Literal(" ");
 		public static Parser ht = Terminals.Literal("\t");
-		public static Parser cr = Terminals.Literal("\r");
-		public static Parser lf = Terminals.Literal("\n");
 		public static Parser eol = Terminals.Eol;
 		public static Parser eof = Terminals.End;
-		public static Parser ch = !Terminals.Set(" \r\n\t");
 		public static Parser sporht = Terminals.Set(" \t");
 		public static Parser indent = "    " | ht;
 		public static Parser eolorf;
@@ -32,9 +29,9 @@ namespace Eto.Parse.Samples.Markdown
 
 		static Terms()
 		{
-			word = +ch;
-			ws = +(sporht);
-			ows = -(sporht);
+			word = Terminals.Repeat(c => c != ' ' && c != '\r' && c != '\n' && c != '\t', 1);
+			ws = Terminals.Repeat(c => c == ' ' || c == '\t', 1);
+			ows = Terminals.Repeat(c => c == ' ' || c == '\t', 0);
 			blankLine = (ows & eol).Separate();
 			blankLineOrEof = (blankLine | eof).Separate();
 			eolorf = (Terminals.Eol | eof).Separate();

@@ -18,7 +18,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 			var num = (+Terminals.Digit).WithName("num") & "." & Terms.ows;
 			var start = (prefix & (num | star)).Separate();
 
-			var content = grammar.Encoding.ReplacementsWithAnyChar().Repeat().Until(Terms.blankLine & (Terms.blankLine | -Terms.sporht & start));
+			var content = grammar.Encoding.ReplacementsWithAnyChar().Repeat().Until(Terms.blankLine & (Terms.blankLine | Terms.ows & start));
 			content.Name = "content";
 			var line = (grammar.PrefixSpOrHt & start & content & Terms.blankLineOrEof).WithName("line");
 			var inner = grammar.CreateInnerReplacements().WithName("inner");

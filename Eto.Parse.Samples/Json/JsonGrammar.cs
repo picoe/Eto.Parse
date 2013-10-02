@@ -1,5 +1,6 @@
 using System;
 using Eto.Parse.Parsers;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Samples.Json
 {
@@ -24,8 +25,8 @@ namespace Eto.Parse.Samples.Json
 			var jboolean = new BooleanTerminal { Name = "bool", TrueValues = new string[] { "true" }, FalseValues = new string[] { "false" } };
 			var jname = new StringParser { AllowEscapeCharacters = true, Name = "name" };
 			var jnull = new LiteralTerminal { Value = "null", Name = "null" };
-			var comma = Terminals.Set(",");
-			var ws = -Terminals.WhiteSpace;
+			var ws = new RepeatCharTerminal(char.IsWhiteSpace);
+			var commaDelimiter = new RepeatCharTerminal(new RepeatCharItem(char.IsWhiteSpace), ',', new RepeatCharItem(char.IsWhiteSpace));
 
 			// nonterminals (things we're interested in getting back)
 			var jobject = new SequenceParser { Name = "object" }; 
@@ -34,9 +35,9 @@ namespace Eto.Parse.Samples.Json
 
 			// rules
 			var jvalue = jstring | jnumber | jobject | jarray | jboolean | jnull;
-			jobject.Add("{", (-jprop).SeparatedBy(ws & comma & ws), "}");
+			jobject.Add("{", (-jprop).SeparatedBy(commaDelimiter), "}");
 			jprop.Add(jname, ":", jvalue);
-			jarray.Add("[", (-jvalue).SeparatedBy(ws & comma & ws), "]");
+			jarray.Add("[", (-jvalue).SeparatedBy(commaDelimiter), "]");
 
 			// separate sequence and repeating parsers by whitespace
 			jvalue.SeparateChildrenBy(ws, false);

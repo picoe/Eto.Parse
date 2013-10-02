@@ -12,7 +12,7 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 		public void Initialize(MarkdownGrammar grammar)
 		{
-			var prefix = Terms.sporht.Repeat(0, 3);
+			var prefix = Terminals.Repeat(c => c == ' ' || c == '\t', 0, 3);
 			var dash = Terminals.Literal("-").Repeat(3).SeparatedBy(Terms.ows).Until(Terms.eolorf);
 			var star = Terminals.Literal("*").Repeat(3).SeparatedBy(Terms.ows).Until(Terms.eolorf);
 			var underscore = Terminals.Literal("_").Repeat(3).SeparatedBy(Terms.ows).Until(Terms.eolorf);
