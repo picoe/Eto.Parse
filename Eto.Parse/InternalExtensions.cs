@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 
 namespace Eto.Parse
 {
-	internal static class InternalExtensions
+	static class InternalExtensions
 	{
 		internal static void ThrowIfNull<T>(this T o, string paramName, string message = null) where T : class
 		{

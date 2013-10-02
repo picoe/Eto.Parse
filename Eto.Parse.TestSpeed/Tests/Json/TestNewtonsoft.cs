@@ -1,8 +1,5 @@
-using System;
 using System.Text;
-using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace Eto.Parse.TestSpeed.Tests.Json
 {
@@ -14,7 +11,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		}
 		public override void Warmup(JsonTestSuite suite)
 		{
-			var obj = JObject.Parse(suite.Json);
+			JObject.Parse(suite.Json);
 		}
 
 		public override void PerformTest(JsonTestSuite suite, StringBuilder output)

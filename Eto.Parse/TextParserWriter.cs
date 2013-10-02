@@ -1,6 +1,4 @@
 using System;
-using Eto.Parse.Parsers;
-using System.Collections.Generic;
 using System.IO;
 using System.CodeDom.Compiler;
 
@@ -31,11 +29,6 @@ namespace Eto.Parse
 				Writer = this
 			};
 			WriteParser(args, parser);
-		}
-
-		public override string WriteParser(TextParserWriterArgs args, Parser parser)
-		{
-			return base.WriteParser(args, parser);
 		}
 	}
 }

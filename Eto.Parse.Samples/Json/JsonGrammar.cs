@@ -1,9 +1,5 @@
 using System;
 using Eto.Parse.Parsers;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections;
-using System.Collections.ObjectModel;
 
 namespace Eto.Parse.Samples.Json
 {

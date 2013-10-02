@@ -1,6 +1,4 @@
-using System;
 using Eto.Parse;
-using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
@@ -42,18 +40,14 @@ namespace Eto.Parse.Parsers
 		{
 			if (Value != null)
 			{
-				if (!args.Scanner.ReadString(Value, caseSensitive))
-					return -1;
-				else
-					return Value.Length;
+				return !args.Scanner.ReadString(Value, caseSensitive) ? -1 : Value.Length;
 			}
-			else
-				return 0;
+			return 0;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new LiteralTerminal(this, chain);
+			return new LiteralTerminal(this, args);
 		}
 	}
 }

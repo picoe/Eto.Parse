@@ -108,9 +108,9 @@ namespace Eto.Parse.Parsers
 			return -1;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new GroupParser(this, chain);
+			return new GroupParser(this, args);
 		}
 		
 		public override void Initialize(ParserInitializeArgs args)

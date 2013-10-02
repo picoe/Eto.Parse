@@ -1,10 +1,4 @@
 using System;
-using Eto.Parse.Parsers;
-using System.Text;
-using System.Linq;
-using System.Net;
-using System.Collections.Generic;
-using Eto.Parse.Samples.Markdown.Sections;
 
 namespace Eto.Parse.Samples.Markdown
 {

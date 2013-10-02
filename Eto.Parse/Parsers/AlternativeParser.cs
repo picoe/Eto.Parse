@@ -15,10 +15,7 @@ namespace Eto.Parse.Parsers
 		public static Parser ExcludeNull(IEnumerable<Parser> parsers)
 		{
 			var p = parsers.Where(r => r != null).ToArray();
-			if (p.Length == 1)
-				return p[0];
-			else
-				return new AlternativeParser(p);
+			return p.Length == 1 ? p[0] : new AlternativeParser(p);
 		}
 
 		protected AlternativeParser(AlternativeParser other, ParserCloneArgs chain)
@@ -90,9 +87,9 @@ namespace Eto.Parse.Parsers
 			return -1;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new AlternativeParser(this, chain);
+			return new AlternativeParser(this, args);
 		}
 
 		public override void Initialize(ParserInitializeArgs args)
@@ -120,20 +117,20 @@ namespace Eto.Parse.Parsers
 				}
 				if (second.Count > 0)
 				{
-					this.Items.Clear();
+					Items.Clear();
 					var secondParser = second.Count > 1 ? new AlternativeParser(second) : second[0];
 					if (first.Count > 0)
 					{
 						var firstParser = first.Count > 1 ? new AlternativeParser(first) : first[0];
 						if (first.Count == 1 && first[0] == null)
 						{
-							this.Items.Add(-secondParser);
+							Items.Add(-secondParser);
 						}
 						else
-							this.Items.Add(new SequenceParser(firstParser, -secondParser));
+							Items.Add(new SequenceParser(firstParser, -secondParser));
 					}
 					else
-						this.Items.Add(+secondParser);
+						Items.Add(+secondParser);
 				}
 				args.Pop();
 			}

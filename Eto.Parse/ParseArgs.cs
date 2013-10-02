@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using Eto.Parse.Parsers;
 
 namespace Eto.Parse
 {
@@ -14,10 +11,10 @@ namespace Eto.Parse
 	/// </remarks>
 	public class ParseArgs
 	{
-		SlimStack<MatchCollection> nodes;
-		List<Parser> errors = new List<Parser>();
-		int childErrorIndex;
-		int errorIndex;
+		readonly SlimStack<MatchCollection> nodes = new SlimStack<MatchCollection>(50);
+		readonly List<Parser> errors = new List<Parser>();
+		int childErrorIndex = -1;
+		int errorIndex = -1;
 
 		/// <summary>
 		/// Gets the root match when the grammar is matched
@@ -79,19 +76,8 @@ namespace Eto.Parse
 
 		internal ParseArgs(Grammar grammar, Scanner scanner)
 		{
-			errorIndex = -1;
-			childErrorIndex = -1;
 			Grammar = grammar;
 			Scanner = scanner;
-			nodes = new SlimStack<MatchCollection>(50);
-		}
-
-		internal void Reset(Scanner scanner)
-		{
-			Scanner = scanner;
-			errorIndex = -1;
-			childErrorIndex = -1;
-			errors.Clear();
 		}
 
 		internal bool IsRoot
@@ -154,8 +140,8 @@ namespace Eto.Parse
 		/// Pushes a new match tree node
 		/// </summary>
 		/// <remarks>
-		/// Use this when there is a possibility that a child parser will not match, such as the <see cref="OptionalParser"/>,
-		/// items in a <see cref="AlternativeParser"/>
+		/// Use this when there is a possibility that a child parser will not match, such as the <see cref="Parsers.OptionalParser"/>,
+		/// items in a <see cref="Parsers.AlternativeParser"/>
 		/// </remarks>
 		public void Push()
 		{
@@ -233,7 +219,8 @@ namespace Eto.Parse
 		/// Pops a succesful named match node, and adds it to the parent match node
 		/// </summary>
 		/// <param name="parser">Parser with the name to add to the match tree</param>
-		/// <param name="match">Match to add to the match tree</param>
+		/// <param name="index">Index of the start of the match</param>
+		/// <param name="length">Length of the match</param>
 		/// <param name="name">Name to give the match</param>
 		public void PopMatch(Parser parser, int index, int length, string name)
 		{
@@ -259,7 +246,8 @@ namespace Eto.Parse
 		/// This is used to add a parse match to the result match tree
 		/// </remarks>
 		/// <param name="parser">Parser for the match</param>
-		/// <param name="match">Parse match indicating the position and length of the match</param>
+		/// <param name="index">Index of the start of the match</param>
+		/// <param name="length">Length of the match</param>
 		/// <param name="name">Name of this match (usually the Parser.Match value)</param>
 		public void AddMatch(Parser parser, int index, int length, string name)
 		{

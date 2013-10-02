@@ -8,9 +8,9 @@ namespace Eto.Parse
 {
 	public class ParserWriterArgs
 	{
-		Dictionary<Type, int> names = new Dictionary<Type, int>();
-		HashSet<string> namedParsers = new HashSet<string>();
-		Dictionary<object, string> objectNames = new Dictionary<object, string>();
+		readonly Dictionary<Type, int> names = new Dictionary<Type, int>();
+		readonly HashSet<string> namedParsers = new HashSet<string>();
+		readonly Dictionary<object, string> objectNames = new Dictionary<object, string>();
 
 		public Stack<Parser> Parsers { get; private set; }
 
@@ -70,7 +70,7 @@ namespace Eto.Parse
 
 			names[type] = val;
 			var name = type.Name;
-			if (name.EndsWith("Parser"))
+			if (name.EndsWith("Parser", StringComparison.Ordinal))
 				name = name.Substring(0, name.Length - 6);
 			return name.ToLowerInvariant() + val;
 		}

@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
-using System.Text.RegularExpressions;
 using Eto.Parse.Parsers;
 using System.Linq;
 
@@ -10,8 +7,8 @@ namespace Eto.Parse.Samples.Markdown
 {
 	public class ReplacementParser : AlternativeParser
 	{
-		MarkdownGrammar grammar;
-		Dictionary<string, IMarkdownReplacement> replacements;
+		readonly MarkdownGrammar grammar;
+		readonly Dictionary<string, IMarkdownReplacement> replacements;
 
 		public IMarkdownReplacement GetReplacement(string name)
 		{
@@ -44,7 +41,7 @@ namespace Eto.Parse.Samples.Markdown
 				this.replacements.Add(replacement.Name, replacement);
 				if (initReplacements)
 					replacement.Initialize(grammar);
-				this.Add((Parser)replacement);
+				Add((Parser)replacement);
 			}
 		}
 	}

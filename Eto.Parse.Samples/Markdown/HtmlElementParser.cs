@@ -1,19 +1,16 @@
 using System;
-using Eto.Parse.Parsers;
-using System.Text;
-using System.Linq;
-using System.Net;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Eto.Parse.Samples.Markdown
 {
 	public class HtmlElementParser : Parser
 	{
-		StringBuilder tagNameBuilder = new StringBuilder();
+		readonly StringBuilder tagNameBuilder = new StringBuilder();
 
 		public bool MatchContent { get; set; }
 
-		HashSet<string> voidTags = new HashSet<string>
+		static readonly HashSet<string> voidTags = new HashSet<string>
 		{
 			"area", "base", "br", "col", "command", "embed", "hr", "img", "input",
 			"keygen", "link", "meta", "param", "source", "track", "wbr"

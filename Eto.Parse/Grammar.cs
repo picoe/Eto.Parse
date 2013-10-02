@@ -1,6 +1,5 @@
 using System;
 using Eto.Parse.Scanners;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Eto.Parse
@@ -121,8 +120,7 @@ namespace Eto.Parse
 				args.Root = new GrammarMatch(this, scanner, pos, match, matches, args.ErrorIndex, args.ChildErrorIndex, errors);
 				return match;
 			}
-			else
-				return base.InnerParse(args);
+			return base.InnerParse(args);
 		}
 
 		public GrammarMatch Match(string value)
@@ -174,9 +172,9 @@ namespace Eto.Parse
 			return matches;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new Grammar(this, chain);
+			return new Grammar(this, args);
 		}
 	}
 }

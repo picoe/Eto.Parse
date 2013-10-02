@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 
@@ -270,8 +268,7 @@ namespace Eto.Parse.Parsers
 							{
 								if (!AllowDoubleQuote || scanner.Peek() != quote)
 									return length;
-								else
-									isEscape = true;
+								isEscape = true;
 							}
 						}
 						else
@@ -300,9 +297,9 @@ namespace Eto.Parse.Parsers
 			return -1;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new StringParser(this, chain);
+			return new StringParser(this, args);
 		}
 	}
 }

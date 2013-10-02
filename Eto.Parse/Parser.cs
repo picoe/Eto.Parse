@@ -1,10 +1,6 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
-using Eto.Parse.Scanners;
-using Eto.Parse.Parsers;
 using System.Linq;
-using System.Diagnostics;
 
 namespace Eto.Parse
 {
@@ -88,8 +84,8 @@ namespace Eto.Parse
 					return this.name;
 				var type = GetType();
 				var name = type.Name;
-				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser"))
-					name = name.Substring(0, name.LastIndexOf("Parser"));
+				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser", StringComparison.Ordinal))
+					name = name.Substring(0, name.LastIndexOf("Parser", StringComparison.Ordinal));
 				return name;
 			}
 		}
@@ -116,7 +112,7 @@ namespace Eto.Parse
 		/// Event to handle when this parser is matched
 		/// </summary>
 		/// <remarks>
-		/// This event is fired only for matches that have a <see cref="Name"/> defined.
+		/// This event is fired only for matches that have a <see cref="Parser.Name"/> defined.
 		/// </remarks>
 		public event Action<Match> Matched;
 
@@ -154,11 +150,13 @@ namespace Eto.Parse
 		{
 			OnPreMatch(match);
 		}
+
 		#endregion
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Eto.Parse.Parser"/> class.
 		/// </summary>
-		public Parser()
+		protected Parser()
 		{
 		}
 
@@ -345,7 +343,7 @@ namespace Eto.Parse
 
 		public virtual IEnumerable<Parser> Find(ParserFindArgs args)
 		{
-			if (string.Equals(this.Name, args.ParserId, StringComparison.Ordinal))
+			if (string.Equals(Name, args.ParserId, StringComparison.Ordinal))
 				yield return this;
 		}
 

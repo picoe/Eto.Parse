@@ -1,7 +1,5 @@
 using System;
-using Eto.Parse.Parsers;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Eto.Parse
 {
@@ -22,12 +20,12 @@ namespace Eto.Parse
 		}
 	}
 
-	public class ParserWriter<T_Args> : IParserWriter
-		where T_Args: ParserWriterArgs
+	public class ParserWriter<TArgs> : IParserWriter
+		where TArgs: ParserWriterArgs
 	{
 		public interface IParserWriterHandler
 		{
-			string Write(T_Args args, Parser parser);
+			string Write(TArgs args, Parser parser);
 		}
 
 		public class ParserDictionary : Dictionary<Type, IParserWriterHandler> { }
@@ -39,7 +37,7 @@ namespace Eto.Parse
 			ParserWriters = writers ?? new ParserDictionary();
 		}
 
-		public virtual string WriteParser(T_Args args, Parser parser)
+		public virtual string WriteParser(TArgs args, Parser parser)
 		{
 			if (parser == null)
 				throw new ArgumentNullException("parser");
@@ -56,7 +54,7 @@ namespace Eto.Parse
 
 		string IParserWriter.WriteParser(ParserWriterArgs args, Parser parser)
 		{
-			return WriteParser((T_Args)args, parser);
+			return WriteParser((TArgs)args, parser);
 		}
 	}
 }

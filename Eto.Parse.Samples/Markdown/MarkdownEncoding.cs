@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
 using System.Text.RegularExpressions;
-using Eto.Parse.Parsers;
 using Eto.Parse.Samples.Markdown.Encodings;
 using System.Linq;
 using Eto.Parse.Scanners;
@@ -17,7 +14,7 @@ namespace Eto.Parse.Samples.Markdown
 		ReplacementParser sharedReplacementParser;
 		MarkdownGrammar grammar;
 
-		IEnumerable<IMarkdownReplacement> GetReplacements()
+		static IEnumerable<IMarkdownReplacement> GetReplacements()
 		{
 			yield return new BreakEncoding();
 			yield return new HtmlEncoding();
@@ -42,7 +39,7 @@ namespace Eto.Parse.Samples.Markdown
 			where T: IMarkdownReplacement
 		{
 			var rep = new ReplacementParser(grammar);
-			rep.Add(sharedReplacements.Where(r => !typeof(T).IsAssignableFrom(r.GetType())), false);
+			rep.Add(sharedReplacements.Where(r => !(r is T)), false);
 			return rep;
 		}
 
@@ -133,8 +130,8 @@ namespace Eto.Parse.Samples.Markdown
 				args.Output.Append(scanner.Substring(last, end - last));
 		}
 
-		static Regex apersands = new Regex(@"&(?!((#[0-9]+)|(#[xX][a-fA-F0-9]+)|([a-zA-Z][a-zA-Z0-9]*));)",  RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-		static Regex backslashes = new Regex(@"(?<=[^\\])[\\]([\\`*_{}[\]()#+-.!])", RegexOptions.Compiled);
+		static readonly Regex apersands = new Regex(@"&(?!((#[0-9]+)|(#[xX][a-fA-F0-9]+)|([a-zA-Z][a-zA-Z0-9]*));)",  RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+		static readonly Regex backslashes = new Regex(@"(?<=[^\\])[\\]([\\`*_{}[\]()#+-.!])", RegexOptions.Compiled);
 
 		internal static string EncodeAttribute(string attribute)
 		{

@@ -18,15 +18,12 @@ namespace Eto.Parse.Parsers
 		protected override int InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Position;
-			if (pos <= 0)
-				return 0;
-			else
-				return -1;
+			return pos <= 0 ? 0 : -1;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new StartParser(this, chain);
+			return new StartParser(this, args);
 		}
 	}
 }

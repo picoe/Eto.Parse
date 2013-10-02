@@ -117,9 +117,9 @@ namespace Eto.Parse.Parsers
 			return len;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new NumberParser(this, chain);
+			return new NumberParser(this, args);
 		}
 	}
 }

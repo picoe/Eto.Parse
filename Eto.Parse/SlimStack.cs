@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Eto.Parse
@@ -33,7 +32,7 @@ namespace Eto.Parse
 		public void Push(T value)
 		{
 			if (count == base.Count)
-				base.Add(value);
+				Add(value);
 			else
 				this[count] = value;
 			count++;
@@ -42,7 +41,7 @@ namespace Eto.Parse
 		public void PushDefault()
 		{
 			if (count == base.Count)
-				base.Add(default(T));
+				Add(default(T));
 			count++;
 		}
 

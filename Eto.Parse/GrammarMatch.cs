@@ -7,7 +7,7 @@ namespace Eto.Parse
 {
 	public class GrammarMatch : Match
 	{
-		IEnumerable<Parser> errors;
+		readonly IEnumerable<Parser> errors;
 
 		public int ErrorIndex { get; private set; }
 
@@ -27,7 +27,7 @@ namespace Eto.Parse
 		{
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "Index must be greater or equal to zero");
-			var before = Scanner.Substring(Math.Max(0, index - count), (int)Math.Min(index, count));
+			var before = Scanner.Substring(Math.Max(0, index - count), Math.Min(index, count));
 			var after = Scanner.Substring(index, count);
 			return before + indicator + after;
 		}

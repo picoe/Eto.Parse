@@ -82,8 +82,7 @@ namespace Eto.Parse
 		{
 			if (Inner != null)
 				return Inner.Parse(args);
-			else
-				return 0;
+			return 0;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)
@@ -105,8 +104,7 @@ namespace Eto.Parse
 				}
 				return false;
 			}
-			else
-				return false;
+			return false;
 		}
 
 		public override IEnumerable<Parser> Children(ParserChildrenArgs args)

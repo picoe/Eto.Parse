@@ -1,9 +1,4 @@
-using System;
-using System.Text;
 using System.Collections.Generic;
-using Eto.Parse.Scanners;
-using Eto.Parse.Parsers;
-using System.Linq;
 
 namespace Eto.Parse
 {
@@ -35,7 +30,7 @@ namespace Eto.Parse
 	/// </remarks>
 	public abstract class ParserChain
 	{
-		List<Parser> parents;
+		readonly List<Parser> parents = new List<Parser>();
 
 		/// <summary>
 		/// Gets an enumerable of parents in the chain
@@ -64,14 +59,6 @@ namespace Eto.Parse
 		public void Pop()
 		{
 			parents.RemoveAt(parents.Count - 1);
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Eto.Parse.ParserChain"/> class.
-		/// </summary>
-		protected ParserChain()
-		{
-			parents = new List<Parser>();
 		}
 	}
 }

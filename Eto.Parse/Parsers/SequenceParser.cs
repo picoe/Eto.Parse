@@ -68,27 +68,24 @@ namespace Eto.Parse.Parsers
 				}
 				return length;
 			}
-			else
+			for (int i = 0; i < count; i++)
 			{
-				for (int i = 0; i < count; i++)
+				var parser = Items[i];
+				var childMatch = parser.Parse(args);
+				if (childMatch >= 0)
 				{
-					var parser = Items[i];
-					var childMatch = parser.Parse(args);
-					if (childMatch >= 0)
-					{
-						length += childMatch;
-						continue;
-					}
-					args.Scanner.Position = pos;
-					return -1;
+					length += childMatch;
+					continue;
 				}
-				return length;
+				args.Scanner.Position = pos;
+				return -1;
 			}
+			return length;
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new SequenceParser(this, chain);
+			return new SequenceParser(this, args);
 		}
 
 		public override void Initialize(ParserInitializeArgs args)

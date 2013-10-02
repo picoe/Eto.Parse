@@ -29,10 +29,7 @@ namespace Eto.Parse.Parsers
 			{
 				var match = Inner.Parse(args);
 
-				if (match >= 0)
-					return match;
-				else
-					return 0;
+				return match < 0 ? 0 : match;
 			}
 			else
 			{
@@ -44,17 +41,14 @@ namespace Eto.Parse.Parsers
 					args.PopSuccess();
 					return match;
 				}
-				else
-				{
-					args.PopFailed();
-					return 0;
-				}
+				args.PopFailed();
+				return 0;
 			}
 		}
 
-		public override Parser Clone(ParserCloneArgs chain)
+		public override Parser Clone(ParserCloneArgs args)
 		{
-			return new OptionalParser(this, chain);
+			return new OptionalParser(this, args);
 		}
 	}
 }

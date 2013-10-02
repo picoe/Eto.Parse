@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using Eto.Parse.Parsers;
 
 namespace Eto.Parse.Samples.Markdown.Encodings

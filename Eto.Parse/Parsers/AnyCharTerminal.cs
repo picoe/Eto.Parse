@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
@@ -17,10 +16,7 @@ namespace Eto.Parse.Parsers
 		protected override int InnerParse(ParseArgs args)
 		{
 			var pos = args.Scanner.Advance(1);
-			if (pos >= 0)
-				return 1;
-			else
-				return -1;
+			return pos < 0 ? -1 : 1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

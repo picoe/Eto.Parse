@@ -25,8 +25,7 @@ namespace Eto.Parse.Parsers
 				args.Scanner.Position = pos;
 				return Inverse ? -1 : 0;
 			}
-			else
-				return Inverse ? 0 : -1;
+			return Inverse ? 0 : -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

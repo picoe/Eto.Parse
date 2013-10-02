@@ -16,9 +16,7 @@ namespace Eto.Parse.Parsers
 
 		protected override bool Test(char ch)
 		{
-			if (ch == '\n' || ch == '\r')
-				return false;
-			return Char.IsWhiteSpace(ch);
+			return ch != '\n' && ch != '\r' && Char.IsWhiteSpace(ch);
 		}
 
 		protected override string CharName

@@ -7,11 +7,11 @@ namespace Eto.Parse
 	public class Match
 	{
 		MatchCollection matches;
-		int index;
-		int length;
-		string name;
-		Parser parser;
-		Scanner scanner;
+		readonly int index;
+		readonly int length;
+		readonly string name;
+		readonly Parser parser;
+		readonly Scanner scanner;
 
 		internal static readonly Match EmptyMatch = new Match(null, null, null, -1, -1, new MatchCollection());
 
@@ -116,7 +116,7 @@ namespace Eto.Parse
 		public IEnumerable<Match> Find(string id, bool deep = false)
 		{
 			bool found = false;
-			for (int i = 0; i < this.Count; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				var item = this[i];
 				if (item.Name == id)
@@ -127,7 +127,7 @@ namespace Eto.Parse
 			}
 			if (deep && !found)
 			{
-				for (int i = 0; i < this.Count; i++)
+				for (int i = 0; i < Count; i++)
 				{
 					var item = this[i];
 					foreach (var child in item.Find(id, deep))

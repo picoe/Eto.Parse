@@ -28,11 +28,8 @@ namespace Eto.Parse.Parsers
 			var match = Except.Parse(args);
 			if (match < 0)
 				return base.InnerParse(args);
-			else
-			{
-				args.Scanner.Position = pos;
-				return -1;
-			}
+			args.Scanner.Position = pos;
+			return -1;
 		}
 
 		public override void Initialize(ParserInitializeArgs args)

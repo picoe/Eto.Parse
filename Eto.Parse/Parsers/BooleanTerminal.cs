@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Eto.Parse.Parsers
 {
@@ -32,7 +29,7 @@ namespace Eto.Parse.Parsers
 		public override void Initialize(ParserInitializeArgs args)
 		{
 			base.Initialize(args);
-			caseSensitive = this.CaseSensitive ?? args.Grammar.CaseSensitive;
+			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
 		public override object GetValue(string text)
@@ -54,7 +51,7 @@ namespace Eto.Parse.Parsers
 						return false;
 				}
 			}
-			throw new ArgumentOutOfRangeException("Match value is invalid");
+			throw new ArgumentOutOfRangeException("text", "Match value is invalid");
 		}
 
 		protected override int InnerParse(ParseArgs args)

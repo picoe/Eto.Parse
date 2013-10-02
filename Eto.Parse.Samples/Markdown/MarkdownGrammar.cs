@@ -15,7 +15,7 @@ namespace Eto.Parse.Samples.Markdown
 		ReplacementParser replacementsOnly;
 		MarkdownEncoding encoding;
 
-		IEnumerable<IMarkdownReplacement> GetReplacements()
+		static IEnumerable<IMarkdownReplacement> GetReplacements()
 		{
 			yield return new CodeSection();
 			yield return new HeaderSection();
@@ -108,8 +108,7 @@ namespace Eto.Parse.Samples.Markdown
 				Transform(match, args);
 				return args.Output.ToString();
 			}
-			else
-				return markdown;
+			return markdown;
 		}
 
 		public void Transform(Match match, MarkdownReplacementArgs args)

@@ -59,7 +59,7 @@ namespace Eto.Parse
 			return new CharRangeTerminal((char)start, (char)end);
 		}
 
-		public static CharTerminal Printable { get { return new ControlTerminal() { Inverse = true }; } }
+		public static CharTerminal Printable { get { return new ControlTerminal { Inverse = true }; } }
 
 		public static StartParser Start { get { return new StartParser(); } }
 

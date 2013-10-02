@@ -15,7 +15,7 @@ namespace Eto.Parse.Samples.Json
 		static JsonGrammar grammar;
 		protected static JsonGrammar Grammar { get { return grammar ?? (grammar = new JsonGrammar()); } }
 
-		static JsonNull nullLiteral = new JsonNull();
+		static readonly JsonNull nullLiteral = new JsonNull();
 
 		/// <summary>
 		/// Gets a singleton null json token for properties and elements that are null
@@ -218,7 +218,7 @@ namespace Eto.Parse.Samples.Json
 		public bool Contains(KeyValuePair<string, JsonToken> pair)
 		{
 			JsonToken y;
-			return this.TryGetValue(pair.Key, out y) && EqualityComparer<JsonToken>.Default.Equals(pair.Value, y);
+			return TryGetValue(pair.Key, out y) && EqualityComparer<JsonToken>.Default.Equals(pair.Value, y);
 		}
 
 		public void CopyTo(KeyValuePair<string, JsonToken>[] array, int arrayIndex)
@@ -331,7 +331,7 @@ namespace Eto.Parse.Samples.Json
 
 		public void CopyTo(JsonToken[] array, int arrayIndex)
 		{
-			Match.Matches.Select(r => GetToken(r)).ToArray().CopyTo(array, arrayIndex);
+			Match.Matches.Select(GetToken).ToArray().CopyTo(array, arrayIndex);
 		}
 
 		public bool Remove(JsonToken item)
@@ -351,7 +351,7 @@ namespace Eto.Parse.Samples.Json
 
 		class Enumerator : IEnumerator<JsonToken>
 		{
-			MatchCollection matches;
+			readonly MatchCollection matches;
 			int index = -1;
 
 			public Enumerator(MatchCollection matches)

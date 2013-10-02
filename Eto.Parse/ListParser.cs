@@ -11,15 +11,15 @@ namespace Eto.Parse
 		protected ListParser(ListParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
-			Items = new List<Parser>(other.Items.Select(r => chain.Clone(r)));
+			Items = new List<Parser>(other.Items.Select(chain.Clone));
 		}
 
-		public ListParser()
+		protected ListParser()
 		{
 			Items = new List<Parser>();
 		}
 
-		public ListParser(IEnumerable<Parser> sequence)
+		protected ListParser(IEnumerable<Parser> sequence)
 		{
 			Items = sequence.ToList();
 		}

@@ -1,7 +1,4 @@
 using System;
-using Eto.Parse.Parsers;
-using System.Collections.Generic;
-using System.IO;
 using System.CodeDom.Compiler;
 
 namespace Eto.Parse
@@ -19,7 +16,7 @@ namespace Eto.Parse
 		public new TextParserWriter Writer
 		{ 
 			get { return (TextParserWriter)base.Writer; }
-			set { base.Writer = (ParserWriter<TextParserWriterArgs>)value; } 
+			set { base.Writer = value; } 
 		}
 	}
 }

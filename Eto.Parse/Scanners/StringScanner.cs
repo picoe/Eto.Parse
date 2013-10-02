@@ -4,8 +4,8 @@ namespace Eto.Parse.Scanners
 {
 	public class StringScanner : Scanner
 	{
-		int end;
-		string value;
+		readonly int end;
+		readonly string value;
 
 		public override bool IsEof
 		{
@@ -49,11 +49,7 @@ namespace Eto.Parse.Scanners
 		public override int Peek()
 		{
 			var pos = Position;
-			if (pos < end)
-			{
-				return value[pos];
-			}
-			return -1;
+			return pos < end ? value[pos] : -1;
 		}
 
 		public override int Advance(int length)
@@ -70,9 +66,9 @@ namespace Eto.Parse.Scanners
 
 		public override bool ReadString(string matchString, bool caseSensitive)
 		{
-			var index = this.Position;
-			var end = index + matchString.Length;
-			if (end <= this.end)
+			var index = Position;
+			var endstring = index + matchString.Length;
+			if (endstring <= end)
 			{
 				if (caseSensitive)
 				{
@@ -81,7 +77,7 @@ namespace Eto.Parse.Scanners
 						if (value[index++] != matchString[i])
 							return false;
 					}
-					Position = end;
+					Position = endstring;
 					return true;
 				}
 				else
@@ -91,19 +87,19 @@ namespace Eto.Parse.Scanners
 						if (char.ToLowerInvariant(value[index++]) != char.ToLowerInvariant(matchString[i]))
 							return false;
 					}
-					Position = end;
+					Position = endstring;
 					return true;
 				}
 			}
 			return false;
 		}
 
-		public override string Substring(int offset, int length)
+		public override string Substring(int index, int length)
 		{
-			if (offset < end)
+			if (index < end)
 			{
-				length = Math.Min(offset + length, end) - offset;
-				return value.Substring(offset, length);
+				length = Math.Min(index + length, end) - index;
+				return value.Substring(index, length);
 			}
 			return null;
 		}

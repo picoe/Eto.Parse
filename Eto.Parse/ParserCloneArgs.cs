@@ -1,15 +1,10 @@
-using System;
-using System.Text;
 using System.Collections.Generic;
-using Eto.Parse.Scanners;
-using Eto.Parse.Parsers;
-using System.Linq;
 
 namespace Eto.Parse
 {
 	public class ParserCloneArgs
 	{
-		Dictionary<Parser, Parser> clones;
+		readonly Dictionary<Parser, Parser> clones = new Dictionary<Parser, Parser>();
 
 		public Parser Clone(Parser parser)
 		{
@@ -31,7 +26,6 @@ namespace Eto.Parse
 
 		internal ParserCloneArgs()
 		{
-			clones = new Dictionary<Parser, Parser>();
 		}
 	}
 	
