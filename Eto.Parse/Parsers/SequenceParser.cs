@@ -56,9 +56,7 @@ namespace Eto.Parse.Parsers
 						childMatch = parser.Parse(args);
 						if (childMatch >= 0)
 						{
-							if (childMatch > 0)
-								length += sepMatch;
-							length += childMatch;
+							length += childMatch + sepMatch;
 							continue;
 						}
 					}

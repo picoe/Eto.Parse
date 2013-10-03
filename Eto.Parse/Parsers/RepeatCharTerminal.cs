@@ -83,7 +83,6 @@ namespace Eto.Parse.Parsers
 				var count = 0;
 				while (ch != -1 && item.Test((char)ch))
 				{
-					length++;
 					count++;
 					ch = scanner.ReadChar();
 					if (count >= item.Maximum)
@@ -94,6 +93,7 @@ namespace Eto.Parse.Parsers
 					scanner.Position = pos;
 					return -1;
 				}
+				length += count;
 			}
 			scanner.Position = pos + length;
 			return length;

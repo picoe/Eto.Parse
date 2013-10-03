@@ -27,6 +27,7 @@ namespace Eto.Parse.Parsers
 
 		public LiteralTerminal(string value)
 		{
+			value.ThrowIfNull("value", "Value must not be null");
 			Value = value;
 		}
 
@@ -38,11 +39,7 @@ namespace Eto.Parse.Parsers
 
 		protected override int InnerParse(ParseArgs args)
 		{
-			if (Value != null)
-			{
-				return !args.Scanner.ReadString(Value, caseSensitive) ? -1 : Value.Length;
-			}
-			return 0;
+			return !args.Scanner.ReadString(Value, caseSensitive) ? -1 : Value.Length;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)
