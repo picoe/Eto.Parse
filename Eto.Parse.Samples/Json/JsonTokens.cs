@@ -241,9 +241,18 @@ namespace Eto.Parse.Samples.Json
 			get { return true; }
 		}
 
+		IEnumerable<KeyValuePair<string, JsonToken>> Enumerate()
+		{
+			for (int i = 0; i < Match.Matches.Count; i++)
+			{
+				var match = Match.Matches[i];
+				yield return new KeyValuePair<string, JsonToken>(match.Matches[0].StringValue, GetToken(match.Matches[1]));
+			}
+		}
+
 		public IEnumerator<KeyValuePair<string, JsonToken>> GetEnumerator()
 		{
-			return null;
+			return Enumerate().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
