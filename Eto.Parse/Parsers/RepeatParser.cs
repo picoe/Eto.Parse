@@ -82,6 +82,7 @@ namespace Eto.Parse.Parsers
 			{
 				while (count < Maximum)
 				{
+					int curPos = scanner.Position;
 					if (Until != null && count >= Minimum)
 					{
 						int stopMatch;
@@ -100,7 +101,7 @@ namespace Eto.Parse.Parsers
 							if (CaptureUntil)
 								length += stopMatch;
 							else if (!SkipUntil)
-								scanner.Position = pos + length;
+								scanner.Position = curPos;
 							return length;
 						}
 					}
@@ -123,7 +124,7 @@ namespace Eto.Parse.Parsers
 					else
 					{
 						if (sepMatch > 0)
-							scanner.Position = pos + length;
+							scanner.Position = curPos;
 						break;
 					}
 
@@ -169,7 +170,7 @@ namespace Eto.Parse.Parsers
 					{
 						if (sepMatch > 0)
 							length += sepMatch;
-						length ++;
+						length++;
 						count++;
 					}
 					else
