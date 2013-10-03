@@ -5,6 +5,7 @@ using Eto.Parse.Samples.Json;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Eto.Parse.TestSpeed
 {
@@ -77,6 +78,9 @@ namespace Eto.Parse.TestSpeed
 			var tests = GetTests().ToArray();
 			for (int testNum = 0; testNum < tests.Length; testNum++)
 			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				Thread.Sleep(500);
 				var test = tests[testNum];
 				var warmupsw = new Stopwatch();
 				warmupsw.Start();

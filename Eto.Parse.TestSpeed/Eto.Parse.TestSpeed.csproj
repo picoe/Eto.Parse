@@ -57,6 +57,9 @@
     <Reference Include="Irony">
       <HintPath>Irony.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.3.9.64\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="Tests\Json\TestEtoHelpers.cs" />
     <Compile Include="Tests\Json\Gold\GoldJsonParser.cs" />
     <Compile Include="Tests\Json\Irony\IronyJsonGrammar.cs" />
+    <Compile Include="Tests\Json\TestServiceStack.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

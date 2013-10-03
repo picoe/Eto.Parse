@@ -19,7 +19,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 			var obj = JObject.Parse(suite.Json);
 			if (suite.CompareOutput)
 			{
-				var result = obj["result"] as JArray;
+				var result = (JArray)obj["result"];
 				for (int j = 0; j < result.Count; j++)
 				{
 					var item = result[j];

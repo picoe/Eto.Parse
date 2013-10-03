@@ -28,7 +28,7 @@ The framework has been put together to get at the relevant values as easily as p
 
 ### Left Recursion
 
-One rather cumbersome issue to deal with using recursive descent parsers is [left recursion](http://en.wikipedia.org/wiki/Left_recursion). Eto.Parse automatically identifies left recursive grammars and will parse them with no issues by transforming them into a repeating pattern.
+One rather cumbersome issue to deal with using recursive descent parsers is [left recursion](http://en.wikipedia.org/wiki/Left_recursion). Eto.Parse automatically identifies left recursive grammars and transforms them into a repeating pattern.
 
 Performance
 -----------
@@ -37,17 +37,18 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse        |  0.258s |     1.00x        |  0.064s |     1.00xNewtonsoft Json  |  0.263s |     1.02x        |  0.075s |     1.18xIrony            |  2.523s |     9.78x        |  0.266s |     4.18xGold Parser      | 35.217s |   136.47x        |  0.405s |     6.36x
-(Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
+Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse-helpers|  0.253s |     1.00x        |  0.068s |     1.00xNewtonsoft Json  |  0.264s |     1.04x        |  0.077s |     1.13xServiceStack.Text|  0.272s |     1.08x        |  0.069s |     1.01xIrony            |  2.594s |    10.25x        |  0.271s |     3.99xGold Parser      | 34.695s |   137.05x        |  0.386s |     5.70x
+(Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
 ### Memory & Objects
 
 Framework        |  Allocated  | More than best | # Objects | More than best
 ---------------- | ----------: | :------------: | --------: | :------------:
-Eto.Parse        |    56.89 MB |      1x        | 1541401   |    1x
-Newtonsoft.Json  |   109.39 MB |      1.92x     | 2176395   |    1.41x
-Irony            |   440.21 MB |      7.74x     | 9572011   |    6.21x
-Gold             | 4,609.45 MB |     81.02x     | 121366066 |   78.74x
+Eto.Parse        |    56.88 MB |      1.00x     |   1541144 |    1.00x
+Newtonsoft.Json  |   109.40 MB |      1.92x     |   2176432 |    1.41x
+ServiceStack.Text|   255.16 MB |      4.49x     |   1572981 |    1.02x
+Irony            |   440.31 MB |      7.74x     |   9573216 |    6.21x
+Gold Parser      | 4,609.46 MB |     81.03x     | 121366109 |   78.75x
 
 Example
 -------
