@@ -255,96 +255,6 @@
     <None Include="Markdown\tests\blocktests\SimpleUnorderedList.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Markdown\tests\extramode\Abbreviations%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Abbreviations%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\BackslashEscapes%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\BackslashEscapes%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\DefinitionLists%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\DefinitionLists%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Emphasis%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Emphasis%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\FencedCodeBlocks%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\FencedCodeBlocks%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Footnotes%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Footnotes%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\HeaderIDs%28ExtraMode%29%28AutoHeadingIDs%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\HeaderIDs%28ExtraMode%29%28AutoHeadingIDs%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\HeaderIDs%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\HeaderIDs%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested%28ExtraMode%29%28MarkdownInHtml%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested%28ExtraMode%29%28MarkdownInHtml%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-Nested%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\MarkdownInHtml-Nested%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\TableAlignment%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\TableAlignment%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\TableFormatting%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\TableFormatting%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Tables%28ExtraMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\extramode\Tables%28ExtraMode%29.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Markdown\tests\mdtest01\code-inside-list.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -555,18 +465,6 @@
     <None Include="Markdown\tests\phpmarkdown\Horizontal Rules.text">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Markdown\tests\phpmarkdown\Inline HTML %28Simple%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\phpmarkdown\Inline HTML %28Simple%29.text">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\phpmarkdown\Inline HTML %28Span%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\phpmarkdown\Inline HTML %28Span%29.text">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Markdown\tests\phpmarkdown\Inline HTML comments.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -613,12 +511,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Markdown\tests\phpmarkdown\Tight blocks.text">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\safemode\Basic%28SafeMode%29.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Markdown\tests\safemode\Basic%28SafeMode%29.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Markdown\tests\spantests\BackslashEscapes.html">
@@ -715,6 +607,114 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Markdown\tests\pandoc\unpredictable-sublists.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Abbreviations-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Abbreviations-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\BackslashEscapes-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\BackslashEscapes-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\DefinitionLists-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\DefinitionLists-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Emphasis-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Emphasis-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\FencedCodeBlocks-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\FencedCodeBlocks-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Footnotes-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Footnotes-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\HeaderIDs-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\HeaderIDs-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\HeaderIDs-ExtraMode-AutoHeadingIDs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\HeaderIDs-ExtraMode-AutoHeadingIDs.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested-ExtraMode-MarkdownInHtml.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-DeepNested-ExtraMode-MarkdownInHtml.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-Nested-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\MarkdownInHtml-Nested-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\TableAlignment-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\TableAlignment-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\TableFormatting-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\TableFormatting-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Tables-ExtraMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\extramode\Tables-ExtraMode.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\phpmarkdown\Inline HTML Simple.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\phpmarkdown\Inline HTML Simple.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\phpmarkdown\Inline HTML Span.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\phpmarkdown\Inline HTML Span.text">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\safemode\Basic-SafeMode.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Markdown\tests\safemode\Basic-SafeMode.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
