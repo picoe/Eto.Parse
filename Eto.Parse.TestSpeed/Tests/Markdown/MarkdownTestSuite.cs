@@ -58,7 +58,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 		public MarkdownTestSuite()
 			: base("Markdown")
 		{
-			Iterations = 200;
+			Iterations = 1000;
 		}
 
 		public override IEnumerable<ITest> GetTests()

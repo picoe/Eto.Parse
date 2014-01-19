@@ -33,22 +33,22 @@ One rather cumbersome issue to deal with using recursive descent parsers is [lef
 Performance
 -----------
 
-Eto.Parse has been highly optimized for performance and memory usage. For example, here's a comparison parsing a large JSON string 100 times (times in seconds):
+Eto.Parse has been highly optimized for performance and memory usage. For example, here's a comparison parsing a large JSON string 1000 times (times in seconds):
 
 ### Speed
 
-Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse-helpers|  0.253s |     1.00x        |  0.068s |     1.00xNewtonsoft Json  |  0.264s |     1.04x        |  0.077s |     1.13xServiceStack.Text|  0.272s |     1.08x        |  0.069s |     1.01xIrony            |  2.594s |    10.25x        |  0.271s |     3.99xGold Parser      | 34.695s |   137.05x        |  0.386s |     5.70x
+Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse        |  2.532s |     1.00x        |  0.067s |     1.08xNewtonsoft Json  |  2.628s |     1.04x        |  0.083s |     1.33xServiceStack.Text|  2.871s |     1.13x        |  0.065s |     1.05xIrony            | 26.533s |    10.48x        |  0.254s |     4.06xbsn.GoldParser   |  9.626s |     3.80x        |  0.063s |     1.00x
 (Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
 ### Memory & Objects
 
 Framework        |  Allocated  | More than best | # Objects | More than best
 ---------------- | ----------: | :------------: | --------: | :------------:
-Eto.Parse        |    56.88 MB |      1.00x     |   1541144 |    1.00x
-Newtonsoft.Json  |   109.40 MB |      1.92x     |   2176432 |    1.41x
-ServiceStack.Text|   255.16 MB |      4.49x     |   1572981 |    1.02x
-Irony            |   440.31 MB |      7.74x     |   9573216 |    6.21x
-Gold Parser      | 4,609.46 MB |     81.03x     | 121366109 |   78.75x
+Eto.Parse        |   553.99 MB |      1.00x     |  15268050 |    1.00x
+Newtonsoft.Json  | 1,074.27 MB |      1.94x     |  21562432 |    1.41x
+ServiceStack.Text| 2,540.91 MB |      4.59x     |  15738493 |    1.03x
+Irony            | 4,351.44 MB |      7.85x     |  94831118 |    6.21x
+bsn.GoldParser   | 2,012.16 MB |      3.63x     |  74387176 |    4.87x
 
 Example
 -------

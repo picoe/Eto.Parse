@@ -13,7 +13,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		public JsonTestSuite(string name = null, string sample = "sample-large.json")
 			: base("Json" + (name != null ? " " + name : ""))
 		{
-			Iterations = 100;
+			Iterations = 1000;
 			CompareProperty = "id";
 			//CompareOutput = true;
 
@@ -28,6 +28,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 			yield return new TestNewtonsoft();
 			yield return new TestServiceStack();
 			yield return new TestIrony();
+			yield return new TestBsnGold();
 			//yield return new TestGold();
 		}
 	}

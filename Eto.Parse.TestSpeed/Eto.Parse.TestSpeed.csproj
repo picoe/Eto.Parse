@@ -11,7 +11,6 @@
     <AssemblyName>Eto.Parse.TestSpeed</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,6 +59,9 @@
     <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.3.9.64\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
+    <Reference Include="bsn.GoldParser">
+      <HintPath>bsn.GoldParser.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Tests\Json\Gold\GoldJsonParser.cs" />
     <Compile Include="Tests\Json\Irony\IronyJsonGrammar.cs" />
     <Compile Include="Tests\Json\TestServiceStack.cs" />
+    <Compile Include="Tests\Json\TestBsnGold.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -104,6 +107,7 @@
     <None Include="Irony.dll" />
     <None Include="GOLD Engine.dll" />
     <None Include="Tests\Json\Gold\JSON.grm" />
+    <None Include="bsn.GoldParser.dll" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup />
