@@ -54,9 +54,13 @@ namespace Eto.Parse.Parsers
 					{
 						parser = Items[i];
 						childMatch = parser.Parse(args);
-						if (childMatch >= 0)
+						if (childMatch > 0)
 						{
 							length += childMatch + sepMatch;
+							continue;
+						}
+						else if (childMatch == 0)
+						{
 							continue;
 						}
 					}

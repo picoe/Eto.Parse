@@ -77,7 +77,7 @@ namespace Eto.Parse.Parsers
 			int length = 0;
 
 			// retrieve up to the maximum number
-			var sepMatch = -1;
+			var sepMatch = 0;
 			if (Inner != null)
 			{
 				while (count < Maximum)
@@ -116,9 +116,7 @@ namespace Eto.Parse.Parsers
 					var childMatch = Inner.Parse(args);
 					if (childMatch > 0)
 					{
-						if (sepMatch > 0)
-							length += sepMatch;
-						length += childMatch;
+						length += childMatch + sepMatch;
 						count++;
 					}
 					else
@@ -168,8 +166,7 @@ namespace Eto.Parse.Parsers
 					var ofs = scanner.Advance(1);
 					if (ofs >= 0)
 					{
-						if (sepMatch > 0)
-							length += sepMatch;
+						length += sepMatch;
 						length++;
 						count++;
 					}
