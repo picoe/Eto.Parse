@@ -118,7 +118,7 @@ namespace Eto.Parse.Grammars
 			var syntax_rule = this["syntax rule"];
 			syntax_rule.Matched += m => {
 				var name = m["meta identifier"].Text;
-				var isTerminal = m["equals"].Text == "==";
+				var isTerminal = m["equals"].Text == ":=";
 				var parser = m.Tag as UnaryParser;
 				var inner = DefinitionList(m["definition list"], isTerminal);
 				if (name == startParserName)
