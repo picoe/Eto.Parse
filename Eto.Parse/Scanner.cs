@@ -17,27 +17,5 @@ namespace Eto.Parse
 		public abstract int Peek();
 
 		public abstract string Substring(int index, int length);
-
-		#region Obsolete
-
-		[Obsolete("Use Substring instead")]
-		public string SubString(int index, int length)
-		{
-			return Substring(index, length);
-		}
-
-		[Obsolete("Use Peek() instead")]
-		public char Current
-		{
-			get { return (char)Peek(); }
-		}
-
-		[Obsolete("Use Position property instead")]
-		public void SetPosition(int position)
-		{
-			Position = position;
-		}
-
-		#endregion
 	}
 }

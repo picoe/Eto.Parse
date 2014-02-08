@@ -86,26 +86,6 @@ namespace Eto.Parse
 		}
 
 		/// <summary>
-		/// Creates an empty (zero length) match at the current position
-		/// </summary>
-		/// <value>A new instance of an empty match</value>
-		[Obsolete("Use 0 instead")]
-		public int EmptyMatch
-		{
-			get { return 0; }
-		}
-
-		/// <summary>
-		/// Creates a non-match when a parser fails to match
-		/// </summary>
-		/// <value>The non-match</value>
-		[Obsolete("Use -1 instead")]
-		public int NoMatch
-		{
-			get { return -1; }
-		}
-
-		/// <summary>
 		/// Adds an error for the specified parser at the current position
 		/// </summary>
 		/// <param name="parser">Parser to add the error for</param>
