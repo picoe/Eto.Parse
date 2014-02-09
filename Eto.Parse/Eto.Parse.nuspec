@@ -16,6 +16,12 @@
         You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
     </description>
     <releaseNotes>
+    	Changes for v1.3.1:
+    	* More minor performance improvements
+    	* Updates to Gold grammar parser to handle whitespace in grammar, character set ranges, and Auto Whitespace option
+    	* Added XmlGrammar sample and tests (see github)
+    	* BREAKING: WithName() now also makes the parser separate
+    	
     	Changes for v1.3:
     	* Improved performance by another ~9%
     	* Remove ParseMatch struct
