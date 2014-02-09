@@ -1,0 +1,1441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FxCopProject Version="10.0" Name="Eto.Parse">
+ <ProjectOptions>
+  <SharedProject>True</SharedProject>
+  <Stylesheet Apply="False">$(FxCopDir)\Xml\FxCopReport.xsl</Stylesheet>
+  <SaveMessages>
+   <Project Status="Active, Excluded" NewOnly="False" />
+   <Report Status="Active" NewOnly="False" />
+  </SaveMessages>
+  <ProjectFile Compress="True" DefaultTargetCheck="True" DefaultRuleCheck="True" SaveByRuleGroup="" Deterministic="True" />
+  <EnableMultithreadedLoad>True</EnableMultithreadedLoad>
+  <EnableMultithreadedAnalysis>True</EnableMultithreadedAnalysis>
+  <SourceLookup>True</SourceLookup>
+  <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
+  <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
+  <Spelling Locale="en-US" />
+  <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
+  <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
+  <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
+  <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
+ </ProjectOptions>
+ <Targets>
+  <Target Name="\\psf\Home\Projects\Eto.Parse\Eto.Parse\bin\Debug\Eto.Parse.dll" Analyze="True" AnalyzeAllChildren="True" />
+ </Targets>
+ <Rules>
+  <RuleFiles>
+   <RuleFile Name="$(FxCopDir)\Rules\DesignRules.dll" Enabled="True" AllRulesEnabled="False">
+    <Rule Name="AbstractTypesShouldNotHaveConstructors" Enabled="True" />
+    <Rule Name="AssembliesShouldHaveValidStrongNames" Enabled="True" />
+    <Rule Name="AvoidEmptyInterfaces" Enabled="True" />
+    <Rule Name="AvoidExcessiveParametersOnGenericTypes" Enabled="True" />
+    <Rule Name="AvoidNamespacesWithFewTypes" Enabled="True" />
+    <Rule Name="AvoidOutParameters" Enabled="True" />
+    <Rule Name="CollectionsShouldImplementGenericInterface" Enabled="True" />
+    <Rule Name="ConsiderPassingBaseTypesAsParameters" Enabled="True" />
+    <Rule Name="DeclareEventHandlersCorrectly" Enabled="True" />
+    <Rule Name="DeclareTypesInNamespaces" Enabled="True" />
+    <Rule Name="DefineAccessorsForAttributeArguments" Enabled="True" />
+    <Rule Name="DoNotCatchGeneralExceptionTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareProtectedMembersInSealedTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareStaticMembersOnGenericTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareVirtualMembersInSealedTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareVisibleInstanceFields" Enabled="True" />
+    <Rule Name="DoNotExposeGenericLists" Enabled="True" />
+    <Rule Name="DoNotHideBaseClassMethods" Enabled="True" />
+    <Rule Name="DoNotNestGenericTypesInMemberSignatures" Enabled="True" />
+    <Rule Name="DoNotOverloadOperatorEqualsOnReferenceTypes" Enabled="True" />
+    <Rule Name="DoNotPassTypesByReference" Enabled="True" />
+    <Rule Name="DoNotRaiseExceptionsInUnexpectedLocations" Enabled="True" />
+    <Rule Name="EnumeratorsShouldBeStronglyTyped" Enabled="True" />
+    <Rule Name="EnumsShouldHaveZeroValue" Enabled="True" />
+    <Rule Name="EnumStorageShouldBeInt32" Enabled="True" />
+    <Rule Name="ExceptionsShouldBePublic" Enabled="True" />
+    <Rule Name="GenericMethodsShouldProvideTypeParameter" Enabled="True" />
+    <Rule Name="ICollectionImplementationsHaveStronglyTypedMembers" Enabled="True" />
+    <Rule Name="ImplementIDisposableCorrectly" Enabled="True" />
+    <Rule Name="ImplementStandardExceptionConstructors" Enabled="True" />
+    <Rule Name="IndexersShouldNotBeMultidimensional" Enabled="True" />
+    <Rule Name="InterfaceMethodsShouldBeCallableByChildTypes" Enabled="True" />
+    <Rule Name="ListsAreStronglyTyped" Enabled="True" />
+    <Rule Name="MarkAssembliesWithAssemblyVersion" Enabled="True" />
+    <Rule Name="MarkAssembliesWithClsCompliant" Enabled="True" />
+    <Rule Name="MarkAssembliesWithComVisible" Enabled="True" />
+    <Rule Name="MarkAttributesWithAttributeUsage" Enabled="True" />
+    <Rule Name="MarkEnumsWithFlags" Enabled="True" />
+    <Rule Name="MembersShouldNotExposeCertainConcreteTypes" Enabled="True" />
+    <Rule Name="MovePInvokesToNativeMethodsClass" Enabled="True" />
+    <Rule Name="NestedTypesShouldNotBeVisible" Enabled="True" />
+    <Rule Name="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Enabled="True" />
+    <Rule Name="OverrideMethodsOnComparableTypes" Enabled="True" />
+    <Rule Name="PropertiesShouldNotBeWriteOnly" Enabled="True" />
+    <Rule Name="ProvideObsoleteAttributeMessage" Enabled="True" />
+    <Rule Name="ReplaceRepetitiveArgumentsWithParamsArray" Enabled="True" />
+    <Rule Name="StaticHolderTypesShouldBeSealed" Enabled="True" />
+    <Rule Name="StaticHolderTypesShouldNotHaveConstructors" Enabled="True" />
+    <Rule Name="StringUriOverloadsCallSystemUriOverloads" Enabled="True" />
+    <Rule Name="TypesShouldNotExtendCertainBaseTypes" Enabled="True" />
+    <Rule Name="TypesThatOwnDisposableFieldsShouldBeDisposable" Enabled="True" />
+    <Rule Name="TypesThatOwnNativeResourcesShouldBeDisposable" Enabled="True" />
+    <Rule Name="UriParametersShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UriPropertiesShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UriReturnValuesShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UseEventsWhereAppropriate" Enabled="True" />
+    <Rule Name="UseGenericEventHandlerInstances" Enabled="True" />
+    <Rule Name="UseGenericsWhereAppropriate" Enabled="True" />
+    <Rule Name="UseIntegralOrStringArgumentForIndexers" Enabled="True" />
+    <Rule Name="UsePropertiesWhereAppropriate" Enabled="True" />
+   </RuleFile>
+   <RuleFile Name="$(FxCopDir)\Rules\GlobalizationRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="True" AllRulesEnabled="False">
+    <Rule Name="AutoLayoutTypesShouldNotBeComVisible" Enabled="True" />
+    <Rule Name="AvoidInt64ArgumentsForVB6Clients" Enabled="True" />
+    <Rule Name="AvoidNonpublicFieldsInComVisibleValueTypes" Enabled="True" />
+    <Rule Name="AvoidOverloadsInComVisibleInterfaces" Enabled="True" />
+    <Rule Name="AvoidStaticMembersInComVisibleTypes" Enabled="True" />
+    <Rule Name="CallGetLastErrorImmediatelyAfterPInvoke" Enabled="True" />
+    <Rule Name="ComRegistrationMethodsShouldBeMatched" Enabled="True" />
+    <Rule Name="ComRegistrationMethodsShouldNotBeVisible" Enabled="True" />
+    <Rule Name="ComVisibleTypesShouldBeCreatable" Enabled="True" />
+    <Rule Name="DeclarePInvokesCorrectly" Enabled="True" />
+    <Rule Name="DoNotUseAutoDualClassInterfaceType" Enabled="True" />
+    <Rule Name="MarkBooleanPInvokeArgumentsWithMarshalAs" Enabled="True" />
+    <Rule Name="MarkComSourceInterfacesAsIDispatch" Enabled="True" />
+    <Rule Name="PInvokeEntryPointsShouldExist" Enabled="True" />
+    <Rule Name="PInvokesShouldNotBeVisible" Enabled="True" />
+   </RuleFile>
+   <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityTransparencyRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="True" />
+  </RuleFiles>
+  <Groups />
+  <Settings />
+ </Rules>
+ <FxCopReport Version="10.0">
+  <Namespaces>
+   <Namespace Name="Eto.Parse">
+    <Messages>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Grammars">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Created="2013-10-03 20:42:05Z">
+      <Issue>
+       <Item>Eto.Parse.Grammars</Item>
+      </Issue>
+     </Message>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Grammars</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Parsers">
+    <Messages>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Parsers</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Scanners">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Created="2013-10-03 20:42:05Z">
+      <Issue>
+       <Item>Eto.Parse.Scanners</Item>
+      </Issue>
+     </Message>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Scanners</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Writers">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Created="2013-10-03 20:42:05Z">
+      <Issue>
+       <Item>Eto.Parse.Writers</Item>
+      </Issue>
+     </Message>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Writers</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Writers.Code">
+    <Messages>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Writers.Code</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="Eto.Parse.Writers.Display">
+    <Messages>
+     <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+      <Issue Name="Namespace">
+       <Item>Eto</Item>
+       <Item>Eto.Parse.Writers.Display</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+  </Namespaces>
+  <Targets>
+   <Target Name="\\psf\Home\Projects\Eto.Parse\Eto.Parse\bin\Debug\Eto.Parse.dll">
+    <Modules>
+     <Module Name="eto.parse.dll">
+      <Messages>
+       <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Created="2013-10-03 20:42:05Z">
+        <Issue Name="NoStrongName">
+         <Item>'Eto.Parse.dll'</Item>
+        </Issue>
+       </Message>
+       <Message Id="Eto" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+        <Issue Name="Assembly">
+         <Item>Eto</Item>
+         <Item>'Eto.Parse.dll'</Item>
+        </Issue>
+       </Message>
+       <Message TypeName="MarkAssembliesWithClsCompliant" Category="Microsoft.Design" CheckId="CA1014" Created="2013-10-03 20:42:05Z">
+        <Issue>
+         <Item>'Eto.Parse.dll'</Item>
+        </Issue>
+       </Message>
+       <Message TypeName="MarkAssembliesWithComVisible" Category="Microsoft.Design" CheckId="CA1017" Created="2013-10-03 20:42:05Z">
+        <Issue Name="NoAttribute" Level="CriticalError">
+         <Item>'Eto.Parse.dll'</Item>
+        </Issue>
+       </Message>
+      </Messages>
+      <Namespaces>
+       <Namespace Name="Eto.Parse">
+        <Types>
+         <Type Name="FluentParserExtensions">
+          <Members>
+           <Member Name="#Until(Eto.Parse.Parsers.RepeatParser,Eto.Parse.Parser)">
+            <Messages>
+             <Message Id="1#" TypeName="ParameterNamesShouldNotMatchMemberNames" Category="Microsoft.Naming" CheckId="CA1719" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'until'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Until(Eto.Parse.Parsers.RepeatParser,Eto.Parse.Parser,System.Boolean,System.Boolean)">
+            <Messages>
+             <Message Id="1#" TypeName="ParameterNamesShouldNotMatchMemberNames" Category="Microsoft.Naming" CheckId="CA1719" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'until'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Grammar">
+          <Members>
+           <Member Name="#Matches(Eto.Parse.Scanner)">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection'</Item>
+               <Item>'Grammar.Matches(Scanner)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Matches(System.String)">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection'</Item>
+               <Item>'Grammar.Matches(string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GrammarMatch">
+          <Members>
+           <Member Name="#.ctor(Eto.Parse.Grammar,Eto.Parse.Scanner,System.Int32,System.Int32,Eto.Parse.MatchCollection,System.Int32,System.Int32,System.Collections.Generic.IEnumerable`1&lt;Eto.Parse.Parser&gt;)">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection'</Item>
+               <Item>'GrammarMatch.GrammarMatch(Grammar, Scanner, int, int, MatchCollection, int, int, IEnumerable&lt;Parser&gt;)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ErrorMessage">
+            <Accessors>
+             <Accessor Name="#get_ErrorMessage()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object, object)'</Item>
+                 <Item>'GrammarMatch.ErrorMessage.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object, object)'</Item>
+                 <Item>'GrammarMatch.ErrorMessage.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ListParser">
+          <Members>
+           <Member Name="#Items">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'List&lt;Parser&gt;'</Item>
+               <Item>'ListParser.Items'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Match">
+          <Members>
+           <Member Name="#Item[System.String,System.Boolean]">
+            <Messages>
+             <Message TypeName="IndexersShouldNotBeMultidimensional" Category="Microsoft.Design" CheckId="CA1023" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'Match.this[string, bool]'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Matches">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection'</Item>
+               <Item>'Match.Matches'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_False(Eto.Parse.Match)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Property">
+               <Item>IsTrue</Item>
+               <Item>'Match.operator false(Match)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_True(Eto.Parse.Match)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Property">
+               <Item>IsTrue</Item>
+               <Item>'Match.operator true(Match)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#StringValue">
+            <Accessors>
+             <Accessor Name="#get_StringValue()">
+              <Messages>
+               <Message Id="System.Convert.ToString(System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'Convert.ToString(object)'</Item>
+                 <Item>'Match.StringValue.get()'</Item>
+                 <Item>'Convert.ToString(object, IFormatProvider)'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="MatchCollection">
+          <Members>
+           <Member Name="#Item[System.String,System.Boolean]">
+            <Messages>
+             <Message TypeName="IndexersShouldNotBeMultidimensional" Category="Microsoft.Design" CheckId="CA1023" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection.this[string, bool]'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParseArgs">
+          <Members>
+           <Member Name="#EmptyMatch">
+            <Messages>
+             <Message TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822" Status="Excluded" Created="2013-10-03 20:42:05Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'ParseArgs.EmptyMatch'</Item>
+              </Issue>
+              <Notes>
+               <User Name="curtis">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Errors">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'List&lt;Parser&gt;'</Item>
+               <Item>'ParseArgs.Errors'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#NoMatch">
+            <Messages>
+             <Message TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822" Status="Excluded" Created="2013-10-03 20:42:05Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'ParseArgs.NoMatch'</Item>
+              </Issue>
+              <Notes>
+               <User Name="curtis">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Pop()">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'MatchCollection'</Item>
+               <Item>'ParseArgs.Pop()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Parser">
+          <Members>
+           <Member Name="#GetErrorMessage()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Created="2013-10-03 20:42:05Z">
+              <Issue Certainty="50">
+               <Item>'Parser.GetErrorMessage()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_BitwiseAnd(Eto.Parse.Parser,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>BitwiseAnd</Item>
+               <Item>'Parser.operator &amp;(Parser, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_BitwiseOr(Eto.Parse.Parser,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>BitwiseOr</Item>
+               <Item>'Parser.operator |(Parser, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Implicit(System.Char):Eto.Parse.Parser">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'Parser.implicit operator Parser(char)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Implicit(System.Char[]):Eto.Parse.Parser">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'Parser.implicit operator Parser(char[])'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Implicit(System.String):Eto.Parse.Parser">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'Parser.implicit operator Parser(string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_LogicalNot(Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>LogicalNot</Item>
+               <Item>'Parser.operator !(Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Multiply(Eto.Parse.Parser,System.Int32)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>Multiply</Item>
+               <Item>'Parser.operator *(Parser, int)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_OnesComplement(Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>OnesComplement</Item>
+               <Item>'Parser.operator ~(Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Subtraction(Eto.Parse.Parser,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>Subtract</Item>
+               <Item>'Parser.operator -(Parser, Parser)'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'Parser'</Item>
+               <Item>'Parser.operator -(Parser, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_UnaryNegation(Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>Negate</Item>
+               <Item>'Parser.operator -(Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_UnaryPlus(Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>Plus</Item>
+               <Item>'Parser.operator +(Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#SetError`1(System.Boolean,System.String)">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'Parser.SetError&lt;T&gt;(bool, string)'</Item>
+               <Item>'T'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Matched" Kind="Event">
+            <Messages>
+             <Message TypeName="DeclareEventHandlersCorrectly" Category="Microsoft.Design" CheckId="CA1009" Created="2013-10-03 20:42:05Z">
+              <Issue Name="First">
+               <Item>'Action&lt;Match&gt;'</Item>
+              </Issue>
+              <Issue Name="Second">
+               <Item>'Action&lt;Match&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'Action&lt;Match&gt;'</Item>
+               <Item>EventHandler</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#PreMatch" Kind="Event">
+            <Messages>
+             <Message TypeName="DeclareEventHandlersCorrectly" Category="Microsoft.Design" CheckId="CA1009" Created="2013-10-03 20:42:05Z">
+              <Issue Name="First">
+               <Item>'Action&lt;Match&gt;'</Item>
+              </Issue>
+              <Issue Name="Second">
+               <Item>'Action&lt;Match&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'Action&lt;Match&gt;'</Item>
+               <Item>EventHandler</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParserInitializeArgs">
+          <Members>
+           <Member Name="#RecursionFixes">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'List&lt;Parser&gt;'</Item>
+               <Item>'ParserInitializeArgs.RecursionFixes'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParserWriter`1+IParserWriterHandler">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Created="2013-10-03 20:42:05Z">
+            <Issue>
+             <Item>'ParserWriter&lt;TArgs&gt;.IParserWriterHandler'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParserWriter`1+ParserDictionary">
+          <Messages>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2013-10-03 20:42:05Z">
+            <Issue>
+             <Item>'ParserWriter&lt;TArgs&gt;.ParserDictionary'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Created="2013-10-03 20:42:05Z">
+            <Issue>
+             <Item>'ParserWriter&lt;TArgs&gt;.ParserDictionary'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParserWriterArgs">
+          <Members>
+           <Member Name="#GenerateName(System.Type)">
+            <Messages>
+             <Message TypeName="NormalizeStringsToUppercase" Category="Microsoft.Globalization" CheckId="CA1308" Status="Excluded" Created="2013-10-03 20:42:05Z">
+              <Issue Name="ToUpperInvariant">
+               <Item>'ParserWriterArgs.GenerateName(Type)'</Item>
+               <Item>'string.ToLowerInvariant()'</Item>
+              </Issue>
+              <Notes>
+               <User Name="curtis">
+                <Note Id="0" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Scanner">
+          <Messages>
+           <Message TypeName="IdentifiersShouldDifferByMoreThanCase" Category="Microsoft.Naming" CheckId="CA1708" Created="2013-10-03 20:42:05Z">
+            <Issue Name="Member">
+             <Item>'Substring'</Item>
+             <Item>SubString</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#IsEof">
+            <Messages>
+             <Message Id="Eof" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Member">
+               <Item>Eof</Item>
+               <Item>'Scanner.IsEof'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Terminals">
+          <Members>
+           <Member Name="#Eol">
+            <Messages>
+             <Message Id="Eol" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Member">
+               <Item>Eol</Item>
+               <Item>'Terminals.Eol'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="TextParserWriter">
+          <Members>
+           <Member Name="#Write(Eto.Parse.Parser)">
+            <Messages>
+             <Message Id="System.IO.StringWriter.#ctor" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'StringWriter.StringWriter()'</Item>
+               <Item>'TextParserWriter.Write(Parser)'</Item>
+               <Item>'StringWriter.StringWriter(IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="UnaryParser">
+          <Members>
+           <Member Name="#DescriptiveName">
+            <Accessors>
+             <Accessor Name="#get_DescriptiveName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object, object)'</Item>
+                 <Item>'UnaryParser.DescriptiveName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="Eto.Parse.Grammars">
+        <Types>
+         <Type Name="BnfGrammar">
+          <Messages>
+           <Message Id="Bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+            <Issue Name="Type">
+             <Item>Bnf</Item>
+             <Item>'BnfGrammar'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Build(System.String,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'BnfGrammar.Build(string, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'BnfGrammar.Build(string, string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToCode(System.String,System.String,System.IO.TextWriter,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'BnfGrammar.ToCode(string, string, TextWriter, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToCode(System.String,System.String,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'BnfGrammar.ToCode(string, string, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.IO.StringWriter.#ctor" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'StringWriter.StringWriter()'</Item>
+               <Item>'BnfGrammar.ToCode(string, string, string)'</Item>
+               <Item>'StringWriter.StringWriter(IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EbnfGrammar">
+          <Messages>
+           <Message Id="Ebnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+            <Issue Name="Type">
+             <Item>Ebnf</Item>
+             <Item>'EbnfGrammar'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Build(System.String,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'EbnfGrammar.Build(string, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'EbnfGrammar.Build(string, string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Factor(Eto.Parse.Match,System.Boolean)">
+            <Messages>
+             <Message Id="System.Int32.Parse(System.String)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'int.Parse(string)'</Item>
+               <Item>'EbnfGrammar.Factor(Match, bool)'</Item>
+               <Item>'int.Parse(string, IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToCode(System.String,System.String,System.IO.TextWriter,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'EbnfGrammar.ToCode(string, string, TextWriter, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToCode(System.String,System.String,System.String)">
+            <Messages>
+             <Message Id="bnf" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'EbnfGrammar.ToCode(string, string, string)'</Item>
+               <Item>bnf</Item>
+               <Item>'bnf'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.IO.StringWriter.#ctor" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'StringWriter.StringWriter()'</Item>
+               <Item>'EbnfGrammar.ToCode(string, string, string)'</Item>
+               <Item>'StringWriter.StringWriter(IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GoldGrammar">
+          <Members>
+           <Member Name="#Build(System.String)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'GoldGrammar.Build(string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Symbol(Eto.Parse.Match)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'GoldGrammar.Symbol(Match)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToCode(System.String,System.String)">
+            <Messages>
+             <Message Id="System.IO.StringWriter.#ctor" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'StringWriter.StringWriter()'</Item>
+               <Item>'GoldGrammar.ToCode(string, string)'</Item>
+               <Item>'StringWriter.StringWriter(IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="Eto.Parse.Parsers">
+        <Types>
+         <Type Name="BooleanTerminal">
+          <Members>
+           <Member Name="#FalseValues">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'BooleanTerminal.FalseValues'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#TrueValues">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'BooleanTerminal.TrueValues'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CharRangeTerminal">
+          <Members>
+           <Member Name="#CharName">
+            <Accessors>
+             <Accessor Name="#get_CharName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object, object)'</Item>
+                 <Item>'CharRangeTerminal.CharName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CharSetTerminal">
+          <Members>
+           <Member Name="#Characters">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'CharSetTerminal.Characters'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CharName">
+            <Accessors>
+             <Accessor Name="#get_CharName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'CharSetTerminal.CharName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'CharSetTerminal.CharName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'CharSetTerminal.CharName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CharTerminal">
+          <Members>
+           <Member Name="#DescriptiveName">
+            <Accessors>
+             <Accessor Name="#get_DescriptiveName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'CharTerminal.DescriptiveName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+           <Member Name="#Test(System.Char)">
+            <Messages>
+             <Message Id="ch" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+              <Issue Name="MemberParameter">
+               <Item>'CharTerminal.Test(char)'</Item>
+               <Item>ch</Item>
+               <Item>'ch'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EolTerminal">
+          <Messages>
+           <Message Id="Eol" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2013-10-03 20:42:05Z">
+            <Issue Name="Type">
+             <Item>Eol</Item>
+             <Item>'EolTerminal'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="LiteralTerminal">
+          <Members>
+           <Member Name="#DescriptiveName">
+            <Accessors>
+             <Accessor Name="#get_DescriptiveName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'LiteralTerminal.DescriptiveName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="RepeatCharItem">
+          <Members>
+           <Member Name="#op_Implicit(System.Char):Eto.Parse.Parsers.RepeatCharItem">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'RepeatCharItem.implicit operator RepeatCharItem(char)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="RepeatParser">
+          <Members>
+           <Member Name="#op_ExclusiveOr(Eto.Parse.Parsers.RepeatParser,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>Xor</Item>
+               <Item>'RepeatParser.operator ^(RepeatParser, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="SingleCharTerminal">
+          <Members>
+           <Member Name="#CharName">
+            <Accessors>
+             <Accessor Name="#get_CharName()">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'SingleCharTerminal.CharName.get()'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="StringParser">
+          <Members>
+           <Member Name="#BeginQuoteCharacters">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'StringParser.BeginQuoteCharacters'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EndQuoteCharacters">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'StringParser.EndQuoteCharacters'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetEscapedString(System.String)">
+            <Messages>
+             <Message Id="System.Int32.Parse(System.String,System.Globalization.NumberStyles)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'int.Parse(string, NumberStyles)'</Item>
+               <Item>'StringParser.GetEscapedString(string)'</Item>
+               <Item>'int.Parse(string, NumberStyles, IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.UInt32.Parse(System.String,System.Globalization.NumberStyles)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'uint.Parse(string, NumberStyles)'</Item>
+               <Item>'StringParser.GetEscapedString(string)'</Item>
+               <Item>'uint.Parse(string, NumberStyles, IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternate">
+               <Item>'uint.Parse(string, NumberStyles)'</Item>
+               <Item>'StringParser.GetEscapedString(string)'</Item>
+               <Item>'uint.Parse(string, NumberStyles, IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#QuoteCharacters">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'StringParser.QuoteCharacters'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="Eto.Parse.Writers.Code">
+        <Types>
+         <Type Name="CharSetWriter">
+          <Members>
+           <Member Name="#WriteContents(Eto.Parse.TextParserWriterArgs,Eto.Parse.Parsers.CharSetTerminal,System.String)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'CharSetWriter.WriteContents(TextParserWriterArgs, CharSetTerminal, string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParserWriter`1">
+          <Members>
+           <Member Name="#Eto.Parse.ParserWriter`1&lt;Eto.Parse.TextParserWriterArgs&gt;+IParserWriterHandler.Write(Eto.Parse.TextParserWriterArgs,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="InterfaceMethodsShouldBeCallableByChildTypes" Category="Microsoft.Design" CheckId="CA1033" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'ParserWriter&lt;T&gt;'</Item>
+               <Item>'ParserWriter&lt;TextParserWriterArgs&gt;.IParserWriterHandler.Write(TextParserWriterArgs, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetIdentifier(System.String)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'ParserWriter&lt;T&gt;.GetIdentifier(string)'</Item>
+               <Item>'ParserWriter&lt;T&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="StringWriter">
+          <Members>
+           <Member Name="#WriteContents(Eto.Parse.TextParserWriterArgs,Eto.Parse.Parsers.StringParser,System.String)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'StringWriter.WriteContents(TextParserWriterArgs, StringParser, string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'StringWriter.WriteContents(TextParserWriterArgs, StringParser, string)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="Eto.Parse.Writers.Display">
+        <Types>
+         <Type Name="LiteralWriter">
+          <Members>
+           <Member Name="#GetName(Eto.Parse.ParserWriterArgs,Eto.Parse.Parsers.LiteralTerminal)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'LiteralWriter.GetName(ParserWriterArgs, LiteralTerminal)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParserWriter`1">
+          <Members>
+           <Member Name="#Eto.Parse.ParserWriter`1&lt;Eto.Parse.TextParserWriterArgs&gt;+IParserWriterHandler.Write(Eto.Parse.TextParserWriterArgs,Eto.Parse.Parser)">
+            <Messages>
+             <Message TypeName="InterfaceMethodsShouldBeCallableByChildTypes" Category="Microsoft.Design" CheckId="CA1033" Created="2013-10-03 20:42:05Z">
+              <Issue>
+               <Item>'ParserWriter&lt;T&gt;'</Item>
+               <Item>'ParserWriter&lt;TextParserWriterArgs&gt;.IParserWriterHandler.Write(TextParserWriterArgs, Parser)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="RepeatWriter">
+          <Members>
+           <Member Name="#GetName(Eto.Parse.ParserWriterArgs,Eto.Parse.Parsers.RepeatParser)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'RepeatWriter.GetName(ParserWriterArgs, RepeatParser)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2013-10-03 20:42:05Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object, object)'</Item>
+               <Item>'RepeatWriter.GetName(ParserWriterArgs, RepeatParser)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Notes>
+   <User Name="curtis">
+    <Note Id="0" Modified="2013-10-04 01:29:04Z">Name of variable should be lowercase</Note>
+    <Note Id="1" Modified="2013-10-04 01:30:56Z">Obsolete</Note>
+   </User>
+  </Notes>
+  <Rules>
+   <Rule TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210">
+    <Resolution Name="NoStrongName">Sign {0} with a strong name key.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020">
+    <Resolution Name="Default">Consider merging the types defined in '{0}' with another namespace.</Resolution>
+   </Rule>
+   <Rule TypeName="DeclareEventHandlersCorrectly" Category="Microsoft.Design" CheckId="CA1009">
+    <Resolution Name="First">Declare the first parameter of {0} as an object named 'sender'.</Resolution>
+    <Resolution Name="Second">Declare the second parameter of {0} as an EventArgs, or an instance of a type that extends EventArgs, named 'e'.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000">
+    <Resolution Name="Default">Remove {0} from {1} or make it an instance member.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002">
+    <Resolution Name="Default">Change {0} in {1} to use Collection&lt;T&gt;, ReadOnlyCollection&lt;T&gt; or KeyedCollection&lt;K,V&gt;</Resolution>
+   </Rule>
+   <Rule TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004">
+    <Resolution Name="Default">Consider a design where {0} doesn't require explicit type parameter {1} in any call to it.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704">
+    <Resolution Name="Assembly">Correct the spelling of '{0}' in assembly name {1}.</Resolution>
+    <Resolution Name="Member">Correct the spelling of '{0}' in member name {1} or remove it entirely if it represents any sort of Hungarian notation.</Resolution>
+    <Resolution Name="MemberParameter">In method {0}, correct the spelling of '{1}' in parameter name {2} or remove it entirely if it represents any sort of Hungarian notation.</Resolution>
+    <Resolution Name="Namespace">Correct the spelling of '{0}' in namespace name '{1}'.</Resolution>
+    <Resolution Name="Type">Correct the spelling of '{0}' in type name {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldDifferByMoreThanCase" Category="Microsoft.Naming" CheckId="CA1708">
+    <Resolution Name="Member">Change member names {0} and '{1}' so that they differ by more than case.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710">
+    <Resolution Name="Default">Rename {0} to end in '{1}'.</Resolution>
+   </Rule>
+   <Rule TypeName="IndexersShouldNotBeMultidimensional" Category="Microsoft.Design" CheckId="CA1023">
+    <Resolution Name="Default">Redesign indexer {0} to use a single string or integer value as its index.</Resolution>
+   </Rule>
+   <Rule TypeName="InterfaceMethodsShouldBeCallableByChildTypes" Category="Microsoft.Design" CheckId="CA1033">
+    <Resolution Name="Default">Make {0} sealed (a breaking change if this class has previously shipped), implement the method non-explicitly, or implement a new method that exposes the functionality of {1} and is visible to derived classes.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkAssembliesWithClsCompliant" Category="Microsoft.Design" CheckId="CA1014">
+    <Resolution Name="Default">Mark {0} with CLSCompliant(true) because it exposes externally visible types.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkAssembliesWithComVisible" Category="Microsoft.Design" CheckId="CA1017">
+    <Resolution Name="NoAttribute">Because {0} exposes externally visible types, mark it with ComVisible(false) at the assembly level and then mark all types within the assembly that should be exposed to COM clients with ComVisible(true).</Resolution>
+   </Rule>
+   <Rule TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237">
+    <Resolution Name="Default">Add [Serializable] to {0} as this type implements ISerializable.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822">
+    <Resolution Name="Default">The 'this' parameter (or 'Me' in Visual Basic) of {0} is never used. Mark the member as static (or Shared in Visual Basic) or use 'this'/'Me' in the method body or at least one property accessor, if appropriate.</Resolution>
+   </Rule>
+   <Rule TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034">
+    <Resolution Name="Default">Do not nest type {0}. Alternatively, change its accessibility so that it is not externally visible.</Resolution>
+   </Rule>
+   <Rule TypeName="NormalizeStringsToUppercase" Category="Microsoft.Globalization" CheckId="CA1308">
+    <Resolution Name="ToUpperInvariant">In method {0}, replace the call to {1} with String.ToUpperInvariant().</Resolution>
+   </Rule>
+   <Rule TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225">
+    <Resolution Name="Default">Provide a method named '{0}' as a friendly alternate for operator {1}.</Resolution>
+    <Resolution Name="Multiple">Provide a method named '{0}' or '{1}' as an alternate for operator {2}.</Resolution>
+    <Resolution Name="Property">Provide a property named '{0}' as a friendly alternate for operator {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013">
+    <Resolution Name="Default">Consider adding an overload of the equality operator for {0} that takes the same parameters as {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="ParameterNamesShouldNotMatchMemberNames" Category="Microsoft.Naming" CheckId="CA1719">
+    <Resolution Name="Default">Change either member or parameter name {0} so that one differs from the other.</Resolution>
+   </Rule>
+   <Rule TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819">
+    <Resolution Name="Default">Change {0} to return a collection or make it a method.</Resolution>
+   </Rule>
+   <Rule TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305">
+    <Resolution Name="IFormatProviderAlternate">Because the behavior of {0} could vary based on the current user's locale settings, replace this call in {1} with a call to {2}. If the result of {2} will be based on input from the user, specify {3} as the 'IFormatProvider' parameter. Otherwise, if the result will based on input stored and accessed by software, such as when it is loaded from disk or from a database, specify {4}.</Resolution>
+    <Resolution Name="IFormatProviderAlternateString">Because the behavior of {0} could vary based on the current user's locale settings, replace this call in {1} with a call to {2}. If the result of {2} will be displayed to the user, specify {3} as the 'IFormatProvider' parameter. Otherwise, if the result will be stored and accessed by software, such as when it is persisted to disk or to a database, specify {4}.</Resolution>
+   </Rule>
+   <Rule TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024">
+    <Resolution Name="Default">Change {0} to a property if appropriate.</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
+</FxCopProject>
