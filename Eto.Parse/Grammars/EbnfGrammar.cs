@@ -15,6 +15,18 @@ namespace Eto.Parse.Grammars
 	/// <remarks>
 	/// See http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form
 	/// 
+	/// This has a few extensions to allow for explicit or implicit whitespace:
+	/// <code>
+	/// 	terminal sequence := 'a', 'b', 'c', 'd'; (* no whitespace inbetween *)
+	/// 	rule sequence = 'a', 'b', 'c', 'd'; (* allows for whitespace *)
+	/// </code>
+	/// 
+	/// You can also reference parsers from <see cref="EbnfGrammar.SpecialParsers"/> which by default includes the list
+	/// of terminals from <see cref="Terminals"/>
+	/// <code>
+	/// 	ws := ? Terminals.Whitespace ?;
+	/// </code>
+	///
 	/// This grammar is not thread-safe.
 	/// </remarks>
 	public class EbnfGrammar : Grammar
@@ -34,9 +46,9 @@ namespace Eto.Parse.Grammars
 		{
 			Parser comment;
 			if (parserLookup.TryGetValue("comment", out comment))
-				separator = (-(Terminals.WhiteSpace | comment)).Named("separator");
+				separator = (-(Terminals.WhiteSpace | comment)).WithName("separator");
 			else
-				separator = (-(Terminals.WhiteSpace)).Named("separator");
+				separator = (-(Terminals.WhiteSpace)).WithName("separator");
 		}
 
 		void GenerateSpecialSequences()
@@ -60,11 +72,11 @@ namespace Eto.Parse.Grammars
 			GenerateSpecialSequences();
 
 			// terminals
-			var terminal_string = ("'" & (+Terminals.AnyChar).Until("'").Named("value") & "'")
-				| ("\"" & (+Terminals.AnyChar).Until("\"").Named("value") & "\"")
-				| ("’" & (+Terminals.AnyChar).Until("’").Named("value") & "’");
+			var terminal_string = ("'" & (+Terminals.AnyChar).Until("'").WithName("value") & "'")
+				| ("\"" & (+Terminals.AnyChar).Until("\"").WithName("value") & "\"")
+				| ("’" & (+Terminals.AnyChar).Until("’").WithName("value") & "’");
 
-			var special_sequence = ("?" & (+Terminals.AnyChar).Until("?").Named("name") & "?").Named("special sequence");
+			var special_sequence = ("?" & (+Terminals.AnyChar).Until("?").WithName("name") & "?").WithName("special sequence");
 
 			var meta_identifier_terminal = Terminals.Letter & -(Terminals.LetterOrDigit | '_');
 			var integer = new NumberParser();
@@ -83,9 +95,9 @@ namespace Eto.Parse.Grammars
 			var syntax_rule = new UnaryParser("syntax rule");
 			var rule_equals = new UnaryParser("equals");
 
-			var optional_sequence = ("[" & definition_list & "]").Named("optional sequence");
-			var repeated_sequence = ("{" & definition_list & "}").Named("repeated sequence");
-			var grouped_sequence = ("(" & definition_list & ")").Named("grouped sequence");
+			var optional_sequence = ("[" & definition_list & "]").WithName("optional sequence");
+			var repeated_sequence = ("{" & definition_list & "}").WithName("repeated sequence");
+			var grouped_sequence = ("(" & definition_list & ")").WithName("grouped sequence");
 
 			// rules
 			meta_identifier.Inner = (+meta_identifier_terminal).SeparatedBy(ws);

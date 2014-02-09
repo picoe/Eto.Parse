@@ -18,13 +18,14 @@ namespace Eto.Parse.Samples.Json
 			: base("json")
 		{
 			EnableMatchEvents = false;
+			CaseSensitive = true;
 
 			// terminals
 			var jstring = new StringParser { AllowEscapeCharacters = true, Name = "string" };
 			var jnumber = new NumberParser { AllowExponent = true, AllowSign = true, AllowDecimal = true, Name = "number" };
-			var jboolean = new BooleanTerminal { Name = "bool", TrueValues = new string[] { "true" }, FalseValues = new string[] { "false" } };
+			var jboolean = new BooleanTerminal { Name = "bool", TrueValues = new string[] { "true" }, FalseValues = new string[] { "false" }, CaseSensitive = false };
 			var jname = new StringParser { AllowEscapeCharacters = true, Name = "name" };
-			var jnull = new LiteralTerminal { Value = "null", Name = "null" };
+			var jnull = new LiteralTerminal { Value = "null", Name = "null", CaseSensitive = false };
 			var ws = new RepeatCharTerminal(char.IsWhiteSpace);
 			var commaDelimiter = new RepeatCharTerminal(new RepeatCharItem(char.IsWhiteSpace), ',', new RepeatCharItem(char.IsWhiteSpace));
 

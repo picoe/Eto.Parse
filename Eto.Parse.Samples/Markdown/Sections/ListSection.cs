@@ -20,11 +20,11 @@ namespace Eto.Parse.Samples.Markdown.Sections
 
 			var content = grammar.Encoding.ReplacementsWithAnyChar().Repeat().Until(Terms.blankLine & (Terms.blankLine | Terms.ows & start));
 			content.Name = "content";
-			var line = (grammar.PrefixSpOrHt & start & content & Terms.blankLineOrEof).WithName("line");
+			var line = (grammar.PrefixSpOrHt & start & content & Terms.blankLineOrEof);
 			var inner = grammar.CreateInnerReplacements().WithName("inner");
 			var spacing = (-Terms.blankLine).WithName("spacing");
 			var lineWithSpacing = line & ~(-Terms.blankLine & inner) & spacing;
-			Inner = lineWithSpacing;
+			Inner = lineWithSpacing.WithName("line");
 			Minimum = 1;
 
 			this.Until(Terms.EndOfSection(line.Not()), capture: true);
