@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Picoe Software Solutions, Inc.")]
 [assembly: AssemblyProduct("Eto.Parse")]
-[assembly: AssemblyCopyright("Copyright 2013 by Curtis Wensley")]
+[assembly: AssemblyCopyright("Copyright 2014 by Curtis Wensley")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,5 +21,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyVersion("1.3.1.0")]
+[assembly: AssemblyFileVersion("1.3.1.0")]
