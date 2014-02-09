@@ -22,7 +22,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 			var obj = JsonObject.Parse(suite.Json);
 			if (suite.CompareOutput)
 			{
-				var result = obj["result"] as JsonArray;
+				var result = (JsonArray)obj["result"];
 				foreach (var item in result.OfType<JsonObject>())
 				{
 					var id = item[suite.CompareProperty].Value;

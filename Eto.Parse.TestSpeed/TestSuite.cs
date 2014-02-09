@@ -36,19 +36,25 @@ namespace Eto.Parse.TestSpeed
 				Console.WriteLine("\tcomparing output");
 			}
 
+			var tests = GetTests().ToArray();
+
+			var nameLength = tests.Max(r => r.Name.Length);
+			var nameHeader = new string('-', nameLength);
+			var testHeader = "Test".PadRight(nameLength);
+
 			if (WriteInitialResults)
 			{
 				Console.WriteLine();
-				Console.WriteLine("Test             | Parsing | Warmup ");
-				Console.WriteLine("---------------- | ------- | -------");
+				Console.WriteLine("{0} | Parsing | Warmup ", testHeader);
+				Console.WriteLine("{0} | ------- | -------", nameHeader);
 			}
 
 			var results = new List<TestResult>();
 			TestResult compare = null;
-			foreach (var result in PerformTests())
+			foreach (var result in PerformTests(tests))
 			{
 				if (WriteInitialResults)
-					Console.WriteLine("{0,-17}| {1,6:0.000}s | {2,6:0.000}s", result.Test.Name, result.Speed, result.WarmupSpeed);
+					Console.WriteLine("{0} | {1,6:0.000}s | {2,6:0.000}s", result.Test.Name.PadRight(nameLength), result.Speed, result.WarmupSpeed);
 				if (compare != null && result.CompareResult != compare.CompareResult)
 				{
 					Console.WriteLine("ERROR: Output does not match!");
@@ -60,22 +66,22 @@ namespace Eto.Parse.TestSpeed
 			Console.WriteLine();
 			Console.WriteLine("Comparison:");
 			Console.WriteLine();
-			Console.WriteLine("Test             | Parsing | Slower than best |  Warmup | Slower than best");
-			Console.WriteLine("---------------- | ------: | :--------------: | ------: | :--------------:");
+			Console.WriteLine("{0} | Parsing | Slower than best |  Warmup | Slower than best", testHeader);
+			Console.WriteLine("{0} | ------: | :--------------: | ------: | :--------------:", nameHeader);
 
 			var minSpeed = results.Min(r => r.Speed);
 			var minWarmup = results.Min(r => r.WarmupSpeed);
 			foreach (var result in results)
 			{
-				Console.WriteLine("{0,-17}| {1,6:0.000}s | {2,8:0.00}x        | {3,6:0.000}s | {4,8:0.00}x", result.Test.Name, 
+				Console.WriteLine("{0} | {1,6:0.000}s | {2,8:0.00}x        | {3,6:0.000}s | {4,8:0.00}x", 
+				                  result.Test.Name.PadRight(nameLength), 
 				                  result.Speed, result.Speed / minSpeed,
 				                  result.WarmupSpeed, result.WarmupSpeed / minWarmup);
 			}
 		}
 
-		public IEnumerable<TestResult> PerformTests()
+		IEnumerable<TestResult> PerformTests(ITest[] tests)
 		{
-			var tests = GetTests().ToArray();
 			for (int testNum = 0; testNum < tests.Length; testNum++)
 			{
 				GC.Collect();
