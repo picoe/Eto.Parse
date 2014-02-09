@@ -116,8 +116,10 @@ namespace Eto.Parse
 			return unary;
 		}
 
-		public static Parser WithName(this Parser parser, string name)
+		public static T WithName<T>(this T parser, string name)
+			where T: Parser
 		{
+			parser.Reusable = false;
 			parser.Name = name;
 			return parser;
 		}
