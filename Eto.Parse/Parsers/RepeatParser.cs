@@ -64,7 +64,7 @@ namespace Eto.Parse.Parsers
 				if (Until != null)
 					Until.Initialize(args);
 				separator = Separator ?? args.Grammar.Separator;
-				skipUntilMatches = !CaptureUntil || (Until != null && Until.Children().Any(r => r.Name != null));
+				skipUntilMatches = (Until != null && (Until.Name != null || Until.Children().Any(r => r.Name != null)));
 				args.Pop();
 			}
 		}
