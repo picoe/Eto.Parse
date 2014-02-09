@@ -17,8 +17,8 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 		public void Initialize(MarkdownGrammar grammar)
 		{
 			var inner = grammar.Encoding.Replacements();
-			Add("**" & Terms.ows & +((inner | Terminals.AnyChar.Except(Terminals.Set("*\n\r")))) & "**");
-			Add("__" & Terms.ows & +((inner | Terminals.AnyChar.Except(Terminals.Set("_\n\r")))) & "__");
+			Add("**" & Terms.ows & +((inner | Terminals.Set("*\n\r").Inverse())) & "**");
+			Add("__" & Terms.ows & +((inner | Terminals.Set("_\n\r").Inverse())) & "__");
 		}
 
 		protected override int InnerParse(ParseArgs args)
