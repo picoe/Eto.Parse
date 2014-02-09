@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -62,6 +62,8 @@
     <Reference Include="bsn.GoldParser">
       <HintPath>bsn.GoldParser.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -81,6 +83,12 @@
     <Compile Include="Tests\Json\Irony\IronyJsonGrammar.cs" />
     <Compile Include="Tests\Json\TestServiceStack.cs" />
     <Compile Include="Tests\Json\TestBsnGold.cs" />
+    <Compile Include="Tests\Xml\TestBsnGold.cs" />
+    <Compile Include="Tests\Xml\TestEtoFromGold.cs" />
+    <Compile Include="Tests\Xml\TestXDocument.cs" />
+    <Compile Include="Tests\Xml\XmlTestSuite.cs" />
+    <Compile Include="Tests\Xml\TestEto.cs" />
+    <Compile Include="Tests\Xml\TestSystemXml.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -101,6 +109,7 @@
     <EmbeddedResource Include="Tests\Json\sample-large.json" />
     <EmbeddedResource Include="Tests\Json\sample-small.json" />
     <EmbeddedResource Include="Tests\Json\Gold\JSON.egt" />
+    <EmbeddedResource Include="Tests\Xml\sample-large.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -108,7 +117,10 @@
     <None Include="GOLD Engine.dll" />
     <None Include="Tests\Json\Gold\JSON.grm" />
     <None Include="bsn.GoldParser.dll" />
+    <EmbeddedResource Include="Tests\Xml\Gold\XML.egt" />
+    <EmbeddedResource Include="Tests\Xml\Gold\XML.grm" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup />
   <ItemGroup />
 </Project>

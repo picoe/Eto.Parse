@@ -69,6 +69,7 @@
     <Compile Include="Markdown\Sections\HrSection.cs" />
     <Compile Include="Markdown\Sections\DoubleLineHeaderSection.cs" />
     <Compile Include="Markdown\Encodings\BreakEncoding.cs" />
+    <Compile Include="Xml\XmlGrammar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
