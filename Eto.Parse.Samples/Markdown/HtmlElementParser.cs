@@ -146,7 +146,7 @@ namespace Eto.Parse.Samples.Markdown
 							args.AddMatch(this, start, contentLength, "content");
 						}
 						if (Name != null)
-							args.PopMatch(this, pos, length, Name);
+							args.PopMatch(this, pos, length);
 					}
 					return length;
 				}

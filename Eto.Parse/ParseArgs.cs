@@ -220,7 +220,30 @@ namespace Eto.Parse
 		}
 
 		/// <summary>
-		/// Adds a match to the current result match node
+		/// Pops a succesful named match node, and adds it to the parent match node
+		/// </summary>
+		/// <param name="parser">Parser with the name to add to the match tree</param>
+		/// <param name="index">Index of the start of the match</param>
+		/// <param name="length">Length of the match</param>
+		public void PopMatch(Parser parser, int index, int length)
+		{
+			// always successful here, assume at least two or more nodes
+			var last = nodes.Pop();
+
+			if (nodes.Count > 0)
+			{
+				var node = nodes.Last;
+				if (node == null)
+				{
+					node = new MatchCollection();
+					nodes.Last = node;
+				}
+				node.Add(new Match(parser, Scanner, index, length, last));
+			}
+		}
+
+		/// <summary>
+		/// Adds a match to the current result match node with the specified name
 		/// </summary>
 		/// <remarks>
 		/// This is used to add a parse match to the result match tree
@@ -240,6 +263,29 @@ namespace Eto.Parse
 					nodes.Last = node;
 				}
 				node.Add(new Match(name, parser, Scanner, index, length, null));
+			}
+		}
+
+		/// <summary>
+		/// Adds a match to the current result match node
+		/// </summary>
+		/// <remarks>
+		/// This is used to add a parse match to the result match tree
+		/// </remarks>
+		/// <param name="parser">Parser for the match</param>
+		/// <param name="index">Index of the start of the match</param>
+		/// <param name="length">Length of the match</param>
+		public void AddMatch(Parser parser, int index, int length)
+		{
+			if (nodes.Count > 0)
+			{
+				var node = nodes.Last;
+				if (node == null)
+				{
+					node = new MatchCollection();
+					nodes.Last = node;
+				}
+				node.Add(new Match(parser, Scanner, index, length));
 			}
 		}
 	}

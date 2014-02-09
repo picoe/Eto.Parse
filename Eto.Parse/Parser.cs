@@ -16,10 +16,17 @@ namespace Eto.Parse
 	public abstract partial class Parser : ICloneable
 	{
 		bool hasNamedChildren;
-		bool useNamed;
+		ParseMode mode;
 		string name;
 		bool addError;
 		bool addErrorSet;
+
+		enum ParseMode
+		{
+			Simple,
+			NameOrError,
+			NamedChildren
+		}
 
 		#region Properties
 
@@ -214,7 +221,16 @@ namespace Eto.Parse
 		/// <returns>The length of the successfully matched value (can be zero), or -1 if not matched</returns>
 		public int Parse(ParseArgs args)
 		{
-			if (!useNamed)
+			if (mode == ParseMode.Simple)
+			{
+				var match = InnerParse(args);
+				if (match < 0)
+				{
+					args.SetChildError();
+				}
+				return match;
+			}
+			else if (mode == ParseMode.NameOrError)
 			{
 				var pos = args.Scanner.Position;
 				var match = InnerParse(args);
@@ -223,23 +239,19 @@ namespace Eto.Parse
 					if (!AddError)
 					{
 						args.SetChildError();
-						return match;
 					}
 					else
 					{
 						args.AddError(this);
-						return match;
 					}
 				}
 				else
 				{
-					if (name == null)
-						return match;
-					args.AddMatch(this, pos, match, Name);
-					return match;
+					args.AddMatch(this, pos, match);
 				}
+				return match;
 			}
-			else
+			else // ParseMode.Named
 			{
 				args.Push();
 				var pos = args.Scanner.Position;
@@ -250,19 +262,17 @@ namespace Eto.Parse
 					if (!AddError)
 					{
 						args.SetChildError();
-						return match;
 					}
 					else
 					{
 						args.AddError(this);
-						return match;
 					}
 				}
 				else
 				{
-					args.PopMatch(this, pos, match, Name);
-					return match;
+					args.PopMatch(this, pos, match);
 				}
+				return match;
 			}
 		}
 
@@ -289,7 +299,7 @@ namespace Eto.Parse
 			if (args.Push(this))
 			{
 				hasNamedChildren = Children().Any(r => r.Name != null);
-				useNamed = hasNamedChildren && name != null;
+				mode = (hasNamedChildren && name != null) ? ParseMode.NamedChildren : name != null || AddError ? ParseMode.NameOrError : ParseMode.Simple;
 				args.Pop();
 			}
 		}

@@ -7,12 +7,11 @@ namespace Eto.Parse
 	public class Match
 	{
 		MatchCollection matches;
+		string name;
 		readonly int index;
 		readonly int length;
-		readonly string name;
 		readonly Parser parser;
 		readonly Scanner scanner;
-
 		internal static readonly Match EmptyMatch = new Match(null, null, null, -1, -1, new MatchCollection());
 
 		public MatchCollection Matches
@@ -33,7 +32,7 @@ namespace Eto.Parse
 
 		public string Text { get { return Success ? scanner.Substring(index, length) : null; } }
 
-		public string Name { get { return name; } }
+		public string Name { get { return name ?? (name = Parser.Name); } }
 
 		public Parser Parser { get { return parser; } }
 
@@ -55,6 +54,23 @@ namespace Eto.Parse
 			this.index = index;
 			this.length = length;
 			this.matches = matches;
+		}
+
+		internal Match(Parser parser, Scanner scanner, int index, int length, MatchCollection matches)
+		{
+			this.parser = parser;
+			this.scanner = scanner;
+			this.index = index;
+			this.length = length;
+			this.matches = matches;
+		}
+
+		internal Match(Parser parser, Scanner scanner, int index, int length)
+		{
+			this.parser = parser;
+			this.scanner = scanner;
+			this.index = index;
+			this.length = length;
 		}
 
 		public IEnumerable<Match> Find(string id, bool deep = false)
@@ -110,6 +126,11 @@ namespace Eto.Parse
 	{
 		public MatchCollection()
 			: base(4)
+		{
+		}
+
+		public MatchCollection(IEnumerable<Match> collection)
+			: base(collection)
 		{
 		}
 
