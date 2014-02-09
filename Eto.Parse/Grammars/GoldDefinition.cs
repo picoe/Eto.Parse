@@ -22,7 +22,15 @@ namespace Eto.Parse.Grammars
 
 		public Parser Comment { get { return Terminals.ContainsKey("Comment") ? Terminals["Comment"] : null; } }
 
-		public Parser Whitespace { get { return Terminals.ContainsKey("Whitespace") ? Terminals["Whitespace"] : null; } }
+		public Parser Whitespace
+		{ 
+			get { return Terminals.ContainsKey("Whitespace") ? Terminals["Whitespace"] : null; }
+			set
+			{
+				Terminals["Whitespace"] = value; 
+				ClearSeparator();
+			}
+		}
 
 		public Parser NewLine { get { return Terminals.ContainsKey("NewLine") ? Terminals["NewLine"] : null; } }
 
@@ -58,7 +66,8 @@ namespace Eto.Parse.Grammars
 
 		internal string GrammarName
 		{
-			get {
+			get
+			{
 				string name;
 				if (Properties.TryGetValue("Start Symbol", out name))
 					return name.TrimStart('<').TrimEnd('>');
@@ -112,5 +121,4 @@ namespace Eto.Parse.Grammars
 			CreateSeparator();
 		}
 	}
-	
 }

@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using Eto.Parse.Parsers;
 using System.IO;
 using System.CodeDom.Compiler;
 using Eto.Parse.Writers;
+using System.Globalization;
 
 namespace Eto.Parse.Grammars
 {
@@ -19,15 +19,15 @@ namespace Eto.Parse.Grammars
 	public class GoldGrammar : Grammar
 	{
 		GoldDefinition definition;
-		Parser parameter;
-		Parser ruleDecl;
-		Parser handle;
-		Parser symbol;
-		Parser terminalDecl;
-		Parser setDecl;
-		Parser whitespace;
-		Parser regExpItem;
-		Parser regExp;
+		readonly Parser parameter;
+		readonly Parser ruleDecl;
+		readonly Parser handle;
+		readonly Parser symbol;
+		readonly Parser terminalDecl;
+		readonly Parser setDecl;
+		readonly Parser whitespace;
+		readonly Parser regExpItem;
+		readonly Parser regExp;
 
 		public GoldGrammar()
 			: base("gold")
@@ -42,20 +42,20 @@ namespace Eto.Parse.Grammars
 			var setLiteralCh = Terminals.Printable - Terminals.Set("[]'");
 			var setNameCh = Terminals.Printable - Terminals.Set("{}");
 
-			var parameterName = ('"' & (+parameterCh).Named("value") & '"').Separate();
-			var nonterminal = ('<' & (+nonterminalCh).Named("value") & '>').Separate();
-			var terminal = ((+terminalCh).Named("terminal") | ('\'' & (-literalCh).Named("literal") & '\'')).Separate();
-			var setLiteral = ('[' & +(setLiteralCh.Named("ch") | '\'' & (-literalCh).Named("ch") & '\'') & ']').Named("setLiteral");
-			var setName = ('{' & (+setNameCh).Named("value") & '}').Named("setName");
+			var parameterName = ('"' & (+parameterCh).WithName("value") & '"').Separate();
+			var nonterminal = ('<' & (+nonterminalCh).WithName("value") & '>').Separate();
+			var terminal = ((+terminalCh).WithName("terminal") | ('\'' & (-literalCh).WithName("literal") & '\'')).Separate();
+			var setLiteral = ('[' & +(setLiteralCh.WithName("ch") | '\'' & (-literalCh).WithName("ch") & '\'') & ']').WithName("setLiteral");
+			var setName = ('{' & (+setNameCh).WithName("value") & '}').WithName("setName");
 
 			// Line-Based Grammar Declarations
 
 			var comments = new GroupParser("!*", "*!", "!");
+			var newline = Terminals.Eol;
 			whitespace = -(Terminals.SingleLineWhiteSpace | comments);
 			Parser.DefaultSeparator = whitespace;
-			var newline = Terminals.Eol;
 			var nlOpt = -newline;
-			var nl = +newline;
+			var nl = +newline | Terminals.End;
 
 			// Parameter Definition
 
@@ -65,48 +65,48 @@ namespace Eto.Parse.Grammars
 
 			var parameterBody = parameterItems & -(nlOpt & '|' & parameterItems);
 
-			parameter = (parameterName.Named("name") & nlOpt & '=' & parameterBody.Named("body") & nl).Named("parameter");
+			parameter = (parameterName.Named("name") & nlOpt & '=' & parameterBody.WithName("body") & nl).WithName("parameter");
 
 			// Set Definition
 
 			var setItem = setLiteral | setName;
 
-			var setExp = new UnaryParser("setExp");
-			setExp.Inner = (setExp & nlOpt & '+' & setItem).Named("add")
-				| (setExp & nlOpt & '-' & setItem).Named("sub")
-				| setItem;
+			var setExp = new AlternativeParser { Name = "setExp" };
+			setExp.Add((setExp & nlOpt & '+' & setItem).WithName("add"),
+				(setExp & nlOpt & '-' & setItem).WithName("sub"), 
+				setItem);
 
 
-			setDecl = (setName & nlOpt & '=' & setExp & nl).Named("setDecl");
+			setDecl = (setName & nlOpt & '=' & setExp & nl).WithName("setDecl");
 
 			//  Terminal Definition
 
 			var regExp2 = new SequenceParser();
 
-			var kleeneOpt = (~((Parser)'+' | '?' | '*')).Named("kleene");
+			var kleeneOpt = (~((Parser)'+' | '?' | '*')).WithName("kleene");
 
 			regExpItem = ((setLiteral & kleeneOpt)
 				| (setName & kleeneOpt)
 				| (terminal.Named("terminal") & kleeneOpt)
-				| ('(' & regExp2.Named("regExp2") & ')' & kleeneOpt)).Named("regExpItem");
+				| ('(' & regExp2.Named("regExp2") & ')' & kleeneOpt)).WithName("regExpItem");
 
-			var regExpSeq = (+regExpItem).Named("regExpSeq");
+			var regExpSeq = (+regExpItem).WithName("regExpSeq");
 
 			regExp2.Items.Add(regExpSeq);
 			regExp2.Items.Add(-('|' & regExpSeq));
 
-			regExp = (regExpSeq & -(nlOpt & '|' & regExpSeq)).Named("regExp");
+			regExp = (regExpSeq & -(nlOpt & '|' & regExpSeq)).WithName("regExp");
 
 			var terminalName = +terminal;
 
-			terminalDecl = (terminalName.Named("name") & nlOpt & '=' & regExp & nl).Named("terminalDecl");
+			terminalDecl = (terminalName.Named("name") & nlOpt & '=' & regExp & nl).WithName("terminalDecl");
 
 			// Rule Definition
-			symbol = (terminal.Named("terminal") | nonterminal.Named("nonterminal")).Named("symbol");
+			symbol = (terminal.Named("terminal") | nonterminal.Named("nonterminal")).WithName("symbol");
 
-			handle = (-symbol).Named("handle");
+			handle = (-symbol).WithName("handle");
 			var handles = handle & -(nlOpt & '|' & handle);
-			ruleDecl = (nonterminal.Named("name") & nlOpt & "::=" & handles & nl).Named("ruleDecl");
+			ruleDecl = (nonterminal.Named("name") & nlOpt & "::=" & handles & nl).WithName("ruleDecl");
 
 			// Rules
 
@@ -114,7 +114,7 @@ namespace Eto.Parse.Grammars
 
 			var content = -definitionDecl;
 
-			this.Inner = nlOpt & content;
+			this.Inner = nlOpt & content & nlOpt;
 
 			Parser.DefaultSeparator = oldSeparator;
 			AttachEvents();
@@ -125,13 +125,17 @@ namespace Eto.Parse.Grammars
 			// attach logic to parsers
 			parameter.PreMatch += m => {
 				var name = m["name"]["value"].Text;
-				definition.Properties[name] = m["body"].Text;
+				var value = m["body"].Text;
+				definition.Properties[name] = value;
+				bool val;
+				if (string.Equals("Auto Whitespace", name, StringComparison.OrdinalIgnoreCase) && bool.TryParse(value, out val) && !val)
+					definition.Whitespace = null;
 			};
 
 			ruleDecl.Matched += m => {
 				var name = m["name"]["value"].Text;
 				bool addWhitespace = name == definition.GrammarName;
-				var parser = Alternative(m, "handle", r => Sequence(r, "symbol", cm => Symbol(cm), addWhitespace));
+				var parser = Alternative(m, "handle", r => Sequence(r, "symbol", Symbol, addWhitespace));
 				definition.Rules[name].Inner = parser;
 			};
 			ruleDecl.PreMatch += m => {
@@ -145,7 +149,7 @@ namespace Eto.Parse.Grammars
 			};
 
 			terminalDecl.Matched += m => {
-				var inner = Sequence(m, "regExp", r => RegExp(r));
+				var inner = Sequence(m, "regExp", RegExp);
 				var parser = m.Tag as UnaryParser;
 				if (parser != null)
 					parser.Inner = inner;
@@ -153,13 +157,13 @@ namespace Eto.Parse.Grammars
 				var name = m["name"].Text;
 				if (groupParser != null)
 				{
-					if (name.EndsWith(" Start"))
+					if (name.EndsWith(" Start", StringComparison.Ordinal))
 						groupParser.Start = inner;
-					else if (name.EndsWith(" End"))
+					else if (name.EndsWith(" End", StringComparison.Ordinal))
 						groupParser.End = inner;
-					else if (name.EndsWith(" Line"))
+					else if (name.EndsWith(" Line", StringComparison.Ordinal))
 						groupParser.Line = inner;
-					var count = name.EndsWith(" Start") ? 6 : name.EndsWith(" Line") ? 5 : name.EndsWith(" End") ? 4 : 0;
+					var count = name.EndsWith(" Start", StringComparison.Ordinal) ? 6 : name.EndsWith(" Line", StringComparison.Ordinal) ? 5 : name.EndsWith(" End", StringComparison.Ordinal) ? 4 : 0;
 					name = name.Substring(0, name.Length - count);
 				}
 
@@ -173,10 +177,10 @@ namespace Eto.Parse.Grammars
 
 			terminalDecl.PreMatch += m => {
 				var name = m["name"].Text;
-				if (name.EndsWith(" Start") || name.EndsWith(" End") || name.EndsWith(" Line"))
+				if (name.EndsWith(" Start", StringComparison.Ordinal) || name.EndsWith(" End", StringComparison.Ordinal) || name.EndsWith(" Line", StringComparison.Ordinal))
 				{
 					Parser parser;
-					var count = name.EndsWith(" Start") ? 6 : name.EndsWith(" Line") ? 5 : name.EndsWith(" End") ? 4 : 0;
+					var count = name.EndsWith(" Start", StringComparison.Ordinal) ? 6 : name.EndsWith(" Line", StringComparison.Ordinal) ? 5 : name.EndsWith(" End", StringComparison.Ordinal) ? 4 : 0;
 					name = name.Substring(0, name.Length - count);
 					if (definition.Terminals.TryGetValue(name, out parser))
 					{
@@ -197,31 +201,29 @@ namespace Eto.Parse.Grammars
 			};
 		}
 
-		Parser Alternative(Match m, string innerName, Func<Match, Parser> inner)
+		static Parser Alternative(Match m, string innerName, Func<Match, Parser> inner)
 		{
-			var parsers = m.Find(innerName).Select(r => inner(r));
-			if (parsers.Count() > 1)
+			var parsers = m.Find(innerName).Select(inner).ToArray();
+			if (parsers.Length > 1)
 				return new AlternativeParser(parsers);
-			else
-				return parsers.FirstOrDefault();
+			return parsers.FirstOrDefault();
 		}
 
 		Parser Sequence(Match m, string innerName, Func<Match, Parser> inner, bool addWhitespace = false)
 		{
-			var parsers = m.Find(innerName).Select(r => inner(r));
-			if (addWhitespace || parsers.Count() > 1)
+			var parsers = m.Find(innerName).Select(inner).ToArray();
+			if (addWhitespace || parsers.Length > 1)
 			{
 				var sep = definition.Separator;
 				var seq = new SequenceParser(parsers) { Separator = sep };
-				if (addWhitespace)
+				if (addWhitespace && sep != null)
 				{
 					seq.Items.Insert(0, sep);
 					seq.Items.Add(sep);
 				}
 				return seq;
 			}
-			else
-				return parsers.FirstOrDefault();
+			return parsers.FirstOrDefault();
 		}
 
 		Parser Symbol(Match m)
@@ -259,7 +261,7 @@ namespace Eto.Parse.Grammars
 
 		Parser RegExp(Match m)
 		{
-			return Alternative(m, "regExpSeq", r => Sequence(r, "regExpItem", cm => RegExpItem(cm)));
+			return Alternative(m, "regExpSeq", r => Sequence(r, "regExpItem", RegExpItem));
 		}
 
 		Parser RegExpItem(Match m)
@@ -290,12 +292,43 @@ namespace Eto.Parse.Grammars
 			if (name.Success)
 			{
 				Parser parser;
-				if (definition.Sets.TryGetValue(name.Text, out parser))
+				var nameText = name.Text;
+				if (definition.Sets.TryGetValue(nameText, out parser))
 					return parser;
+				var chars = nameText.Split(new [] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+				if (chars.Length == 2)
+				{
+					// range of characters
+					return new CharRangeTerminal(Character(chars[0]), Character(chars[1]));
+				}
+				if (chars.Length == 1)
+				{
+					// single character
+					return new SingleCharTerminal(Character(chars[0]));
+				}
 			}
 			if (error)
-				throw new FormatException("Literal or set name missing");
+				throw new FormatException("Literal or set name missing or invalid");
 			return null;
+		}
+
+		static char Character(string charName)
+		{
+			int ch;
+			if (charName.StartsWith("&", StringComparison.Ordinal))
+			{
+				// hex value
+				if (int.TryParse(charName.Substring(1), NumberStyles.AllowHexSpecifier, null, out ch))
+					return (char)ch;
+
+			}
+			else if (charName.StartsWith("#", StringComparison.Ordinal))
+			{
+				// hex value
+				if (int.TryParse(charName.Substring(1), out ch))
+					return (char)ch;
+			}
+			throw new FormatException("Set characters are invalid");
 		}
 
 		Parser SetMatch(Match m)
