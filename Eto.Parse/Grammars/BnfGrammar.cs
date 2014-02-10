@@ -23,20 +23,20 @@ namespace Eto.Parse.Grammars
 	public class BnfGrammar : Grammar
 	{
 		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
-		Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
-		Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
-		Parser ws = Terminals.WhiteSpace.Repeat(0);
-		Parser sq = Terminals.Set('\'');
-		Parser dq = Terminals.Set('"');
-		LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
+		readonly Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+		readonly Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
+		readonly Parser ws = Terminals.WhiteSpace.Repeat(0);
+		readonly Parser sq = Terminals.Set('\'');
+		readonly Parser dq = Terminals.Set('"');
+		readonly LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
 		string startParserName;
-		Parser rule;
-		Parser listRepeat;
-		Parser list;
-		Parser repeatRule;
-		Parser optionalRule;
-		Parser literal;
-		Parser ruleName;
+		readonly Parser rule;
+		readonly Parser listRepeat;
+		readonly Parser list;
+		readonly Parser repeatRule;
+		readonly Parser optionalRule;
+		readonly Parser literal;
+		readonly Parser ruleName;
 
 		/// <summary>
 		/// Gets or sets the separator for rules, which is usually '::=' for BNF
@@ -93,30 +93,31 @@ namespace Eto.Parse.Grammars
 			var lineEnd = sws & +(sws & Terminals.Eol);
 
 			literal = (
-				(sq & (+!sq).Named("value").Optional() & sq)
-				| (dq & (+!dq).Named("value").Optional() & dq)
-			).Named("parser");
+				(sq & (+!sq).WithName("value").Optional() & sq)
+				| (dq & (+!dq).WithName("value").Optional() & dq)
+			).WithName("parser");
 
 
-			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().Named("name") & ">";
+			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().WithName("name") & ">";
 
 			RuleParser = new AlternativeParser(); // defined later 
 
 			TermParser = literal | (ruleName = RuleNameParser.Named("parser"));
+			TermParser.Name = "term";
 			if (enhanced)
 			{
 				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
-				TermParser.Items.Add(repeatRule = ('{' & sws & RuleParser & sws & '}').Named("parser"));
-				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').Named("parser"));
+				TermParser.Items.Add(repeatRule = ('{' & sws & RuleParser & sws & '}').WithName("parser"));
+				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').WithName("parser"));
 			}
 
-			list = (TermParser.Named("term") & -(~((+Terminals.SingleLineWhiteSpace).Named("ws")) & TermParser.Named("term"))).Named("parser");
+			list = (TermParser & -(~((+Terminals.SingleLineWhiteSpace).WithName("ws")) & TermParser)).WithName("parser");
 
-			listRepeat = (list.Named("list") & ws & '|' & sws & ~(RuleParser.Named("expression"))).Named("parser");
+			listRepeat = (list.Named("list") & ws & '|' & sws & ~(RuleParser.Named("expression"))).WithName("parser");
 			RuleParser.Items.Add(listRepeat);
 			RuleParser.Items.Add(list);
 
-			rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd).Named("parser");
+			rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd).WithName("parser");
 			Expresssions = new AlternativeParser();
 			Expresssions.Items.Add(rule);
 
@@ -195,7 +196,7 @@ namespace Eto.Parse.Grammars
 		{
 			this.startParserName = startParserName;
 			Parser parser;
-			var match = this.Match(new StringScanner(bnf));
+			var match = Match(new StringScanner(bnf));
 
 			if (!match.Success)
 			{
