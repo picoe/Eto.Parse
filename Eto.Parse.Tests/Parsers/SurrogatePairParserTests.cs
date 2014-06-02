@@ -32,7 +32,7 @@ namespace Eto.Parse.Tests.Parsers
             var sample = char.ConvertFromUtf32(0x87FFF);
 
             var grammar = new Grammar();
-            var parser = new SurrogatePairTerminal(0x87FFF);
+            var parser = new SingleSurrogatePairTerminal(0x87FFF);
             grammar.Inner = parser.Named("char");
 
             var match = grammar.Match(sample);
@@ -47,7 +47,7 @@ namespace Eto.Parse.Tests.Parsers
             var sample = char.ConvertFromUtf32(0x17DF6);
 
             var grammar = new Grammar();
-            var parser = new SurrogatePairTerminal(0x87FFF);
+            var parser = new SingleSurrogatePairTerminal(0x87FFF);
             grammar.Inner = parser.Named("char");
 
             var match = grammar.Match(sample);
@@ -62,7 +62,7 @@ namespace Eto.Parse.Tests.Parsers
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
                 {
-                    new SurrogatePairTerminal(codePoint);
+                    new SingleSurrogatePairTerminal(codePoint);
                 });
 
             Assert.That("codePoint", Is.EqualTo(exception.ParamName));

@@ -63,6 +63,7 @@
     <Compile Include="ParseArgs.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Parsers\AnySurrogatePairTerminal.cs" />
+    <Compile Include="Parsers\SingleSurrogatePairTerminal.cs" />
     <Compile Include="Parsers\SurrogatePairTerminal.cs" />
     <Compile Include="Parsers\UntilParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
