@@ -1,12 +1,22 @@
-﻿namespace Eto.Parse.Parsers
+﻿using System;
+
+namespace Eto.Parse.Parsers
 {
     public class SurrogatePairTerminal : Parser
     {
+        private const int MinCodePoint = 0x10000;
+        private const int MaxCodePoint = 0x10FFFF;
+
         private readonly char _lowSurrogate;
         private readonly char _highSurrogate;
 
         public SurrogatePairTerminal(int codePoint)
         {
+            if (codePoint < MinCodePoint || codePoint > MaxCodePoint)
+            {
+                throw new ArgumentOutOfRangeException("codePoint", "Invalid UTF code point");
+            }
+
             var unicodeString = char.ConvertFromUtf32(codePoint);
 
             _highSurrogate = unicodeString[0];

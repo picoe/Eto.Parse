@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Eto.Parse.Parsers;
 using NUnit.Framework;
 
@@ -52,6 +53,19 @@ namespace Eto.Parse.Tests.Parsers
             var match = grammar.Match(sample);
 
             Assert.IsFalse(match.Success, match.ErrorMessage);
+        }
+
+        [TestCase(50, TestName = "Ordinary char")]
+        [TestCase(0x10FFFF + 1, TestName = "Value too high")]
+        [TestCase(-1, TestName = "Negative value")]
+        public void TestInvaldCodePoint(int codePoint)
+        {
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+                {
+                    new SurrogatePairTerminal(codePoint);
+                });
+
+            Assert.That("codePoint", Is.EqualTo(exception.ParamName));
         }
     }
 }
