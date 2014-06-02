@@ -23,7 +23,7 @@ namespace Eto.Parse.Parsers
             _lowSurrogate = unicodeString[1];
         }
 
-        protected SingleSurrogatePairTerminal(Parser other, ParserCloneArgs args) 
+        protected SingleSurrogatePairTerminal(SingleSurrogatePairTerminal other, ParserCloneArgs args) 
             : base(other, args)
         {
         }
