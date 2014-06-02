@@ -22,7 +22,7 @@ namespace Eto.Parse.Tests.Parsers
             var match = grammar.Match(chars);
 
             Assert.IsTrue(match.Success, match.ErrorMessage);
-            CollectionAssert.AreEquivalent(new []{0x10000, 0x87FFF, 0x10FFFF}, match.Find("char").Select(parser.GetValue));
+            CollectionAssert.AreEquivalent(new []{0x10000, 0x87FFF, 0x10FFFF}, match.Find("char").Select(m => char.ConvertToUtf32((string) parser.GetValue(m),0)));
         }
     }
 }
