@@ -1,15 +1,18 @@
 ﻿namespace Eto.Parse.Parsers
 {
-    public abstract class SurrogatePairTerminal : Parser
+    public abstract class SurrogatePairTerminal : Parser, IInverseParser
     {
         protected SurrogatePairTerminal()
         {
         }
 
-        protected SurrogatePairTerminal(Parser other, ParserCloneArgs args) 
+        protected SurrogatePairTerminal(SurrogatePairTerminal other, ParserCloneArgs args) 
             : base(other, args)
         {
+            Inverse = other.Inverse;
         }
+
+        public bool Inverse { get; set; }
 
         protected override int InnerParse(ParseArgs args)
         {
@@ -17,11 +20,11 @@
 
             var highSurrogate = scanner.ReadChar();
             if (highSurrogate > 0 && char.IsHighSurrogate((char)highSurrogate) 
-                && TestHighSurrogate(highSurrogate))
+                && TestHighSurrogate(highSurrogate) != Inverse)
             {
                 var lowSurrogate = scanner.ReadChar();
-                if (lowSurrogate > 0 && char.IsLowSurrogate((char)lowSurrogate) 
-                    && TestLowSurrogate(lowSurrogate))
+                if (lowSurrogate > 0 && char.IsLowSurrogate((char)lowSurrogate)
+                    && TestLowSurrogate(lowSurrogate) != Inverse)
                 {
                     return 2;
                 }
