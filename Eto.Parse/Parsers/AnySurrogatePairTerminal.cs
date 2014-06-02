@@ -1,16 +1,25 @@
 ﻿namespace Eto.Parse.Parsers
 {
-    public class SurrogatePairParser : Parser
+    public class AnySurrogatePairTerminal : Parser
     {
+        public AnySurrogatePairTerminal()
+        {
+        }
+
+        protected AnySurrogatePairTerminal(AnySurrogatePairTerminal other, ParserCloneArgs args)
+			: base(other, args)
+		{
+		}
+
         protected override int InnerParse(ParseArgs args)
         {
             var scanner = args.Scanner;
 
             var highSurrogate = scanner.ReadChar();
-            if (highSurrogate > 0 && char.IsHighSurrogate((char) highSurrogate))
+            if (highSurrogate > 0 && char.IsHighSurrogate((char)highSurrogate))
             {
                 var lowSurrogate = scanner.ReadChar();
-                if (lowSurrogate > 0 && char.IsLowSurrogate((char) lowSurrogate))
+                if (lowSurrogate > 0 && char.IsLowSurrogate((char)lowSurrogate))
                 {
                     return 2;
                 }
@@ -23,7 +32,7 @@
 
         public override Parser Clone(ParserCloneArgs args)
         {
-            throw new System.NotImplementedException();
+            return new AnySurrogatePairTerminal(this, args);
         }
     }
 }

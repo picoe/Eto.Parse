@@ -16,13 +16,42 @@ namespace Eto.Parse.Tests.Parsers
                 char.ConvertFromUtf32(0x10FFFF));
 
             var grammar = new Grammar();
-            var parser = new SurrogatePairParser();
+            var parser = new AnySurrogatePairTerminal();
             grammar.Inner = (+parser.Named("char")).SeparatedBy(",");
 
             var match = grammar.Match(chars);
 
             Assert.IsTrue(match.Success, match.ErrorMessage);
             CollectionAssert.AreEquivalent(new []{0x10000, 0x87FFF, 0x10FFFF}, match.Find("char").Select(m => char.ConvertToUtf32((string) parser.GetValue(m),0)));
+        }
+
+        [Test]
+        public void TestMatchingSpecificSurrogatePairByCodePoint()
+        {
+            var sample = char.ConvertFromUtf32(0x87FFF);
+
+            var grammar = new Grammar();
+            var parser = new SurrogatePairTerminal(0x87FFF);
+            grammar.Inner = parser.Named("char");
+
+            var match = grammar.Match(sample);
+
+            Assert.IsTrue(match.Success, match.ErrorMessage);
+            Assert.AreEqual(0x87FFF, char.ConvertToUtf32((string)parser.GetValue(match.Find("char").Single()), 0));
+        }
+
+        [Test]
+        public void TestUnmatchedSpecificSurrogatePairByCodePoint()
+        {
+            var sample = char.ConvertFromUtf32(0x17DF6);
+
+            var grammar = new Grammar();
+            var parser = new SurrogatePairTerminal(0x87FFF);
+            grammar.Inner = parser.Named("char");
+
+            var match = grammar.Match(sample);
+
+            Assert.IsFalse(match.Success, match.ErrorMessage);
         }
     }
 }
