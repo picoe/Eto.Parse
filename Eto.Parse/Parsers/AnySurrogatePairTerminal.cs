@@ -3,13 +3,13 @@
     /// <summary>
     /// Parser, which matches any UTF-32 surrogate pair character
     /// </summary>
-    public class AnySurrogatePairTerminal : SurrogatePairTerminal
+    public sealed class AnySurrogatePairTerminal : SurrogatePairTerminal
     {
         public AnySurrogatePairTerminal()
         {
         }
 
-        protected AnySurrogatePairTerminal(AnySurrogatePairTerminal other, ParserCloneArgs args)
+        private AnySurrogatePairTerminal(AnySurrogatePairTerminal other, ParserCloneArgs args)
 			: base(other, args)
 		{
 		}

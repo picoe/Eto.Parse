@@ -3,7 +3,7 @@
     /// <summary>
     /// Parser, which matches a range of UTF-32 surrogate pair characters
     /// </summary>
-    public class SurrogatePairRangeTerminal : SurrogatePairTerminal
+    public sealed class SurrogatePairRangeTerminal : SurrogatePairTerminal
     {
         private readonly int _min;
         private readonly int _max;
@@ -22,7 +22,7 @@
             _max = max;
         }
 
-        protected SurrogatePairRangeTerminal(SurrogatePairRangeTerminal other, ParserCloneArgs args)
+        private SurrogatePairRangeTerminal(SurrogatePairRangeTerminal other, ParserCloneArgs args)
             : base(other, args)
         {
         }

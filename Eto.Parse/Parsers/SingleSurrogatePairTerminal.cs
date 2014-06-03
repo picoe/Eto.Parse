@@ -3,7 +3,7 @@
     /// <summary>
     /// Parser, which matches a single UTF-32 surrogate pair character
     /// </summary>
-    public class SingleSurrogatePairTerminal : SurrogatePairTerminal
+    public sealed class SingleSurrogatePairTerminal : SurrogatePairTerminal
     {
         private readonly int _codePoint;
 
@@ -17,7 +17,7 @@
             _codePoint = codePoint;
         }
 
-        protected SingleSurrogatePairTerminal(SingleSurrogatePairTerminal other, ParserCloneArgs args) 
+        private SingleSurrogatePairTerminal(SingleSurrogatePairTerminal other, ParserCloneArgs args) 
             : base(other, args)
         {
         }
