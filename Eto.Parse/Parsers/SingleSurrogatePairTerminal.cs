@@ -1,26 +1,13 @@
-﻿using System;
-
-namespace Eto.Parse.Parsers
+﻿namespace Eto.Parse.Parsers
 {
     public class SingleSurrogatePairTerminal : SurrogatePairTerminal
     {
-        private const int MinCodePoint = 0x10000;
-        private const int MaxCodePoint = 0x10FFFF;
-
-        private readonly char _lowSurrogate;
-        private readonly char _highSurrogate;
+        private readonly int _codePoint;
 
         public SingleSurrogatePairTerminal(int codePoint)
         {
-            if (codePoint < MinCodePoint || codePoint > MaxCodePoint)
-            {
-                throw new ArgumentOutOfRangeException("codePoint", "Invalid UTF code point");
-            }
-
-            var unicodeString = char.ConvertFromUtf32(codePoint);
-
-            _highSurrogate = unicodeString[0];
-            _lowSurrogate = unicodeString[1];
+            AssertValidSurrogatePair(codePoint);
+            _codePoint = codePoint;
         }
 
         protected SingleSurrogatePairTerminal(SingleSurrogatePairTerminal other, ParserCloneArgs args) 
@@ -33,14 +20,9 @@ namespace Eto.Parse.Parsers
             return new SingleSurrogatePairTerminal(this, args);
         }
 
-        protected override bool TestLowSurrogate(int lowSurrogate)
+        protected override bool Test(int codePoint)
         {
-            return lowSurrogate == _lowSurrogate;
-        }
-
-        protected override bool TestHighSurrogate(int highSurrogate)
-        {
-            return highSurrogate == _highSurrogate;
+            return codePoint == _codePoint;
         }
     }
 }

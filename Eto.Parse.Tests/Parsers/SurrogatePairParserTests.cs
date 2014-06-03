@@ -55,6 +55,22 @@ namespace Eto.Parse.Tests.Parsers
             Assert.IsFalse(match.Success, match.ErrorMessage);
         }
 
+        [TestCase(0x12345, TestName = "Lower bound")]
+        [TestCase(0x57FFF, TestName = "Within range")]
+        [TestCase(0x8F4FE, TestName = "Upper bound")]
+        public void TestMatchingRange(int codePoint)
+        {
+            var sample = char.ConvertFromUtf32(codePoint);
+
+            var grammar = new Grammar();
+            var parser = new SurrogatePairRangeTerminal(0x12345, 0x8F4FE);
+            grammar.Inner = parser.Named("char");
+
+            var match = grammar.Match(sample);
+
+            Assert.IsTrue(match.Success, match.ErrorMessage);
+        }
+
         [TestCase(50, TestName = "Ordinary char")]
         [TestCase(0x10FFFF + 1, TestName = "Value too high")]
         [TestCase(-1, TestName = "Negative value")]

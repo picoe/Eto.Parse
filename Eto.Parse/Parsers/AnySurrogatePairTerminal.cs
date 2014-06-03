@@ -16,12 +16,7 @@
             return new AnySurrogatePairTerminal(this, args);
         }
 
-        protected override bool TestLowSurrogate(int lowSurrogate)
-        {
-            return true;
-        }
-
-        protected override bool TestHighSurrogate(int highSurrogate)
+        protected override bool Test(int codePoint)
         {
             return true;
         }
