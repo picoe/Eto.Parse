@@ -1,9 +1,16 @@
 ﻿namespace Eto.Parse.Parsers
 {
+    /// <summary>
+    /// Parser, which matches a single UTF-32 surrogate pair character
+    /// </summary>
     public class SingleSurrogatePairTerminal : SurrogatePairTerminal
     {
         private readonly int _codePoint;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SingleSurrogatePairTerminal"/> class.
+        /// </summary>
+        /// <param name="codePoint">The UTF-32 code point to match.</param>
         public SingleSurrogatePairTerminal(int codePoint)
         {
             AssertValidSurrogatePair(codePoint);

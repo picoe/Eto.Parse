@@ -2,6 +2,9 @@
 
 namespace Eto.Parse.Parsers
 {
+    /// <summary>
+    /// Base parser for matching UTF-32 surrogate pair characters
+    /// </summary>
     public abstract class SurrogatePairTerminal : Parser, IInverseParser
     {
         protected const int MinCodePoint = 0x10000;

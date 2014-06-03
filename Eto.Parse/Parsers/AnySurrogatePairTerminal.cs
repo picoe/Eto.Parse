@@ -1,5 +1,8 @@
 ﻿namespace Eto.Parse.Parsers
 {
+    /// <summary>
+    /// Parser, which matches any UTF-32 surrogate pair character
+    /// </summary>
     public class AnySurrogatePairTerminal : SurrogatePairTerminal
     {
         public AnySurrogatePairTerminal()

@@ -1,10 +1,18 @@
 ﻿namespace Eto.Parse.Parsers
 {
+    /// <summary>
+    /// Parser, which matches a range of UTF-32 surrogate pair characters
+    /// </summary>
     public class SurrogatePairRangeTerminal : SurrogatePairTerminal
     {
         private readonly int _min;
         private readonly int _max;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SurrogatePairRangeTerminal"/> class.
+        /// </summary>
+        /// <param name="min">The minimum UTF code point.</param>
+        /// <param name="max">The maximum UTF code point.</param>
         public SurrogatePairRangeTerminal(int min, int max)
         {
             AssertValidSurrogatePair(min);

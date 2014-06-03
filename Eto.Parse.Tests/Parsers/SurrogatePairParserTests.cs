@@ -111,7 +111,7 @@ namespace Eto.Parse.Tests.Parsers
             var match = grammar.Match(sample);
 
             Assert.IsTrue(match.Success, match.ErrorMessage);
-            Assert.That(match.Matches, Has.Count.EqualTo(8));
+            Assert.That(match.Length, Is.EqualTo(10));
         }
     }
 }
