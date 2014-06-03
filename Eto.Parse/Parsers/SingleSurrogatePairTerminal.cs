@@ -27,6 +27,11 @@
             return new SingleSurrogatePairTerminal(this, args);
         }
 
+        protected override string CharName
+        {
+            get { return string.Format("0x{0:x2}", _codePoint); }
+        }
+
         protected override bool Test(int codePoint)
         {
             return codePoint == _codePoint;

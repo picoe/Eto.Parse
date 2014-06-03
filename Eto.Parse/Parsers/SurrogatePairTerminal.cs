@@ -22,6 +22,16 @@ namespace Eto.Parse.Parsers
 
         public bool Inverse { get; set; }
 
+        public override string DescriptiveName
+        {
+            get { return string.Format("UTF code point {0}", CharName); }
+        }
+
+        protected virtual string CharName
+        {
+            get { return string.Empty; }
+        }
+
         protected override int InnerParse(ParseArgs args)
         {
             int codePoint;
@@ -35,6 +45,11 @@ namespace Eto.Parse.Parsers
             }
 
             return -1;
+        }
+
+        public override object GetValue(string text)
+        {
+            return char.ConvertToUtf32(text, 0);
         }
 
         protected void AssertValidSurrogatePair(int codePoint)

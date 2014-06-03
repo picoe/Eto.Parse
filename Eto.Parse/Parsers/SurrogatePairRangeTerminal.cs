@@ -32,6 +32,11 @@
             return new SurrogatePairRangeTerminal(this, args);
         }
 
+        protected override string CharName
+        {
+            get { return string.Format("0x{0:x2} to 0x{1:x2}", _min, _max); }
+        }
+
         protected override bool Test(int codePoint)
         {
             return codePoint >= _min && codePoint <= _max;
