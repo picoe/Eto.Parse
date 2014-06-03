@@ -98,5 +98,20 @@ namespace Eto.Parse.Tests.Parsers
 
             Assert.That("codePoint", Is.EqualTo(exception.ParamName));
         }
+
+        [Test]
+        public void TestUseWithOtherParser()
+        {
+            var sample = "abc" + char.ConvertFromUtf32(0x8F4FE) + "def" + char.ConvertFromUtf32(0x56734);
+
+            var grammar = new Grammar();
+            var parser = new LetterTerminal() | new AnySurrogatePairTerminal();
+            grammar.Inner = (+parser).Named("char");
+
+            var match = grammar.Match(sample);
+
+            Assert.IsTrue(match.Success, match.ErrorMessage);
+            Assert.That(match.Matches, Has.Count.EqualTo(8));
+        }
     }
 }

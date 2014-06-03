@@ -23,7 +23,7 @@ namespace Eto.Parse.Parsers
         {
             int codePoint;
 
-            if (TryGetCodePoint(args.Scanner, out codePoint))
+            if (!args.Scanner.IsEof && TryGetCodePoint(args.Scanner, out codePoint))
             {
                 if (Test(codePoint) != Inverse)
                 {
