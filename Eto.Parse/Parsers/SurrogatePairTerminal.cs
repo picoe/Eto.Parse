@@ -44,7 +44,7 @@ namespace Eto.Parse.Parsers
 
         protected abstract bool Test(int codePoint);
 
-        private bool TryGetCodePoint(Scanner scanner, out int codePoint)
+        private static bool TryGetCodePoint(Scanner scanner, out int codePoint)
         {
             codePoint = 0;
             var validCodePoint = false;
