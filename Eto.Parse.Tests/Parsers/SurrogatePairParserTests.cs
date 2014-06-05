@@ -23,7 +23,7 @@ namespace Eto.Parse.Tests.Parsers
             var match = grammar.Match(chars);
 
             Assert.IsTrue(match.Success, match.ErrorMessage);
-            CollectionAssert.AreEquivalent(new []{0x10000, 0x87FFF, 0x10FFFF}, match.Find("char").Select(m => char.ConvertToUtf32((string) parser.GetValue(m),0)));
+            CollectionAssert.AreEquivalent(new []{0x10000, 0x87FFF, 0x10FFFF}, match.Find("char").Select(parser.GetValue));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Eto.Parse.Tests.Parsers
             var match = grammar.Match(sample);
 
             Assert.IsTrue(match.Success, match.ErrorMessage);
-            Assert.AreEqual(0x87FFF, char.ConvertToUtf32((string)parser.GetValue(match.Find("char").Single()), 0));
+            Assert.AreEqual(0x87FFF, parser.GetValue(match.Find("char").Single()));
         }
 
         [Test]
