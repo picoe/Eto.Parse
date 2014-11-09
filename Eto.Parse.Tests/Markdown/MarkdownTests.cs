@@ -102,9 +102,13 @@ namespace Eto.Parse.Tests.Markdown
 
 		public IEnumerable<string> GetTests(string path, string pattern = "*.html")
 		{
-			foreach (var file in Directory.GetFiles(Path.Combine(BasePath, path), pattern))
+			var dir = Path.Combine(BasePath, path);
+			if (Directory.Exists(dir))
 			{
-				yield return Path.Combine(path, Path.GetFileNameWithoutExtension(file));
+				foreach (var file in Directory.GetFiles(dir, pattern))
+				{
+					yield return Path.Combine(path, Path.GetFileNameWithoutExtension(file));
+				}
 			}
 		}
 	}
