@@ -89,6 +89,7 @@
     <Compile Include="Tests\Xml\XmlTestSuite.cs" />
     <Compile Include="Tests\Xml\TestEto.cs" />
     <Compile Include="Tests\Xml\TestSystemXml.cs" />
+    <Compile Include="Tests\Xml\TestEtoFromEbnf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -50,12 +50,13 @@
     <Compile Include="Grammars\BnfTests.cs" />
     <Compile Include="Grammars\GoldParserTests.cs" />
     <Compile Include="Grammars\FluentTests.cs" />
-    <Compile Include="Grammars\EbnfTests.cs" />
     <Compile Include="Grammars\ShorthandTests.cs" />
     <Compile Include="Parsers\NumberParserTests.cs" />
     <Compile Include="Markdown\MarkdownTests.cs" />
     <Compile Include="Parsers\SurrogatePairParserTests.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="Grammars\EbnfIsoTests.cs" />
+    <Compile Include="Grammars\EbnfW3cTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

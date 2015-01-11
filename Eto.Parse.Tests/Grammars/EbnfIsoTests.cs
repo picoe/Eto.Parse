@@ -8,7 +8,7 @@ using System.Linq;
 namespace Eto.Parse.Tests.Grammars
 {
 	[TestFixture]
-	public class EbnfTests
+	public class EbnfIsoTests
 	{
 		const string ebnf = @"
 (*
@@ -77,7 +77,8 @@ terminal string
     ’_’ or ""_"" *);
 
 meta identifier = letter, {letter | decimal digit}
-  (* A <meta identifier> is the name of a
+  (* A <meta identifier> is the name o
+f a
     syntactic element of the language being
     defined *);
 
@@ -110,10 +111,11 @@ comment symbol
 		[Test]
 		public void TestEbnf()
 		{
-			var ebnfGrammar = new EbnfGrammar();
+			var ebnfGrammar = new EbnfGrammar(EbnfStyle.Iso14977 | EbnfStyle.UseCommentRuleWithSeparator);
 
 			var myEbnf = ebnfGrammar.Build(ebnf, "syntax");
 			SetEbnfRules(myEbnf);
+
 
 			var match = myEbnf.Match(ebnf);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
@@ -122,7 +124,7 @@ comment symbol
 		[Test]
 		public void EbnfToCode()
 		{
-			var ebnfGrammar = new EbnfGrammar();
+			var ebnfGrammar = new EbnfGrammar(EbnfStyle.Iso14977 | EbnfStyle.UseCommentRuleWithSeparator);
 
 			var code = ebnfGrammar.ToCode(ebnf, "syntax", "MyEbnfGrammar");
 
@@ -157,7 +159,7 @@ grammar = ws, first, second, ws;
 			var input = "  hello ( parsing world )  ";
 
 			// our grammar
-			var grammar = new EbnfGrammar().Build(grammarString, "grammar");
+			var grammar = new EbnfGrammar(EbnfStyle.Iso14977).Build(grammarString, "grammar");
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
