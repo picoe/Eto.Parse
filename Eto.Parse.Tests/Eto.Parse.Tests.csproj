@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EE26FDF9-63E3-4620-9210-ABF1517AE055}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Eto.Parse.Tests</RootNamespace>

@@ -18,7 +18,7 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 			//CompareOutput = true;
 
 			sample = "Eto.Parse.TestSpeed.Tests.Json." + sample;
-			Json = new StreamReader(typeof(MainClass).Assembly.GetManifestResourceStream(sample)).ReadToEnd();
+			Json = new StreamReader(GetType().Assembly.GetManifestResourceStream(sample)).ReadToEnd();
 		}
 
 		public override IEnumerable<ITest> GetTests()
