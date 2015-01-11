@@ -1,9 +1,18 @@
 using System;
 using Eto.Parse.Scanners;
 using System.Collections.Generic;
+using System.Linq;
+using Eto.Parse.Parsers;
+using System.Diagnostics;
 
 namespace Eto.Parse
 {
+	[Flags]
+	public enum GrammarOptimizations
+	{
+		CharacterSetAlternations = 1 << 0
+	}
+
 	/// <summary>
 	/// Defines the top level parser (a grammar) used to parse text
 	/// </summary>
@@ -37,6 +46,8 @@ namespace Eto.Parse
 
 		public bool Trace { get; set; }
 
+		public GrammarOptimizations Optimizations { get;set; }
+
 		/// <summary>
 		/// Initializes a new copy of the <see cref="Eto.Parse.Grammar"/> class
 		/// </summary>
@@ -47,6 +58,7 @@ namespace Eto.Parse
 			this.EnableMatchEvents = other.EnableMatchEvents;
 			this.Separator = args.Clone(other.Separator);
 			this.CaseSensitive = other.CaseSensitive;
+			this.Optimizations = other.Optimizations;
 		}
 
 		/// <summary>
@@ -59,6 +71,7 @@ namespace Eto.Parse
 		{
 			CaseSensitive = true;
 			EnableMatchEvents = true;
+			Optimizations = GrammarOptimizations.CharacterSetAlternations;
 		}
 
 		/// <summary>
@@ -78,8 +91,61 @@ namespace Eto.Parse
 		/// the grammar is fully defined. This will be called automatically the first
 		/// time you call the <see cref="Match(string)"/> method.
 		/// </remarks>
-		protected void Initialize()
+		public void Initialize()
 		{
+			if (Optimizations.HasFlag(GrammarOptimizations.CharacterSetAlternations))
+			{
+				// turns character sets, ranges, and single characters into a single parser
+				foreach (var alt in Children().OfType<AlternativeParser>().Where(r => r.Items.Count > 2))
+				{
+					if (alt.Items.All(r => r.Name == null && (r is CharSetTerminal || r is CharRangeTerminal || r is SingleCharTerminal)))
+					{
+						var chars = new List<char>();
+						var inverse = new List<char>();
+						foreach (var item in alt.Items)
+						{
+							var singleChar = item as SingleCharTerminal;
+							if (singleChar != null)
+							{
+								if (singleChar.Inverse)
+									inverse.Add(singleChar.Character);
+								else
+									chars.Add(singleChar.Character);
+								continue;
+							}
+							var charSet = item as CharSetTerminal;
+							if (charSet != null)
+							{
+								if (charSet.Inverse)
+									inverse.AddRange(charSet.Characters);
+								else
+									chars.AddRange(charSet.Characters);
+								continue;
+							}
+
+							var charRange = item as CharRangeTerminal;
+							if (charRange != null)
+							{
+								for (char i = charRange.Start; i < charRange.End; i++)
+								{
+									if (charRange.Inverse)
+										inverse.Add(i);
+									else
+										chars.Add(i);
+								}
+								continue;
+							}
+						}
+						//Debug.WriteLine("Optimizing characters normal:{0} inverse:{1}", chars.Count, inverse.Count);
+						alt.Items.Clear();
+						if (chars.Count > 0)
+							alt.Items.Add(new CharSetTerminal(chars.ToArray()));
+						if (inverse.Count > 0)
+							alt.Items.Add(new CharSetTerminal(inverse.ToArray()) { Inverse = true });
+					}
+				}
+			}
+
 			Initialize(new ParserInitializeArgs(this));
 			initialized = true;
 		}
@@ -92,20 +158,17 @@ namespace Eto.Parse
 				var pos = scanner.Position;
 				args.Push();
 				var match = Inner.Parse(args);
-				MatchCollection matches = null;
+				var matches = args.Pop();
 				if (match >= 0 && !AllowPartialMatch && !scanner.IsEof)
 				{
-					args.PopFailed();
 					scanner.Position = pos;
 					match = -1;
 				}
-				else
-				{
-					matches = args.Pop();
-				}
 
+				var errorIndex = -1;
+				var childErrorIndex = -1;
 				IEnumerable<Parser> errors = null;
-				if (args.Errors != null)
+				if (match < 0 || match == args.ErrorIndex)
 				{
 					var errorList = new List<Parser>(args.Errors.Count);
 					for (int i = 0; i < args.Errors.Count; i++)
@@ -115,9 +178,11 @@ namespace Eto.Parse
 							errorList.Add(error);
 					}
 					errors = errorList;
+					errorIndex = args.ErrorIndex;
+					childErrorIndex = args.ChildErrorIndex;
 				}
 
-				args.Root = new GrammarMatch(this, scanner, pos, match, matches, args.ErrorIndex, args.ChildErrorIndex, errors);
+				args.Root = new GrammarMatch(this, scanner, pos, match, matches, errorIndex, childErrorIndex, errors);
 				return match;
 			}
 			return base.InnerParse(args);
