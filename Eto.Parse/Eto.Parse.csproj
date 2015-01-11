@@ -150,6 +150,8 @@
     <Compile Include="Parsers\SingleCharTerminal.cs" />
     <Compile Include="Writers\Code\SingleCharWriter.cs" />
     <Compile Include="Parsers\RepeatCharTerminal.cs" />
+    <Compile Include="Parsers\TagParser.cs" />
+    <Compile Include="Writers\Code\TagWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

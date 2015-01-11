@@ -29,6 +29,7 @@ namespace Eto.Parse.Writers
 				{ typeof(CharTerminal), new Code.CharWriter() },
 				{ typeof(SingleCharTerminal), new Code.SingleCharWriter() },
 				{ typeof(LookAheadParser), new Code.InverseWriter<LookAheadParser>() },
+				{ typeof(TagParser), new Code.TagWriter() },
 			})
 		{
 		}

@@ -130,6 +130,30 @@ namespace Eto.Parse
 			parser.Reusable = false;
 			return parser;
 		}
+
+		public static TagParser PreventRecursion(this Parser parser, bool allowWithDifferentPosition = true)
+		{
+			var tag = Guid.NewGuid().ToString();
+			return new TagParser { Inner = parser, AddTag = tag, ExcludeTag = tag, AllowWithDifferentPosition = allowWithDifferentPosition };
+		}
+
+		/// <summary>
+		/// Adds a tag to the parse tree for all children
+		/// </summary>
+		/// <remarks>
+		/// Tags can be used to exclude child parsers when tags are present
+		/// </remarks>
+		/// <param name="parser">Parser.</param>
+		/// <param name="tag">Tag.</param>
+		public static TagParser Tagged(this Parser parser, string tag)
+		{
+			return new TagParser { Inner = parser, AddTag = tag };
+		}
+
+		public static TagParser ExcludeTag(this Parser parser, string tag)
+		{
+			return new TagParser { Inner = parser, ExcludeTag = tag };
+		}
 	}
 }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Eto.Parse
 {
@@ -15,6 +16,9 @@ namespace Eto.Parse
 		readonly List<Parser> errors = new List<Parser>();
 		int childErrorIndex = -1;
 		int errorIndex = -1;
+		readonly Dictionary<object, object> properties = new Dictionary<object, object>();
+
+		public Dictionary<object, object> Properties { get { return properties; } }
 
 		/// <summary>
 		/// Gets the root match when the grammar is matched
