@@ -1,57 +1,78 @@
 using System;
 using System.Linq;
 using Eto.Parse.Parsers;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
 	public class CharSetTerminal : CharTerminal
 	{
-		char[] characters;
-		char[] lowerCharacters;
+		char[] lookupCharacters;
+		HashSet<char> characterLookup;
 
-		public char[] Characters
-		{
-			get { return characters; }
-			set
-			{
-				characters = value;
-				lowerCharacters = new char[characters.Length];
-				for (int i = 0; i < characters.Length; i++)
-				{
-					lowerCharacters[i] = char.ToLowerInvariant(characters[i]);
-				}
-			}
-		}
+		/// <summary>
+		/// Gets or sets the minimum count of characters before a lookup hash table is created
+		/// </summary>
+		/// <value>The minimum lookup count.</value>
+		public int MinLookupCount { get; set; }
+
+		public char[] Characters { get; set; }
 
 		protected CharSetTerminal(CharSetTerminal other, ParserCloneArgs args)
 			: base(other, args)
 		{
-			this.Characters = other.characters != null ? (char[])other.characters.Clone() : null;
+			this.Characters = other.Characters != null ? (char[])other.Characters.Clone() : null;
+			this.MinLookupCount = other.MinLookupCount;
 		}
 
 		public CharSetTerminal(params char[] chars)
 		{
 			this.Characters = (char[])chars.Clone();
+			this.MinLookupCount = 100;
+		}
+
+		class LowerCharComparer : IEqualityComparer<char>
+		{
+			public bool Equals(char c1, char c2)
+			{
+				return char.ToLowerInvariant(c1) == char.ToLowerInvariant(c2);
+			}
+			public int GetHashCode(char c1)
+			{
+				return char.ToLowerInvariant(c1).GetHashCode();
+			}
+
+		}
+		public override void Initialize(ParserInitializeArgs args)
+		{
+			base.Initialize(args);
+			if (TestCaseSensitive)
+			{
+				lookupCharacters = Characters;
+				if (lookupCharacters.Length >= MinLookupCount)
+					characterLookup = new HashSet<char>(lookupCharacters);
+			}
+			else
+			{
+				lookupCharacters = new char[Characters.Length];
+				for (int i = 0; i < Characters.Length; i++)
+				{
+					lookupCharacters[i] = char.ToLowerInvariant(Characters[i]);
+				}
+				if (lookupCharacters.Length >= MinLookupCount)
+					characterLookup = new HashSet<char>(lookupCharacters, new LowerCharComparer());
+			}
 		}
 
 		protected override bool Test(char ch)
 		{
-			if (TestCaseSensitive)
+			if (characterLookup != null)
+				return characterLookup.Contains(ch);
+			ch = TestCaseSensitive ? char.ToLowerInvariant(ch) : ch;
+			for (int i = 0; i < Characters.Length; i++)
 			{
-				for (int i = 0; i < characters.Length; i++)
-				{
-					if (characters[i] == ch)
-						return true;
-				}
-			}
-			else
-			{
-				ch = char.ToLowerInvariant(ch);
-				for (int i = 0; i < lowerCharacters.Length; i++)
-				{
-					if (lowerCharacters[i] == ch)
-						return true;
-				}
+				if (lookupCharacters[i] == ch)
+					return true;
 			}
 			return false;
 		}
