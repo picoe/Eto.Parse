@@ -101,7 +101,7 @@ namespace Eto.Parse.Parsers
 				var second = new List<Parser>();
 				foreach (var item in Items)
 				{
-					if (item != null && item.IsLeftRecursive(new ParserContainsArgs(this)))
+					if (args.Grammar.Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars) && item != null && item.IsLeftRecursive(new ParserContainsArgs(this)))
 					{
 						second.Add(item);
 						args.RecursionFixes.Add(this);

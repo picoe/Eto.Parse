@@ -98,6 +98,8 @@ namespace Eto.Parse.Parsers
 				throw new InvalidOperationException("There are no items in this sequence");
 			if (args.Push(this))
 			{
+				if (args.Grammar.Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars))
+				{
 				var leftItem = Items[0];
 				if (leftItem != null)
 				{
@@ -109,6 +111,7 @@ namespace Eto.Parse.Parsers
 							break;
 						}
 					}
+				}
 				}
 				foreach (var item in Items.Where(r => r != null))
 				{

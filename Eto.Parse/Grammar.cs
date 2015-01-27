@@ -7,10 +7,45 @@ using System.Diagnostics;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Flags to specify optimizations to apply to a grammar when initialized for the first match
+	/// </summary>
+	/// <remarks>
+	/// These may increase startup time for the first match, but usually increase performance on subsequent
+	/// matches with the same grammar instance.
+	/// </remarks>
 	[Flags]
 	public enum GrammarOptimizations
 	{
-		CharacterSetAlternations = 1 << 0
+		/// <summary>
+		/// No optimizations
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Optimize alternations with only characters into a single character set parser
+		/// </summary>
+		CharacterSetAlternations = 1 << 0,
+
+		/// <summary>
+		/// Replace uncaptured unary parsers with their inner parser
+		/// </summary>
+		TrimUnnamedUnaryParsers = 1 << 1,
+
+		/// <summary>
+		/// Replace sequences and alternations with a single child
+		/// </summary>
+		TrimSingleItemSequencesOrAlterations = 1 << 2,
+
+		/// <summary>
+		/// Fix recursive grammars by replacing them with a repeating parser
+		/// </summary>
+		FixRecursiveGrammars = 1 << 3,
+
+		/// <summary>
+		/// All optimizations turned on
+		/// </summary>
+		All = CharacterSetAlternations | TrimUnnamedUnaryParsers | TrimSingleItemSequencesOrAlterations | FixRecursiveGrammars
 	}
 
 	/// <summary>
@@ -71,7 +106,7 @@ namespace Eto.Parse
 		{
 			CaseSensitive = true;
 			EnableMatchEvents = true;
-			Optimizations = GrammarOptimizations.CharacterSetAlternations;
+			Optimizations = GrammarOptimizations.All;
 		}
 
 		/// <summary>
@@ -93,10 +128,67 @@ namespace Eto.Parse
 		/// </remarks>
 		public void Initialize()
 		{
+			IEnumerable<Parser> children = null;
+			Func<IEnumerable<Parser>> getchildren = () => children ?? (children = Children().ToList());
 			if (Optimizations.HasFlag(GrammarOptimizations.CharacterSetAlternations))
 			{
+				OptimizeCharacterSets(getchildren());
+			}
+
+			if (Optimizations.HasFlag(GrammarOptimizations.TrimUnnamedUnaryParsers))
+			{
+				OptimizeUnaryParsers(getchildren());
+			}
+
+			if (Optimizations.HasFlag(GrammarOptimizations.TrimSingleItemSequencesOrAlterations))
+			{
+				OptimizeSingleItemParsers(getchildren());
+			}
+
+			Initialize(new ParserInitializeArgs(this));
+			initialized = true;
+		}
+
+		void OptimizeSingleItemParsers(IEnumerable<Parser> children)
+		{
+			var sequences = from r in children.OfType<SequenceParser>()
+				where
+				r.Items.Count == 1
+				&& r.GetType() == typeof(SequenceParser)
+				select r;
+			var alternations = from r in children.OfType<AlternativeParser>()
+				where
+				r.Items.Count == 1
+				&& r.GetType() == typeof(AlternativeParser)
+				select r;
+
+			var parsers = sequences.Cast<ListParser>().Union(alternations.Cast<ListParser>()).ToList();
+			foreach (var parser in parsers)
+			{
+				var replacement = parser.Items[0];
+				if (parser.Name != null)
+				{
+					replacement = new UnaryParser { Inner = replacement, Name = parser.Name };
+				}
+				Replace(new ParserReplaceArgs(parser, replacement));
+			}
+		}
+
+		void OptimizeUnaryParsers(IEnumerable<Parser> children)
+		{
+			var parsers = from r in children.OfType<UnaryParser>()
+			              where r.Name == null && r.Inner != null && r.GetType() == typeof(UnaryParser)
+			              select r;
+			foreach (var unary in parsers.ToList())
+			{
+				Replace(new ParserReplaceArgs(unary, unary.Inner));
+			}
+		}
+
+		void OptimizeCharacterSets(IEnumerable<Parser> children)
+		{
 				// turns character sets, ranges, and single characters into a single parser
-				foreach (var alt in Children().OfType<AlternativeParser>().Where(r => r.Items.Count > 2))
+			foreach (var alt in children.OfType<AlternativeParser>().Where(r => r.Items.Count > 2))
 				{
 					if (alt.Items.All(r => r.Name == null && (r is CharSetTerminal || r is CharRangeTerminal || r is SingleCharTerminal)))
 					{
@@ -122,7 +214,6 @@ namespace Eto.Parse
 									chars.AddRange(charSet.Characters);
 								continue;
 							}
-
 							var charRange = item as CharRangeTerminal;
 							if (charRange != null)
 							{
@@ -141,14 +232,13 @@ namespace Eto.Parse
 						if (chars.Count > 0)
 							alt.Items.Add(new CharSetTerminal(chars.ToArray()));
 						if (inverse.Count > 0)
-							alt.Items.Add(new CharSetTerminal(inverse.ToArray()) { Inverse = true });
+						alt.Items.Add(new CharSetTerminal(inverse.ToArray())
+						{
+							Inverse = true
+						});
 					}
 				}
 			}
-
-			Initialize(new ParserInitializeArgs(this));
-			initialized = true;
-		}
 
 		protected override int InnerParse(ParseArgs args)
 		{
