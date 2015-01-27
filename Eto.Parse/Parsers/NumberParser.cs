@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
 	public class NumberParser : Parser
 	{
-		MethodInfo parseMethod;
+		Func<string, object> getValue;
 
 		public bool AllowSign { get; set; }
 
@@ -19,6 +20,8 @@ namespace Eto.Parse.Parsers
 
 		public Type ValueType { get; set; }
 
+		public CultureInfo Culture { get; set; }
+
 		protected NumberParser(NumberParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
@@ -26,12 +29,14 @@ namespace Eto.Parse.Parsers
 			AllowExponent = other.AllowExponent;
 			DecimalSeparator = other.DecimalSeparator;
 			ValueType = other.ValueType;
+			Culture = CultureInfo.CurrentCulture;
 		}
 
 		public NumberParser()
 		{
 			DecimalSeparator = '.';
 			ValueType = typeof(decimal);
+			Culture = CultureInfo.CurrentCulture;
 		}
 
 		public override void Initialize(ParserInitializeArgs args)
@@ -40,23 +45,54 @@ namespace Eto.Parse.Parsers
 			if (args.Push(this))
 			{
 				if (ValueType != null)
-					parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
+				{
+					var style = NumberStyles.None;
+
+					if (AllowSign)
+						style |= NumberStyles.AllowLeadingSign;
+					if (AllowDecimal)
+						style |= NumberStyles.AllowDecimalPoint;
+					if (AllowExponent)
+						style |= NumberStyles.AllowExponent;
+
+					var numberFormat = Culture.NumberFormat;
+
+					if (typeof(decimal) == ValueType)
+						getValue = text => decimal.Parse(text, style, numberFormat);
+					else if (typeof(Int16) == ValueType)
+						getValue = text => Int16.Parse(text, style, numberFormat);
+					else if (typeof(Int32) == ValueType)
+						getValue = text => Int32.Parse(text, style, numberFormat);
+					else if (typeof(Int64) == ValueType)
+						getValue = text => Int64.Parse(text, style, numberFormat);
+					else if (typeof(UInt16) == ValueType)
+						getValue = text => UInt16.Parse(text, style, numberFormat);
+					else if (typeof(UInt32) == ValueType)
+						getValue = text => UInt32.Parse(text, style, numberFormat);
+					else if (typeof(UInt64) == ValueType)
+						getValue = text => UInt64.Parse(text, style, numberFormat);
+					else if (typeof(double) == ValueType)
+						getValue = text => double.Parse(text, style, numberFormat);
+					else if (typeof(float) == ValueType)
+						getValue = text => float.Parse(text, style, numberFormat);
+					else
+					{
+#if PCL
+						var parameters = new [] { typeof(string), typeof(NumberStyles) };
+						var parseMethod = ValueType.GetTypeInfo().DeclaredMethods.FirstOrDefault(r => r.Name == "Parse" && r.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameters));
+#else
+						var parseMethod = ValueType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string), typeof(NumberStyles) }, null);
+#endif
+						getValue = text => parseMethod.Invoke(null, new object[] { text, style });
+					}
+				}
 				args.Pop();
 			}
 		}
 
 		public override object GetValue(string text)
 		{
-			var style = NumberStyles.None;
-
-			if (AllowSign)
-				style |= NumberStyles.AllowLeadingSign;
-			if (AllowDecimal)
-				style |= NumberStyles.AllowDecimalPoint;
-			if (AllowExponent)
-				style |= NumberStyles.AllowExponent;
-
-			return parseMethod.Invoke(null, new object[] { text, style });
+			return getValue(text);
 		}
 
 		protected override int InnerParse(ParseArgs args)

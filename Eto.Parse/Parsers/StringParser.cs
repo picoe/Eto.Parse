@@ -188,7 +188,7 @@ namespace Eto.Parse.Parsers
 								c = (char)charValue;
 								pos += 3;
 							}
-							catch (SystemException)
+						catch (Exception)
 							{
 								throw new ArgumentException("Unrecognized escape sequence");
 							}
@@ -205,7 +205,7 @@ namespace Eto.Parse.Parsers
 								c = (char)charValue;
 								pos += 7;
 							}
-							catch (SystemException)
+						catch (Exception)
 							{
 								throw new ArgumentException("Unrecognized escape sequence");
 							}

@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse", "Eto.Parse\Eto.Parse.csproj", "{C068996C-0949-4550-B21C-EF724D1894DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse.Tests", "Eto.Parse.Tests\Eto.Parse.Tests.csproj", "{EE26FDF9-63E3-4620-9210-ABF1517AE055}"
@@ -16,11 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{01281A
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse-pcl", "Eto.Parse\Eto.Parse-pcl.csproj", "{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
 		Perf - Debug|Any CPU = Perf - Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C068996C-0949-4550-B21C-EF724D1894DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -29,26 +33,29 @@ Global
 		{C068996C-0949-4550-B21C-EF724D1894DA}.Perf - Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C068996C-0949-4550-B21C-EF724D1894DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C068996C-0949-4550-B21C-EF724D1894DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Perf - Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Perf - Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Perf - Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Perf - Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE26FDF9-63E3-4620-9210-ABF1517AE055}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Perf - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Perf - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Perf - Debug|Any CPU.ActiveCfg = Perf - Debug|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Perf - Debug|Any CPU.Build.0 = Perf - Debug|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE5E310D-5E44-44B3-8634-D680A566F38F}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
+		{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}.Perf - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}.Perf - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1E6D76-3151-4DCF-A53D-EC402C5D0F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

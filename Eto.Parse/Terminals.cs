@@ -2,6 +2,7 @@ using System;
 using Eto.Parse.Parsers;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Eto.Parse
 {
@@ -84,6 +85,25 @@ namespace Eto.Parse
 		public static RepeatCharTerminal Repeat(IEnumerable<RepeatCharItem> items)
 		{
 			return new RepeatCharTerminal(items);
+		}
+
+		internal static IEnumerable<Tuple<string, Parser>> GetTerminals()
+		{
+			#if net40
+			var props = typeof(Terminals).GetProperties();
+			#else
+			var props = typeof(Terminals).GetTypeInfo().DeclaredProperties;
+			#endif
+
+			foreach (var property in props)
+			{
+				if (typeof(Parser).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
+				{
+					var parser = property.GetValue(null, null) as Parser;
+					yield return new Tuple<string, Parser>(property.Name, parser.Named(property.Name));
+				}
+			}
+
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Eto.Parse
 {
@@ -47,7 +48,7 @@ namespace Eto.Parse
 				IParserWriterHandler handler;
 				if (ParserWriters.TryGetValue(type, out handler))
 					return handler.Write(args, parser);
-				type = type.BaseType;
+				type = type.GetTypeInfo().BaseType;
 			}
 			return null;
 		}
