@@ -95,6 +95,15 @@ namespace Eto.Parse
 		{
 			Items.AddRange(parsers);
 		}
+
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			for (int i = 0; i < Items.Count; i++)
+			{
+				Items[i] = args.Replace(Items[i]);
+			}
+		}
 	}
 }
 

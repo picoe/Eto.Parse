@@ -118,21 +118,29 @@ namespace Eto.Parse.Parsers
 			base.Initialize(args);
 			if (args.Push(this))
 			{
-				if (line != null)
-					line.Initialize(args);
-				if (start != null)
-					start.Initialize(args);
-				if (end != null)
-					end.Initialize(args);
+				if (Line != null)
+					Line.Initialize(args);
+				if (Start != null)
+					Start.Initialize(args);
+				if (End != null)
+					End.Initialize(args);
 				args.Pop();
 			}
 		}
 
 		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
 		{
-			var items = new Parser[] { start, end, line }.Where(r => r != null);
+			var items = new Parser[] { Start, End, Line }.Where(r => r != null);
 			var childItems = items.SelectMany(r => r.Children(args));
 			return items.Concat(childItems);
+		}
+
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			Start = args.Replace(Start);
+			Line = args.Replace(Line);
+			End = args.Replace(End);
 		}
 
 	}

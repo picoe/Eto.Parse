@@ -48,8 +48,8 @@ namespace Eto.Parse
 		{
 			base.Initialize(args);
 			if (Inner != null && args.Push(this))
-				{
-					Inner.Initialize(args);
+			{
+				Inner.Initialize(args);
 				args.Pop();
 			}
 		}
@@ -120,13 +120,19 @@ namespace Eto.Parse
 			}
 		}
 
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			Inner = args.Replace(Inner);
+		}
+
 		public override object GetValue(Match match)
 		{
 			if (Inner != null)
 				return Inner.GetValue(match);
 			return base.GetValue(match);
 		}
-
+		
 		public override object GetValue(string text)
 		{
 			if (Inner != null)

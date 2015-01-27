@@ -46,6 +46,12 @@ namespace Eto.Parse.Parsers
 		{
 			return new ExceptParser(this, args);
 		}
+
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			Except = args.Replace(Except);
+		}
 	}
 }
 

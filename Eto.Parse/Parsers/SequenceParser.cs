@@ -100,18 +100,18 @@ namespace Eto.Parse.Parsers
 			{
 				if (args.Grammar.Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars))
 				{
-				var leftItem = Items[0];
-				if (leftItem != null)
-				{
-					foreach (var parent in args.RecursionFixes)
+					var leftItem = Items[0];
+					if (leftItem != null)
 					{
-						if (leftItem.IsLeftRecursive(parent))
+						foreach (var parent in args.RecursionFixes)
 						{
-							Items[0] = new EmptyParser();
-							break;
+							if (leftItem.IsLeftRecursive(parent))
+							{
+								Items[0] = new EmptyParser();
+								break;
+							}
 						}
 					}
-				}
 				}
 				foreach (var item in Items.Where(r => r != null))
 				{
@@ -139,6 +139,12 @@ namespace Eto.Parse.Parsers
 				args.Pop();
 			}
 			return false;
+		}
+
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			Separator = args.Replace(Separator);
 		}
 	}
 }

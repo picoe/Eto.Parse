@@ -374,6 +374,20 @@ namespace Eto.Parse
 			return Clone();
 		}
 
+
+		public void Replace(ParserReplaceArgs args)
+		{
+			if (args.Push(this))
+			{
+				InnerReplace(args);
+				args.Pop();
+			}
+		}
+
+		protected virtual void InnerReplace(ParserReplaceArgs args)
+		{
+		}
+
 		/// <summary>
 		/// Sets the <see cref="AddError"/> flag on all children of this parser
 		/// </summary>

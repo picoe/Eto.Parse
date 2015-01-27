@@ -198,5 +198,12 @@ namespace Eto.Parse.Parsers
 			repeat.Until = until;
 			return repeat;
 		}
+
+		protected override void InnerReplace(ParserReplaceArgs args)
+		{
+			base.InnerReplace(args);
+			Separator = args.Replace(Separator);
+			Until = args.Replace(Until);
+		}
 	}
 }
