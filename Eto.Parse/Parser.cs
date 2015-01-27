@@ -91,7 +91,7 @@ namespace Eto.Parse
 					return this.name;
 				var type = GetType();
 				var name = type.Name;
-				if (type.Assembly == typeof(Parser).Assembly && name.EndsWith("Parser", StringComparison.Ordinal))
+				if (type.GetTypeInfo().Assembly == typeof(Parser).GetTypeInfo().Assembly && name.EndsWith("Parser", StringComparison.Ordinal))
 					name = name.Substring(0, name.LastIndexOf("Parser", StringComparison.Ordinal));
 				return name;
 			}
