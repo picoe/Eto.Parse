@@ -65,7 +65,7 @@ namespace Eto.Parse.Parsers
 				// process escapes using string format with no parameters
 				if (AllowEscapeCharacters)
 				{
-					text = GetEscapedString(text);
+					return GetEscapedString(text);
 				}
 				else if (AllowQuoted)
 				{
@@ -93,13 +93,13 @@ namespace Eto.Parse.Parsers
 			var length = source.Length;
 			var parseDoubleQuote = false;
 			char quoteChar = default(char);
-			if (AllowQuoted && pos == 0 && pos < source.Length)
+			if (AllowQuoted && length > 1)
 			{
 				var quoteIndex = quoteCharString.IndexOf(source[pos]);
 				if (quoteIndex >= 0)
 				{
 					quoteChar = endQuoteCharString[quoteIndex];
-					if (source.Length >= 2 && source[source.Length - 1] == quoteChar)
+					if (source[length - 1] == quoteChar)
 					{
 						pos++;
 						length--;
@@ -111,108 +111,104 @@ namespace Eto.Parse.Parsers
 			while (pos < length)
 			{
 				char c = source[pos];
-				if (parseDoubleQuote && pos < source.Length - 1 && endQuoteCharString.IndexOf(c) >= 0)
+				if (c != '\\')
 				{
-					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
 					pos++;
 					sb.Append(c);
+					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
+					if (!parseDoubleQuote || c != quoteChar || pos >= length)
+						continue;
+					pos++;
 					continue;
 				}
-				if (c == '\\')
+				pos++;
+				if (pos >= length)
+					throw new ArgumentException("Missing escape sequence");
+				switch (source[pos])
 				{
-					pos++;
-					if (pos >= length)
-						throw new ArgumentException("Missing escape sequence");
-					switch (source[pos])
-					{
-						case '\'':
-							c = '\'';
-							break;
-						case '\"':
-							c = '\"';
-							break;
-						case '\\':
-							c = '\\';
-							break;
-						case '0':
-							c = '\0';
-							break;
-						case 'a':
-							c = '\a';
-							break;
-						case 'b':
-							c = '\b';
-							break;
-						case 'f':
-							c = '\f';
-							break;
-						case 'n':
-							c = '\n';
-							break;
-						case 'r':
-							c = '\r';
-							break;
-						case 't':
-							c = '\t';
-							break;
-						case 'v':
-							c = '\v';
-							break;
-						case 'x':
-							var hex = new StringBuilder(4);
+					case 'n':
+						c = '\n';
+						break;
+					case 'r':
+						c = '\r';
+						break;
+					case '\'':
+					case '\"':
+					case '\\':
+						// use the char directly
+						break;
+					case '0':
+						c = '\0';
+						break;
+					case 'a':
+						c = '\a';
+						break;
+					case 'b':
+						c = '\b';
+						break;
+					case 'f':
+						c = '\f';
+						break;
+					case 't':
+						c = '\t';
+						break;
+					case 'v':
+						c = '\v';
+						break;
+					case 'x':
+						var hex = new StringBuilder(4);
+						pos++;
+						if (pos >= length)
+							throw new ArgumentException("Missing escape sequence");
+						for (int i = 0; i < 4; i++)
+						{
+							c = source[pos];
+							if (!(char.IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
+								break;
+							hex.Append(c);
 							pos++;
-							if (pos >= length)
-								throw new ArgumentException("Missing escape sequence");
-							for (int i = 0; i < 4; i++)
-							{
-								c = source[pos];
-								if (!(char.IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
-									break;
-								hex.Append(c);
-								pos++;
-								if (pos > length)
-									break;
-							}
-							if (hex.Length == 0)
-								throw new ArgumentException("Unrecognized escape sequence");
-							c = (char)Int32.Parse(hex.ToString(), NumberStyles.HexNumber);
-							pos--;
-							break;
-						case 'u':
-							pos++;
-							if (pos + 3 >= length)
-								throw new ArgumentException("Unrecognized escape sequence");
-							try
-							{
-								uint charValue = UInt32.Parse(source.Substring(pos, 4), NumberStyles.HexNumber);
-								c = (char)charValue;
-								pos += 3;
-							}
-						catch (Exception)
-							{
-								throw new ArgumentException("Unrecognized escape sequence");
-							}
-							break;
-						case 'U':
-							pos++;
-							if (pos + 7 >= length)
-								throw new ArgumentException("Unrecognized escape sequence");
-							try
-							{
-								uint charValue = UInt32.Parse(source.Substring(pos, 8), NumberStyles.HexNumber);
-								if (charValue > 0xffff)
-									throw new ArgumentException("Unrecognized escape sequence");
-								c = (char)charValue;
-								pos += 7;
-							}
-						catch (Exception)
-							{
-								throw new ArgumentException("Unrecognized escape sequence");
-							}
-							break;
-						default:
+							if (pos > length)
+								break;
+						}
+						if (hex.Length == 0)
 							throw new ArgumentException("Unrecognized escape sequence");
-					}
+						c = (char)Int32.Parse(hex.ToString(), NumberStyles.HexNumber);
+						pos--;
+						break;
+					case 'u':
+						pos++;
+						if (pos + 3 >= length)
+							throw new ArgumentException("Unrecognized escape sequence");
+						try
+						{
+							uint charValue = UInt32.Parse(source.Substring(pos, 4), NumberStyles.HexNumber);
+							c = (char)charValue;
+							pos += 3;
+						}
+						catch (Exception)
+						{
+							throw new ArgumentException("Unrecognized escape sequence");
+						}
+						break;
+					case 'U':
+						pos++;
+						if (pos + 7 >= length)
+							throw new ArgumentException("Unrecognized escape sequence");
+						try
+						{
+							uint charValue = UInt32.Parse(source.Substring(pos, 8), NumberStyles.HexNumber);
+							if (charValue > 0xffff)
+								throw new ArgumentException("Unrecognized escape sequence");
+							c = (char)charValue;
+							pos += 7;
+						}
+						catch (Exception)
+						{
+							throw new ArgumentException("Unrecognized escape sequence");
+						}
+						break;
+					default:
+						throw new ArgumentException("Unrecognized escape sequence");
 				}
 				pos++;
 				sb.Append(c);

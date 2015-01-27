@@ -6,80 +6,20 @@ namespace Eto.Parse.Parsers
 {
 	public class GroupParser : Parser
 	{
-		Parser line;
-		Parser start;
-		Parser end;
-		SequenceParser lineSeq;
-		SequenceParser blockSeq;
-		Parser groupParser;
+		static Parser eol = Terminals.Eol;
 
-		public Parser Start
-		{
-			get { return start; }
-			set {
-				start = value;
-				SetBlock();
-				SetInner();
-			}
-		}
+		public Parser Start { get; set; }
 
-		public Parser End
-		{
-			get { return end; }
-			set
-			{
-				end = value;
-				SetBlock();
-				SetInner();
-			}
-		}
+		public Parser End { get; set; }
 
-		public Parser Line {
-			get { return line; }
-			set {
-				line = value;
-				SetLine();
-				SetInner();
-			}
-		}
-
-		void SetBlock()
-		{
-			if (start != null && end != null)
-				blockSeq = start & new RepeatParser().Until(end, true);
-			else
-				blockSeq = null;
-		}
-
-		void SetLine()
-		{
-			if (line != null)
-				lineSeq = line & new RepeatParser().Until(Terminals.Eol);
-			else
-				lineSeq = null;
-		}
-
-		void SetInner()
-		{
-			if (lineSeq != null && blockSeq != null)
-				groupParser = blockSeq | lineSeq;
-			else if (lineSeq != null)
-				groupParser = lineSeq;
-			else if (blockSeq != null)
-				groupParser = blockSeq;
-			else
-				groupParser = null;
-		}
+		public Parser Line { get; set; }
 
 		protected GroupParser(GroupParser other, ParserCloneArgs chain)
 			: base(other, chain)
 		{
-			this.line = chain.Clone(other.line);
-			this.start = chain.Clone(other.start);
-			this.end = chain.Clone(other.end);
-			SetLine();
-			SetBlock();
-			SetInner();
+			this.Line = chain.Clone(other.Line);
+			this.Start = chain.Clone(other.Start);
+			this.End = chain.Clone(other.End);
 		}
 
 		public GroupParser()
@@ -93,18 +33,52 @@ namespace Eto.Parse.Parsers
 
 		public GroupParser(Parser start, Parser end, Parser line = null)
 		{
-			this.start = start;
-			this.end = end;
-			this.line = line;
-			SetLine();
-			SetBlock();
-			SetInner();
+			this.Start = start;
+			this.End = end;
+			this.Line = line;
 		}
 
 		protected override int InnerParse(ParseArgs args)
 		{
-			if (groupParser != null)
-				return groupParser.Parse(args);
+			var scanner = args.Scanner;
+			var pos = scanner.Position;
+			int match = -1;
+			if (Start != null)
+			{
+				match = Start.Parse(args);
+			}
+			if (match < 0)
+			{
+				if (Line == null)
+					return -1;
+				match = Line.Parse(args);
+				if (match < 0)
+					return -1;
+				for (;;)
+				{
+					match = eol.Parse(args);
+					if (match >= 0)
+						break;
+					if (scanner.Advance(1) < 0)
+						break;
+				}
+				if (match < 0)
+					return -1;
+				scanner.Advance(-match);
+				return scanner.Position - pos + 1;
+			}
+			for (;;)
+			{
+				match = End.Parse(args);
+				if (match >= 0)
+					break;
+				if (scanner.Advance(1) < 0)
+					break;
+			}
+
+			if (match >= 0)
+				return scanner.Position - pos + 1;
+
 			return -1;
 		}
 

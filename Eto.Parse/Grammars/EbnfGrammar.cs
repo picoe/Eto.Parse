@@ -108,7 +108,7 @@ namespace Eto.Parse.Grammars
 	public class EbnfGrammar : Grammar
 	{
 		Dictionary<string, Parser> parserLookup;
-		Dictionary<string, Parser> specialLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, Parser> specialLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 		string startParserName;
 		Parser separator;
 
@@ -139,14 +139,10 @@ namespace Eto.Parse.Grammars
 		void GenerateSpecialSequences()
 		{
 			// special sequences for each terminal
-			foreach (var property in typeof(Terminals).GetProperties())
+			foreach (var terminal in Terminals.GetTerminals())
 			{
-				if (typeof(Parser).IsAssignableFrom(property.PropertyType))
-				{
-					var parser = property.GetValue(null, null) as Parser;
-					var name = "Terminals." + property.Name;
-					specialLookup[name] = parser;
-				}
+				var name = "Terminals." + terminal.Item1;
+				specialLookup[name] = terminal.Item2;
 			}
 		}
 
@@ -320,7 +316,6 @@ namespace Eto.Parse.Grammars
 						break;
 					default:
 						throw new FormatException(string.Format("Cardinality '{0}' is unknown", cardinality.Text));
-						break;
 				}
 			}
 			var integer = match["integer"];
@@ -428,7 +423,7 @@ namespace Eto.Parse.Grammars
 
 		protected override int InnerParse(ParseArgs args)
 		{
-			parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+			parserLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 			if (DefineCommonNonTerminals)
 			{
 				parserLookup["letter or digit"] = Terminals.LetterOrDigit;

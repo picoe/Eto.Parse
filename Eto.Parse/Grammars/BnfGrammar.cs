@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Eto.Parse.Writers;
 using System.IO;
+using System.Reflection;
 using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Grammars
@@ -22,10 +23,11 @@ namespace Eto.Parse.Grammars
 	/// </remarks>
 	public class BnfGrammar : Grammar
 	{
-		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
-		readonly Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
+		readonly Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 		readonly Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
-		readonly Parser ws = Terminals.WhiteSpace.Repeat(0);
+		readonly Parser ows = Terminals.WhiteSpace.Repeat(0);
+		readonly Parser rws = Terminals.WhiteSpace.Repeat(1);
 		readonly Parser sq = Terminals.Set('\'');
 		readonly Parser dq = Terminals.Set('"');
 		readonly LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
@@ -80,48 +82,44 @@ namespace Eto.Parse.Grammars
 		{
 			if (enhanced)
 			{
-				foreach (var property in typeof(Terminals).GetProperties())
+				foreach (var terminal in Terminals.GetTerminals())
 				{
-					if (typeof(Parser).IsAssignableFrom(property.PropertyType))
-					{
-						var parser = property.GetValue(null, null) as Parser;
-						baseLookup[property.Name] = parser.Named(property.Name);
-					}
+					baseLookup[terminal.Item1] = terminal.Item2.Named(terminal.Item1);
 				}
 			}
-
-			var lineEnd = sws & +(sws & Terminals.Eol);
 
 			literal = (
 				(sq & (+!sq).WithName("value").Optional() & sq)
 				| (dq & (+!dq).WithName("value").Optional() & dq)
+				| ((+(Terminals.WhiteSpace.Inverse().Except(Terminals.Set("<[{(|)}]>"))))).WithName("value")
 			).WithName("parser");
 
 
-			RuleNameParser = "<" & Terminals.Set('>').Inverse().Repeat().WithName("name") & ">";
+			RuleNameParser = "<" & Terminals.Set("<>").Inverse().Repeat().WithName("name") & ">";
 
 			RuleParser = new AlternativeParser(); // defined later 
 
-			TermParser = literal | (ruleName = RuleNameParser.Named("parser"));
+			TermParser = ((ruleName = RuleNameParser.Named("parser")).NotFollowedBy(ows & ruleSeparator)) | literal;
 			TermParser.Name = "term";
 			if (enhanced)
 			{
-				TermParser.Items.Add('(' & sws & RuleParser & sws & ')');
-				TermParser.Items.Add(repeatRule = ('{' & sws & RuleParser & sws & '}').WithName("parser"));
-				TermParser.Items.Add(optionalRule = ('[' & sws & RuleParser & sws & ']').WithName("parser"));
+				TermParser.Items.Add('(' & ows & RuleParser & ows & ')');
+				TermParser.Items.Add(repeatRule = ('{' & ows & RuleParser & ows & '}').WithName("parser"));
+				TermParser.Items.Add(optionalRule = ('[' & ows & RuleParser & ows & ']').WithName("parser"));
 			}
+			TermParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.Set("<[{(}]>").WithName("value").Named("parser"));
 
-			list = (TermParser & -(~((+Terminals.SingleLineWhiteSpace).WithName("ws")) & TermParser)).WithName("parser");
+			list = (TermParser & -(~(rws.Named("ws")) & TermParser)).WithName("parser");
 
-			listRepeat = (list.Named("list") & ws & '|' & sws & ~(RuleParser.Named("expression"))).WithName("parser");
+			listRepeat = (list.Named("list") & ows & '|' & ~(ows & RuleParser.Named("expression"))).WithName("parser");
 			RuleParser.Items.Add(listRepeat);
 			RuleParser.Items.Add(list);
 
-			rule = (~lineEnd & sws & RuleNameParser.Named("ruleName") & ws & ruleSeparator & sws & RuleParser & lineEnd).WithName("parser");
+			rule = (RuleNameParser.Named("ruleName") & ows & ruleSeparator & ows & RuleParser).WithName("parser");
 			Expresssions = new AlternativeParser();
 			Expresssions.Items.Add(rule);
 
-			this.Inner = ws & +Expresssions & ws;
+			this.Inner = ows & (+Expresssions).SeparatedBy(rws) & ows;
 
 			AttachEvents();
 		}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Eto.Parse
 {
@@ -20,6 +21,8 @@ namespace Eto.Parse
 		string name;
 		bool addError;
 		bool addErrorSet;
+		bool addMatch;
+		bool addMatchSet;
 
 		enum ParseMode
 		{
@@ -54,6 +57,8 @@ namespace Eto.Parse
 				name = value;
 				if (!addErrorSet && name != null)
 					addError = true;
+				if (!addMatchSet && name != null)
+					addMatch = true;
 			}
 		}
 
@@ -74,6 +79,16 @@ namespace Eto.Parse
 			{
 				addError = value;
 				addErrorSet = true;
+			}
+		}
+
+		public bool AddMatch
+		{
+			get { return addMatch; }
+			set
+			{
+				addMatch = value;
+				addMatchSet = true;
 			}
 		}
 
@@ -298,8 +313,8 @@ namespace Eto.Parse
 		{
 			if (args.Push(this))
 			{
-				hasNamedChildren = Children().Any(r => r.Name != null);
-				mode = (hasNamedChildren && name != null) ? ParseMode.NamedChildren : name != null || AddError ? ParseMode.NameOrError : ParseMode.Simple;
+				hasNamedChildren = Children().Any(r => r.AddMatch);
+				mode = (hasNamedChildren && AddMatch) ? ParseMode.NamedChildren : AddMatch || AddError ? ParseMode.NameOrError : ParseMode.Simple;
 				args.Pop();
 			}
 		}

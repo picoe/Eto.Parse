@@ -1,13 +1,17 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Eto.Parse
 {
+	/// <summary>
+	/// Represents a matched range of the input string
+	/// </summary>
 	public class Match
 	{
 		MatchCollection matches;
-		string name;
+		readonly string name;
 		readonly int index;
 		readonly int length;
 		readonly Parser parser;
@@ -32,7 +36,7 @@ namespace Eto.Parse
 
 		public string Text { get { return Success ? scanner.Substring(index, length) : null; } }
 
-		public string Name { get { return name ?? (name = Parser.Name); } }
+		public string Name { get { return name; } }
 
 		public Parser Parser { get { return parser; } }
 
@@ -58,6 +62,7 @@ namespace Eto.Parse
 
 		internal Match(Parser parser, Scanner scanner, int index, int length, MatchCollection matches)
 		{
+			this.name = parser.Name;
 			this.parser = parser;
 			this.scanner = scanner;
 			this.index = index;
@@ -67,6 +72,7 @@ namespace Eto.Parse
 
 		internal Match(Parser parser, Scanner scanner, int index, int length)
 		{
+			this.name = parser.Name;
 			this.parser = parser;
 			this.scanner = scanner;
 			this.index = index;
@@ -80,8 +86,15 @@ namespace Eto.Parse
 			else
 				return Enumerable.Empty<Match>();
 		}
+		public IEnumerable<Match> Find(string id)
+		{
+			if (matches != null)
+				return matches.Find(id);
+			else
+				return Enumerable.Empty<Match>();
+		}
 
-		public Match this [string id, bool deep = false]
+		public Match this[string id, bool deep = false]
 		{
 			get
 			{
@@ -95,14 +108,20 @@ namespace Eto.Parse
 		internal void TriggerPreMatch()
 		{
 			if (matches != null)
-				matches.ForEach(r => r.TriggerPreMatch());
+			{
+				foreach (var match in matches)
+					match.TriggerPreMatch();
+			}
 			Parser.TriggerPreMatch(this);
 		}
 
 		internal void TriggerMatch()
 		{
 			if (matches != null)
-				matches.ForEach(r => r.TriggerMatch());
+			{
+				foreach (var match in matches)
+					match.TriggerMatch();
+			}
 			Parser.TriggerMatch(this);
 		}
 
@@ -134,7 +153,20 @@ namespace Eto.Parse
 		{
 		}
 
-		public IEnumerable<Match> Find(string id, bool deep = false)
+		public IEnumerable<Match> Find(string id)
+		{
+			for (int i = 0; i < Count; i++)
+			{
+				var item = this[i];
+				if (item.Name == id)
+				{
+					yield return item;
+				}
+			}
+		}
+
+
+		public IEnumerable<Match> Find(string id, bool deep)
 		{
 			bool found = false;
 			for (int i = 0; i < Count; i++)
@@ -159,9 +191,14 @@ namespace Eto.Parse
 			}
 		}
 
-		public Match this [string id, bool deep = false]
+		public Match this[string id, bool deep]
 		{
 			get { return Find(id, deep).FirstOrDefault() ?? Match.EmptyMatch; }
+		}
+
+		public Match this[string id]
+		{
+			get { return Find(id).FirstOrDefault() ?? Match.EmptyMatch; }
 		}
 	}
 }

@@ -78,9 +78,11 @@ namespace Eto.Parse
 		{
 			if (args.Push(this))
 			{
-				var items = Items.Where(r => r != null);
-				foreach (var item in items)
+				for (int i = 0; i < Items.Count; i++)
 				{
+					var item = Items[i];
+					if (item == null)
+						continue;
 					yield return item;
 					foreach (var child in item.Children(args))
 					{
