@@ -202,6 +202,8 @@ Extender ::= #x00B7 | #x02D0 | #x02D1 | #x0387 | #x0640 | #x0E46 | #x0EC6 | #x30
 			var ebnfGrammar = new EbnfGrammar(EbnfStyle.W3c & ~EbnfStyle.UseCommentRuleWithSeparator);
 
 			var xmlGrammar = ebnfGrammar.Build(xmlW3cEbnf, "document");
+			// define the terminals in the grammar
+			xmlGrammar.SetTerminals("Letter", "BaseChar", "Ideographic", "CombiningChar", "Digit", "Extender", "PubidChar", "Char", "S", "EnumeratedType", "NameChar", "Eq");
 			var match = xmlGrammar.Match(xmlDocument);
 
 			Assert.IsTrue(match.Success, match.ErrorMessage);

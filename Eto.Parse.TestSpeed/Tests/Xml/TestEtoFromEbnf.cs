@@ -21,6 +21,9 @@ namespace Eto.Parse.TestSpeed.Tests.Xml
 		{
 			const string grm = Eto.Parse.Tests.Grammars.EbnfW3cTests.xmlW3cEbnf;
 			grammar = new EbnfGrammar(EbnfStyle.W3c).Build(grm, "document");
+			// no need to return a match for each terminal character
+			grammar.SetTerminals("Letter", "BaseChar", "Ideographic", "CombiningChar", "Digit", "Extender", "PubidChar", "Char", "S", "EnumeratedType", "NameChar", "Eq");
+			grammar.EnableMatchEvents = false;
 			grammar.Match(suite.Xml);
 		}
 

@@ -81,7 +81,7 @@ namespace Eto.Parse
 
 		public bool Trace { get; set; }
 
-		public GrammarOptimizations Optimizations { get;set; }
+		public GrammarOptimizations Optimizations { get; set; }
 
 		/// <summary>
 		/// Initializes a new copy of the <see cref="Eto.Parse.Grammar"/> class
@@ -187,58 +187,58 @@ namespace Eto.Parse
 
 		void OptimizeCharacterSets(IEnumerable<Parser> children)
 		{
-				// turns character sets, ranges, and single characters into a single parser
+			// turns character sets, ranges, and single characters into a single parser
 			foreach (var alt in children.OfType<AlternativeParser>().Where(r => r.Items.Count > 2))
+			{
+				if (alt.Items.All(r => r.Name == null && (r is CharSetTerminal || r is CharRangeTerminal || r is SingleCharTerminal)))
 				{
-					if (alt.Items.All(r => r.Name == null && (r is CharSetTerminal || r is CharRangeTerminal || r is SingleCharTerminal)))
+					var chars = new List<char>();
+					var inverse = new List<char>();
+					foreach (var item in alt.Items)
 					{
-						var chars = new List<char>();
-						var inverse = new List<char>();
-						foreach (var item in alt.Items)
+						var singleChar = item as SingleCharTerminal;
+						if (singleChar != null)
 						{
-							var singleChar = item as SingleCharTerminal;
-							if (singleChar != null)
-							{
-								if (singleChar.Inverse)
-									inverse.Add(singleChar.Character);
-								else
-									chars.Add(singleChar.Character);
-								continue;
-							}
-							var charSet = item as CharSetTerminal;
-							if (charSet != null)
-							{
-								if (charSet.Inverse)
-									inverse.AddRange(charSet.Characters);
-								else
-									chars.AddRange(charSet.Characters);
-								continue;
-							}
-							var charRange = item as CharRangeTerminal;
-							if (charRange != null)
-							{
-								for (char i = charRange.Start; i < charRange.End; i++)
-								{
-									if (charRange.Inverse)
-										inverse.Add(i);
-									else
-										chars.Add(i);
-								}
-								continue;
-							}
+							if (singleChar.Inverse)
+								inverse.Add(singleChar.Character);
+							else
+								chars.Add(singleChar.Character);
+							continue;
 						}
-						//Debug.WriteLine("Optimizing characters normal:{0} inverse:{1}", chars.Count, inverse.Count);
-						alt.Items.Clear();
-						if (chars.Count > 0)
-							alt.Items.Add(new CharSetTerminal(chars.ToArray()));
-						if (inverse.Count > 0)
+						var charSet = item as CharSetTerminal;
+						if (charSet != null)
+						{
+							if (charSet.Inverse)
+								inverse.AddRange(charSet.Characters);
+							else
+								chars.AddRange(charSet.Characters);
+							continue;
+						}
+						var charRange = item as CharRangeTerminal;
+						if (charRange != null)
+						{
+							for (char i = charRange.Start; i < charRange.End; i++)
+							{
+								if (charRange.Inverse)
+									inverse.Add(i);
+								else
+									chars.Add(i);
+							}
+							continue;
+						}
+					}
+					//Debug.WriteLine("Optimizing characters normal:{0} inverse:{1}", chars.Count, inverse.Count);
+					alt.Items.Clear();
+					if (chars.Count > 0)
+						alt.Items.Add(new CharSetTerminal(chars.ToArray()));
+					if (inverse.Count > 0)
 						alt.Items.Add(new CharSetTerminal(inverse.ToArray())
 						{
 							Inverse = true
 						});
-					}
 				}
 			}
+		}
 
 		protected override int InnerParse(ParseArgs args)
 		{
@@ -330,6 +330,28 @@ namespace Eto.Parse
 		public override Parser Clone(ParserCloneArgs args)
 		{
 			return new Grammar(this, args);
+		}
+
+		/// <summary>
+		/// Sets the parsers with the specified names as terminals, e.g. no match is generated
+		/// </summary>
+		/// <remarks>
+		/// Terminals are usually single characters that are not interesting by themselves.
+		/// Most grammars do not have a way to define a terminal vs. non-terminal, so one could use this
+		/// method to improve performance on BNF/EBNF grammars on terminals so that match entries are not
+		/// created for each character in the results.
+		/// 
+		/// This basically sets <see cref="Parser.AddError"/> and <see cref="Parser.AddMatch"/> to false
+		/// for each matched parser.
+		/// </remarks>
+		/// <param name="terminalNames">Array of terminal names</param>
+		public void SetTerminals(params string[] terminalNames)
+		{
+			foreach (var child in Children().Where(r => Array.IndexOf(terminalNames, r.Name) >= 0).ToList())
+			{
+				child.AddError = false;
+				child.AddMatch = false;
+			}
 		}
 	}
 }
