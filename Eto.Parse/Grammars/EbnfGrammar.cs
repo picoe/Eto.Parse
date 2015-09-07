@@ -84,7 +84,12 @@ namespace Eto.Parse.Grammars
 		/// <summary>
 		/// Use the rule named 'whitespace' as the separator between each non-terminal. Overrides <see cref="WhitespaceSeparator"/> and <see cref="UseCommentRuleWithSeparator"/>.
 		/// </summary>
-		UseWhitespaceRule = 1 << 10
+		UseWhitespaceRule = 1 << 10,
+
+		/// <summary>
+		/// Allows escaping in terminal strings, such as \r \n \t, \x123, etc.
+		/// </summary>
+		EscapeTerminalStrings = 1 << 11
 	}
 
 	/// <summary>
@@ -179,6 +184,11 @@ namespace Eto.Parse.Grammars
 			Parser meta_reference = meta_identifier;
 
 			Parser grouped_sequence = ("(" & ows & definition_list & ows & ")").WithName("grouped sequence");
+
+			if (style.HasFlag(EbnfStyle.EscapeTerminalStrings))
+			{
+				terminal_string.AllowEscapeCharacters = true;
+			}
 
 			if (style.HasFlag(EbnfStyle.SquareBracketAsOptional))
 			{
