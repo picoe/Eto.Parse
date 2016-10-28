@@ -106,7 +106,7 @@ namespace Eto.Parse.Grammars
 
 				{ "Number", Parse.Terminals.Range(0x30, 0x39) },
 				{ "Digit", Parse.Terminals.Range(0x30, 0x39) },
-				{ "Letter", Parse.Terminals.Range(0x41, 0x58) | Parse.Terminals.Range(0x61, 0x78) },
+				{ "Letter", Parse.Terminals.Range(0x41, 0x5A) | Parse.Terminals.Range(0x61, 0x7A) },
 				{ "AlphaNumeric", Parse.Terminals.Range(0x30, 0x39) | Parse.Terminals.Range(0x41, 0x5A) | Parse.Terminals.Range(0x61, 0x7A) },
 				{ "Printable", Parse.Terminals.Range(0x20, 0x7E) | Parse.Terminals.Set(0xA0) },
 				{ "Letter Extended", Parse.Terminals.Range(0xC0, 0xD6) | Parse.Terminals.Range(0xD8, 0xF6) | Parse.Terminals.Range(0xF8, 0xFF) },
