@@ -5,25 +5,25 @@ using System.Linq;
 
 namespace Eto.Parse.TestSpeed.Tests.Json
 {
-	public class TestSpracheJSON : Test<JsonTestSuite>
+	public class TestNFXJson : Test<JsonTestSuite>
 	{
-		public TestSpracheJSON()
-			: base("SpracheJSON")
+		public TestNFXJson()
+			: base("NFX.JSON")
 		{
 		}
 
 		public override void Warmup(JsonTestSuite suite)
 		{
-			global::SpracheJSON.JSON.Parse(suite.Json);
+			global::NFX.Serialization.JSON.JSONExtensions.JSONToDynamic(suite.Json);
 		}
 
 		public override void PerformTest(JsonTestSuite suite, StringBuilder output)
 		{
-			var json = global::SpracheJSON.JSON.Parse(suite.Json);
+			var json = global::NFX.Serialization.JSON.JSONExtensions.JSONToDynamic(suite.Json);
 			if (suite.CompareOutput)
 			{
-				var result = (global::SpracheJSON.JSONArray)json["result"];
-				foreach (var item in result.Elements)
+				var result = json["result"];
+				foreach (var item in result)
 				{
 					var id = item[suite.CompareProperty];
 					output.Append(id);
