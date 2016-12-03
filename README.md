@@ -37,8 +37,17 @@ Eto.Parse has been highly optimized for performance and memory usage. For exampl
 
 ### Speed
 
-Test             | Parsing | Slower than best |  Warmup | Slower than best---------------- | ------: | :--------------: | ------: | :--------------:Eto.Parse        |  2.532s |     1.00x        |  0.067s |     1.08xNewtonsoft Json  |  2.628s |     1.04x        |  0.083s |     1.33xServiceStack.Text|  2.871s |     1.13x        |  0.065s |     1.05xIrony            | 26.533s |    10.48x        |  0.254s |     4.06xbsn.GoldParser   |  9.626s |     3.80x        |  0.063s |     1.00x
-(Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
+Test              | Parsing | Slower than best |  Warmup | Slower than best
+----------------- | ------: | :--------------: | ------: | :--------------:
+Eto.Parse         |  2,327s |     1,00x        |  0,008s |     1,00x
+Newtonsoft Json   |  2,523s |     1,08x        |  0,068s |     8,08x
+ServiceStack.Text |  2,854s |     1,23x        |  0,066s |     7,78x
+Irony             | 25,401s |    10,92x        |  0,188s |    22,28x
+bsn.GoldParser    | 11,186s |     4,81x        |  0,013s |     1,49x
+NFX.JSON          | 11,847s |     5,09x        |  0,187s |    22,10x
+SpracheJSON       | 92,774s |    39,88x        |  0,189s |    22,37x
+
+(Warmup is the time it takes to initialize the engine for the first time and perform the first parse of the json string).
 
 ### Memory & Objects
 
