@@ -115,6 +115,7 @@ namespace Eto.Parse.Grammars
 		Dictionary<string, Parser> parserLookup;
 		Dictionary<string, Parser> specialLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 		string startParserName;
+		Grammar startGrammar;
 		Parser separator;
 
 		public EbnfStyle Style { get; private set; }
@@ -254,7 +255,8 @@ namespace Eto.Parse.Grammars
 		void AttachEvents()
 		{
 			var syntax_rule = this["syntax rule"];
-			syntax_rule.Matched += m => {
+			syntax_rule.Matched += m =>
+			{
 				var name = m["meta identifier"].Text;
 				var isTerminal = m["equals"].Text == ":=";
 				var parser = m.Tag as UnaryParser;
@@ -264,9 +266,10 @@ namespace Eto.Parse.Grammars
 				else
 					parser.Inner = inner;
 			};
-			syntax_rule.PreMatch += m => {
+			syntax_rule.PreMatch += m =>
+			{
 				var name = m["meta identifier"].Text;
-				var parser = (name == startParserName) ? new Grammar(name) : new UnaryParser(name);
+				var parser = (name == startParserName) ? (startGrammar ?? new Grammar(name)) : new UnaryParser(name);
 				m.Tag = parserLookup[name] = parser;
 			};
 		}
@@ -445,10 +448,11 @@ namespace Eto.Parse.Grammars
 			return base.InnerParse(args);
 		}
 
-		public Grammar Build(string bnf, string startParserName)
+		public Grammar Build(string bnf, string startParserName, Grammar grammar = null)
 		{
 			Parser parser;
 			this.startParserName = startParserName;
+			this.startGrammar = grammar;
 			var match = this.Match(new StringScanner(bnf));
 
 			if (!match.Success)

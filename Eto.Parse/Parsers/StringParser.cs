@@ -107,14 +107,17 @@ namespace Eto.Parse.Parsers
 					}
 				}
 			}
-			var sb = new StringBuilder(length);
+			var str = new char[length];
+			var newpos = 0;
+			//var sb = new StringBuilder(length);
 			while (pos < length)
 			{
 				char c = source[pos];
 				if (c != '\\')
 				{
 					pos++;
-					sb.Append(c);
+					str[newpos++] = c;
+					//sb.Append(c);
 					// assume that the parse match ensured that we have a duplicate if we're not at the end of the string
 					if (!parseDoubleQuote || c != quoteChar || pos >= length)
 						continue;
@@ -133,9 +136,13 @@ namespace Eto.Parse.Parsers
 						c = '\r';
 						break;
 					case '\'':
+						c = '\'';
+						break;
 					case '\"':
+						c = '\"';
+						break;
 					case '\\':
-						// use the char directly
+						c = '\\';
 						break;
 					case '0':
 						c = '\0';
@@ -211,10 +218,12 @@ namespace Eto.Parse.Parsers
 						throw new ArgumentException("Unrecognized escape sequence");
 				}
 				pos++;
-				sb.Append(c);
+				str[newpos++] = c;
+				//sb.Append(c);
 			}
 
-			return sb.ToString();
+			return new string(str, 0, newpos);
+			//return sb.ToString();
 		}
 
 		protected StringParser(StringParser other, ParserCloneArgs args)
@@ -236,59 +245,59 @@ namespace Eto.Parse.Parsers
 
 		protected override int InnerParse(ParseArgs args)
 		{
-			int length = 1;
 			var scanner = args.Scanner;
 			var pos = scanner.Position;
-			int ch;
 
-			if (AllowQuoted)
+			if (quoteCharString != null) // AllowQuoted
 			{
-				ch = scanner.ReadChar();
+				var ch = scanner.ReadChar();
 				if (ch == -1)
 					return -1;
 
 				var quoteIndex = quoteCharString.IndexOf((char)ch);
 				if (quoteIndex >= 0)
 				{
-					char quote = endQuoteCharString[quoteIndex];
-					bool isEscape = false;
+					var quote = (int)endQuoteCharString[quoteIndex];
+                  beg:
 					ch = scanner.ReadChar();
-					while (ch != -1)
+					if (ch != quote)
 					{
-						length++;
-						if (AllowEscapeCharacters && ch == '\\')
-							isEscape = true;
-						else if (!isEscape)
-						{
-							if (ch == quote)
-							{
-								if (!AllowDoubleQuote || scanner.Peek() != quote)
-									return length;
-								isEscape = true;
-							}
-						}
-						else
-							isEscape = false;
+						if (ch == -1)
+							goto end;
 
+						if (!AllowEscapeCharacters || ch != '\\')
+							goto beg;
+						// found escape character, read it
 						ch = scanner.ReadChar();
+						if (ch == -1)
+							goto end;
+						goto beg;
 					}
-				}
 
-				length = 0;
+					// reached quote, check for double quote
+					if (!AllowDoubleQuote || scanner.Peek() != quote)
+						return scanner.Position - pos;
+
+					// double quote found, read it
+					scanner.ReadChar();
+					goto beg;
+				}
+			end:
 				scanner.Position = pos;
 			}
 
-			if (AllowNonQuoted && NonQuotedLetter != null)
+			if (!AllowNonQuoted || NonQuotedLetter == null)
+				return -1;
+
+			var length = 0;
+			var m = NonQuotedLetter.Parse(args);
+			while (m > 0)
 			{
-				var m = NonQuotedLetter.Parse(args);
-				while (m > 0)
-				{
-					length += m;
-					m = NonQuotedLetter.Parse(args);
-				}
-				if (length > 0)
-					return length;
+				length += m;
+				m = NonQuotedLetter.Parse(args);
 			}
+			if (length > 0)
+				return length;
 
 			return -1;
 		}

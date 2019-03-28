@@ -26,7 +26,7 @@ namespace Eto.Parse.Tests.Parsers
 		[Test]
 		public void TestEscaping()
 		{
-			var sample = "\"string\\'\\\"\\0\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234 1\",'string\\'\\\"\\0\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234 2'";
+			var sample = "\"string\\'\\\"\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234\\0 1\",'string\\'\\\"\\a\\b\\f\\n\\r\\t\\v\\x123\\u1234\\U00001234\\0 2'";
 
 			var grammar = new Grammar();
 			var str = new StringParser { AllowEscapeCharacters = true  };
@@ -36,7 +36,7 @@ namespace Eto.Parse.Tests.Parsers
 			var match = grammar.Match(sample);
 			Assert.IsTrue(match.Success, match.ErrorMessage);
 			var values = match.Find("str").Select(m => str.GetValue(m)).ToArray();
-			CollectionAssert.AreEquivalent(new string[] { "string\'\"\0\a\b\f\n\r\t\v\x123\u1234\U00001234 1", "string\'\"\0\a\b\f\n\r\t\v\x123\u1234\U00001234 2" }, values);
+			CollectionAssert.AreEqual(new string[] { "string\'\"\a\b\f\n\r\t\v\x123\u1234\U00001234\0 1", "string\'\"\a\b\f\n\r\t\v\x123\u1234\U00001234\0 2" }, values);
 		}
 
 		[Test]

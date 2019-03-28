@@ -10,6 +10,36 @@ using System.CodeDom.Compiler;
 
 namespace Eto.Parse.Grammars
 {
+	[Flags]
+	public enum BnfStyle
+	{
+		/// <summary>
+		/// No extended styles
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Enable ebnf-style comments using (* *)
+		/// </summary>
+		Comments = 1 << 0,
+
+		/// <summary>
+		/// Define common terminals from <see cref="Terminals"/>
+		/// </summary>
+		CommonTerminals = 1 << 1,
+
+		/// <summary>
+		/// Enable ebnf-style cardinality using { } (one or more), [ ] (optional)
+		/// </summary>
+		Cardinality = 1 << 2,
+
+		/// <summary>
+		/// All extended styles
+		/// </summary>
+		All = Comments | CommonTerminals | Cardinality
+	}
+
+
 	/// <summary>
 	/// Grammar to build a parser grammar using Backus-Naur Form
 	/// </summary>
@@ -26,12 +56,11 @@ namespace Eto.Parse.Grammars
 		Dictionary<string, Parser> parserLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 		readonly Dictionary<string, Parser> baseLookup = new Dictionary<string, Parser>(StringComparer.OrdinalIgnoreCase);
 		readonly Parser sws = Terminals.SingleLineWhiteSpace.Repeat(0);
-		readonly Parser ows = Terminals.WhiteSpace.Repeat(0);
-		readonly Parser rws = Terminals.WhiteSpace.Repeat(1);
 		readonly Parser sq = Terminals.Set('\'');
 		readonly Parser dq = Terminals.Set('"');
 		readonly LiteralTerminal ruleSeparator = new LiteralTerminal("::=");
 		string startParserName;
+		Grammar startGrammar;
 		readonly Parser rule;
 		readonly Parser listRepeat;
 		readonly Parser list;
@@ -77,43 +106,59 @@ namespace Eto.Parse.Grammars
 		/// <value>The rules.</value>
 		public Dictionary<string, Parser> Rules { get { return parserLookup; } protected set { parserLookup = value; } }
 
-		public BnfGrammar(bool enhanced = true)
+		public BnfGrammar(BnfStyle style = BnfStyle.All)
 			: base("bnf")
 		{
-			if (enhanced)
+			Parser ows = Terminals.WhiteSpace.Repeat(0);
+			Parser rws = Terminals.WhiteSpace.Repeat(1);
+
+			if (style.HasFlag(BnfStyle.CommonTerminals))
 			{
 				foreach (var terminal in Terminals.GetTerminals())
 				{
-					baseLookup[terminal.Item1] = terminal.Item2.Named(terminal.Item1);
+					baseLookup[terminal.Item1] = terminal.Item2;
 				}
+			}
+
+			if (style.HasFlag(BnfStyle.Comments))
+			{
+				// allow ebnf comments
+				var comment = new GroupParser("(*", "*)");
+				ows = (Terminals.WhiteSpace | comment).Repeat(0);
+				rws = (Terminals.WhiteSpace | comment).Repeat(1);
 			}
 
 			literal = (
 				(sq & (+!sq).WithName("value").Optional() & sq)
 				| (dq & (+!dq).WithName("value").Optional() & dq)
-				| ((+(Terminals.WhiteSpace.Inverse().Except(Terminals.Set("<[{(|)}]>"))))).WithName("value")
+				| (+Terminals.Set(" \n\r<[{(|)}]>").Inverse()).WithName("value")
 			).WithName("parser");
 
 
-			RuleNameParser = "<" & Terminals.Set("<>").Inverse().Repeat().WithName("name") & ">";
+			RuleNameParser = "<" & Terminals.Set("<>\n\r").Inverse().Repeat().WithName("name") & ">";
 
 			RuleParser = new AlternativeParser(); // defined later 
 
-			TermParser = ((ruleName = RuleNameParser.Named("parser")).NotFollowedBy(ows & ruleSeparator)) | literal;
+			TermParser = new AlternativeParser();
 			TermParser.Name = "term";
-			if (enhanced)
+			TermParser.Add((ruleName = RuleNameParser.Named("parser")).NotFollowedBy(ows & ruleSeparator));
+			if (style.HasFlag(BnfStyle.Cardinality))
 			{
 				TermParser.Items.Add('(' & ows & RuleParser & ows & ')');
 				TermParser.Items.Add(repeatRule = ('{' & ows & RuleParser & ows & '}').WithName("parser"));
 				TermParser.Items.Add(optionalRule = ('[' & ows & RuleParser & ows & ']').WithName("parser"));
 			}
-			TermParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.Set("<[{(}]>").WithName("value").Named("parser"));
+			TermParser.Items.Add(literal);
 
-			list = (TermParser & -(~(rws.Named("ws")) & TermParser)).WithName("parser");
+			var rep = -(~((+Terminals.WhiteSpace).WithName("ws")) & TermParser);
+			rep.Name = "rep";
+			rep.AddMatch = false;
+			list = (TermParser & rep).WithName("parser");
 
 			listRepeat = (list.Named("list") & ows & '|' & ~(ows & RuleParser.Named("expression"))).WithName("parser");
 			RuleParser.Items.Add(listRepeat);
 			RuleParser.Items.Add(list);
+			RuleParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.WhiteSpace.Inverse().Repeat().WithName("value").Named("parser"));
 
 			rule = (RuleNameParser.Named("ruleName") & ows & ruleSeparator & ows & RuleParser).WithName("parser");
 			Expresssions = new AlternativeParser();
@@ -138,8 +183,10 @@ namespace Eto.Parse.Grammars
 			};
 
 			literal.Matched += m => m.Tag = new LiteralTerminal(m["value"].Text);
-			optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
-			repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 0) { Separator = sws };
+			if (optionalRule != null)
+				optionalRule.Matched += m => m.Tag = new OptionalParser((Parser)m["parser"].Tag);
+			if (repeatRule != null)
+				repeatRule.Matched += m => m.Tag = new RepeatParser((Parser)m["parser"].Tag, 0) { Separator = sws };
 			list.Matched += m => {
 				if (m.Matches.Count > 1)
 				{
@@ -149,7 +196,12 @@ namespace Eto.Parse.Grammars
 						if (child.Parser.Name == "ws")
 							parser.Items.Add(sws);
 						else if (child.Parser.Name == "term")
-							parser.Items.Add((Parser)child["parser"].Tag);
+						{
+							var childParser = (Parser)child["parser"].Tag;
+							if (childParser == null)
+								throw new Exception("woo");
+							parser.Items.Add(childParser);
+						}
 					}
 					m.Tag = parser;
 				}
@@ -176,11 +228,12 @@ namespace Eto.Parse.Grammars
 				var name = m["ruleName"]["name"].Text;
 				Parser parser;
 				if (name == startParserName)
-					parser = new Grammar(name);
+					parser = startGrammar ?? new Grammar(name);
 				else
+
 					parser = new UnaryParser(name);
 				m.Tag = parser;
-				parserLookup[parser.Name] = parser;
+				parserLookup[name] = parser;
 			};
 		}
 
@@ -190,9 +243,10 @@ namespace Eto.Parse.Grammars
 			return base.InnerParse(args);
 		}
 
-		public Grammar Build(string bnf, string startParserName)
+		public Grammar Build(string bnf, string startParserName, Grammar grammar = null)
 		{
 			this.startParserName = startParserName;
+			this.startGrammar = grammar;
 			Parser parser;
 			var match = Match(new StringScanner(bnf));
 

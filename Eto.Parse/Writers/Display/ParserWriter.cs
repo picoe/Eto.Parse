@@ -12,8 +12,8 @@ namespace Eto.Parse.Writers.Display
 		{
 			var type = parser.GetType();
 			var name = type.Name;
-			if (name.EndsWith("Parser"))
-				name = name.Substring(0, name.LastIndexOf("Parser"));
+			if (name.EndsWith("Parser", StringComparison.Ordinal))
+				name = name.Substring(0, name.LastIndexOf("Parser", StringComparison.Ordinal));
 			if (args.Parsers.Contains(parser))
 				name += "(recursive)";
 			return name;
@@ -21,7 +21,10 @@ namespace Eto.Parse.Writers.Display
 
 		public virtual void WriteObject(TextParserWriterArgs args, T parser, string name)
 		{
-			args.Output.WriteLine(name);
+			if (!string.IsNullOrEmpty(parser.Name))
+				args.Output.WriteLine("{0}: {1}", name, parser.Name);
+			else
+				args.Output.WriteLine(name);
 		}
 
 		public virtual void WriteContents(TextParserWriterArgs args, T parser, string name)
