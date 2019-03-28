@@ -77,7 +77,7 @@ namespace Eto.Parse.Parsers
 						getValue = text => float.Parse(text, style, numberFormat);
 					else
 					{
-#if PCL
+#if NETSTANDARD
 						var parameters = new [] { typeof(string), typeof(NumberStyles) };
 						var parseMethod = ValueType.GetTypeInfo().DeclaredMethods.FirstOrDefault(r => r.Name == "Parse" && r.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameters));
 #else

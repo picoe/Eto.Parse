@@ -10,7 +10,7 @@ namespace Eto.Parse.Parsers
 		public int Minimum { get; set; }
 		public int Maximum { get; set; }
 
-		protected RepeatCharItem(RepeatCharItem other)
+		RepeatCharItem(RepeatCharItem other)
 		{
 			Test = other.Test;
 			Minimum = other.Minimum;

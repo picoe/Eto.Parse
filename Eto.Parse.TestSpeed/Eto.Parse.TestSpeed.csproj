@@ -1,145 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CCAC26D6-7588-4BEE-9F8F-32287FC5F57F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Eto.Parse.TestSpeed</RootNamespace>
-    <AssemblyName>Eto.Parse.TestSpeed</AssemblyName>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <EnvironmentVariables>
-      <EnvironmentVariables>
-        <Variable name="MONO_OPTIONS" value="--gc=sgen" />
-      </EnvironmentVariables>
-    </EnvironmentVariables>
-    <ConsolePause>false</ConsolePause>
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>TRACE;</DefineConstants>
-    <DebugType>pdbonly</DebugType>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFramework>net47</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFX, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\NFX.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFX.MySQL, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\NFX.MySQL.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFX.Wave, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\NFX.Wave.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFX.Web, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\NFX.Web.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NFX.WinForms, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NFX.3.0.0.5\lib\NFX.WinForms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="MarkdownSharp">
-      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="MarkdownDeep">
-      <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
-    </Reference>
-    <Reference Include="GOLD Engine">
-      <HintPath>GOLD Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="Irony">
-      <HintPath>Irony.dll</HintPath>
-    </Reference>
-    <Reference Include="Sprache">
-      <HintPath>Sprache.dll</HintPath>
-    </Reference>
-    <Reference Include="SpracheJSON">
-      <HintPath>SpracheJSON.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\packages\ServiceStack.Text.3.9.64\lib\net35\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="bsn.GoldParser">
-      <HintPath>bsn.GoldParser.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSuite.cs" />
-    <Compile Include="Tests\Json\TestNFXJson.cs" />
-    <Compile Include="Tests\Json\TestSpracheJSON.cs" />
-    <Compile Include="Tests\Markdown\MarkdownTestSuite.cs" />
-    <Compile Include="Tests\Json\JsonTestSuite.cs" />
-    <Compile Include="Tests\Json\TestNewtonsoft.cs" />
-    <Compile Include="Tests\Json\TestIrony.cs" />
-    <Compile Include="Tests\Json\TestGold.cs" />
-    <Compile Include="Tests\Markdown\TestMarkdownDeep.cs" />
-    <Compile Include="Tests\Markdown\TestMarkdownSharp.cs" />
-    <Compile Include="Tests\Markdown\TestEto.cs" />
-    <Compile Include="Tests\Json\TestEtoDirect.cs" />
-    <Compile Include="Tests\Json\TestEtoHelpers.cs" />
-    <Compile Include="Tests\Json\Gold\GoldJsonParser.cs" />
-    <Compile Include="Tests\Json\Irony\IronyJsonGrammar.cs" />
-    <Compile Include="Tests\Json\TestServiceStack.cs" />
-    <Compile Include="Tests\Json\TestBsnGold.cs" />
-    <Compile Include="Tests\Xml\TestBsnGold.cs" />
-    <Compile Include="Tests\Xml\TestEtoFromGold.cs" />
-    <Compile Include="Tests\Xml\TestXDocument.cs" />
-    <Compile Include="Tests\Xml\XmlTestSuite.cs" />
-    <Compile Include="Tests\Xml\TestEto.cs" />
-    <Compile Include="Tests\Xml\TestSystemXml.cs" />
-    <Compile Include="Tests\Xml\TestEtoFromEbnf.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Eto.Parse.Tests\Eto.Parse.Tests.csproj">
-      <Project>{EE26FDF9-63E3-4620-9210-ABF1517AE055}</Project>
-      <Name>Eto.Parse.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj">
-      <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
-      <Name>Eto.Parse</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj">
-      <Project>{EE5E310D-5E44-44B3-8634-D680A566F38F}</Project>
-      <Name>Eto.Parse.Samples</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tests\Json\sample-large.json" />
@@ -148,15 +15,24 @@
     <EmbeddedResource Include="Tests\Xml\sample-large.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Irony.dll" />
-    <None Include="GOLD Engine.dll" />
+    <None Include="app.config" />
     <None Include="Tests\Json\Gold\JSON.grm" />
-    <None Include="bsn.GoldParser.dll" />
-    <None Include="Sprache.dll" />
-    <None Include="SpracheJSON.dll" />
     <EmbeddedResource Include="Tests\Xml\Gold\XML.egt" />
     <EmbeddedResource Include="Tests\Xml\Gold\XML.grm" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup>
+    <PackageReference Include="bsn.GoldParser" Version="2.0.79" />
+    <PackageReference Include="Irony" Version="1.1.0" />
+    <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
+    <PackageReference Include="MarkdownSharp" Version="2.0.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="ServiceStack.Text" Version="4.5.14" />
+    <PackageReference Include="Sprache" Version="2.2.0" />
+    <PackageReference Include="SpracheJSON" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj" />
+    <ProjectReference Include="..\Eto.Parse.Tests\Eto.Parse.Tests.csproj" />
+    <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj" />
+  </ItemGroup>
 </Project>

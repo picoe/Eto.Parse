@@ -29,9 +29,13 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 			yield return new TestServiceStack();
 			yield return new TestIrony();
 			yield return new TestBsnGold();
+#if NFX
 			yield return new TestNFXJson();
+#endif
 			yield return new TestSpracheJSON();
-			//yield return new TestGold();
+#if GOLDParser
+			yield return new TestGold();
+#endif
 		}
 	}
 }

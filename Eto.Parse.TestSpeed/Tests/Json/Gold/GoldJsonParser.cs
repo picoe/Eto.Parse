@@ -1,3 +1,4 @@
+#if GOLDParser
 using System;
 using System.IO;
 
@@ -233,3 +234,4 @@ namespace Eto.Parse.TestSpeed.Tests.Json.Gold
 	}; //MyParser
 }
 
+#endif

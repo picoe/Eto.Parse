@@ -1,0 +1,12 @@
+﻿<Project>
+  <PropertyGroup>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts\</ArtifactsPath>
+	  <BaseIntermediateOutputPath>$(ArtifactsPath)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(ArtifactsPath)bin</BaseOutputPath>
+
+    <Company>Picoe Software Solutions</Company>
+    <Copyright>Copyright 2019 by Curtis Wensley</Copyright>
+    <Version>2.0.0</Version>
+    <FileVersion>2.0.0</FileVersion>
+  </PropertyGroup>
+</Project>

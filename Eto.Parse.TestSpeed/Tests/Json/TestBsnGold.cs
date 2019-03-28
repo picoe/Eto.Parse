@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Diagnostics;
 using System.IO;
-using Eto.Parse.TestSpeed.Tests.Json.Gold;
 using bsn.GoldParser.Parser;
 using bsn.GoldParser.Grammar;
 using System.Reflection;
