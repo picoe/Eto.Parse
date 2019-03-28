@@ -1,80 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EE5E310D-5E44-44B3-8634-D680A566F38F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Eto.Parse.Samples</RootNamespace>
-    <AssemblyName>Eto.Parse.Samples</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Perf - Debug|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Perf - Debug</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG; PERF_TEST</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
+    <TargetFrameworks>net461</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AddressGrammar.cs" />
-    <Compile Include="Json\JsonTokens.cs" />
-    <Compile Include="Json\JsonGrammar.cs" />
-    <Compile Include="Markdown\MarkdownGrammar.cs" />
-    <Compile Include="Markdown\MarkdownEncoding.cs" />
-    <Compile Include="Markdown\HtmlElementParser.cs" />
-    <Compile Include="Markdown\MarkdownReplacement.cs" />
-    <Compile Include="Markdown\ReplacementParser.cs" />
-    <Compile Include="Markdown\Encodings\BoldEncoding.cs" />
-    <Compile Include="Markdown\Encodings\CodeEncoding.cs" />
-    <Compile Include="Markdown\Encodings\EscapeEncoding.cs" />
-    <Compile Include="Markdown\Encodings\HtmlEncoding.cs" />
-    <Compile Include="Markdown\Encodings\LinkEncoding.cs" />
-    <Compile Include="Markdown\Sections\CodeSection.cs" />
-    <Compile Include="Markdown\Terms.cs" />
-    <Compile Include="Markdown\Sections\ParagraphSection.cs" />
-    <Compile Include="Markdown\Sections\HtmlSection.cs" />
-    <Compile Include="Markdown\Sections\HeaderSection.cs" />
-    <Compile Include="Markdown\Sections\ReferenceSection.cs" />
-    <Compile Include="Markdown\Sections\ListSection.cs" />
-    <Compile Include="Markdown\Encodings\ItalicEncoding.cs" />
-    <Compile Include="Markdown\Extensions.cs" />
-    <Compile Include="Markdown\Sections\BlockQuoteSection.cs" />
-    <Compile Include="Markdown\Sections\HrSection.cs" />
-    <Compile Include="Markdown\Sections\DoubleLineHeaderSection.cs" />
-    <Compile Include="Markdown\Encodings\BreakEncoding.cs" />
-    <Compile Include="Xml\XmlGrammar.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj">
-      <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
-      <Name>Eto.Parse</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
 </Project>

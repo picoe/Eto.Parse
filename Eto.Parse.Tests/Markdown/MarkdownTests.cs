@@ -16,7 +16,7 @@ namespace Eto.Parse.Tests.Markdown
 		MarkdownGrammar grammar;
 		MarkdownDeep.Markdown deep;
 
-		[TestFixtureSetUp]
+        [SetUp]
 		public void SetUp()
 		{
 			grammar = new MarkdownGrammar();

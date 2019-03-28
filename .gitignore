@@ -1,7 +1,5 @@
-bin/
-obj/
+artifacts/
 *.userprefs
 *.suo
-test-results
-packages/
 *.user
+.vs
