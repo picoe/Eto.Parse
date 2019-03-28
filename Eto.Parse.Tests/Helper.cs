@@ -18,7 +18,7 @@ namespace Eto.Parse.Tests
 				};
 				if (referencedAssemblies != null)
 					parameters.ReferencedAssemblies.AddRange(referencedAssemblies);
-				var assemblyName = typeof(T).Assembly.GetName().Name + ".dll";
+                var assemblyName = typeof(T).Assembly.Location;
 				if (typeof(T).Assembly != Assembly.GetExecutingAssembly() && (referencedAssemblies == null || !referencedAssemblies.Contains(assemblyName)))
 				{
 					parameters.ReferencedAssemblies.Add(assemblyName);

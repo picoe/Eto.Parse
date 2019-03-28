@@ -40,7 +40,12 @@ namespace Eto.Parse
 
 		public Parser Parser { get { return parser; } }
 
-		public object Tag { get; set; }
+        object tag;
+		public object Tag
+        {
+            get => tag;
+            set => tag = value;
+        }
 
 		public int Index { get { return index; } }
 

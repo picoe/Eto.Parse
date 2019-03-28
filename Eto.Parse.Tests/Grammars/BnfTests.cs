@@ -135,8 +135,11 @@ Vancouver, BC V5V5V5";
 
 			var input = "  hello ( parsing world )  ";
 
-			// our grammar
-			var grammar = new BnfGrammar().Build(grammarString, "grammar");
+            var code = new BnfGrammar().ToCode(grammarString, "grammar");
+            // our grammar
+            var grammar = new BnfGrammar().Build(grammarString, "grammar");
+
+            
 
 			var match = grammar.Match(input);
 			Assert.IsTrue(match.Success);

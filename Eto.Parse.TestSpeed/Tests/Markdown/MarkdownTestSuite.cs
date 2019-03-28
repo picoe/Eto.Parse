@@ -25,20 +25,19 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 			{
 				if (htmlTests == null)
 				{
-					var markdownTests = new MarkdownTests();
 					var testList = new List<HtmlTest>();
 
 					var tests = Enumerable.Empty<string>();
-					//tests = tests.Concat(markdownTests.GetTests("blocktests"));
-					//tests = tests.Concat(markdownTests.GetTests("extramode")); // no extra mode yet
-					//tests = tests.Concat(markdownTests.GetTests("mdtest01"));
-					//tests = tests.Concat(markdownTests.GetTests("mdtest11"));
-					//tests = tests.Concat(markdownTests.GetTests("pandoc"));
-					//tests = tests.Concat(markdownTests.GetTests("phpmarkdown"));
-					//tests = tests.Concat(markdownTests.GetTests("safemode"));
-					tests = tests.Concat(markdownTests.GetTests("simple"));
-					//tests = tests.Concat(markdownTests.GetTests("spantests"));
-					//tests = tests.Concat(markdownTests.GetTests("xsstests"));
+					//tests = tests.Concat(MarkdownTests.GetTests("blocktests"));
+					//tests = tests.Concat(MarkdownTests.GetTests("extramode")); // no extra mode yet
+					//tests = tests.Concat(MarkdownTests.GetTests("mdtest01"));
+					//tests = tests.Concat(MarkdownTests.GetTests("mdtest11"));
+					//tests = tests.Concat(MarkdownTests.GetTests("pandoc"));
+					//tests = tests.Concat(MarkdownTests.GetTests("phpmarkdown"));
+					//tests = tests.Concat(MarkdownTests.GetTests("safemode"));
+					tests = tests.Concat(MarkdownTests.GetTests("simple"));
+					//tests = tests.Concat(MarkdownTests.GetTests("spantests"));
+					//tests = tests.Concat(MarkdownTests.GetTests("xsstests"));
 					foreach (var name in tests)
 					{
 						var textName = Path.Combine(MarkdownTests.BasePath, name + ".text");

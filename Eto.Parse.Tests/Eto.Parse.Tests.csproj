@@ -4,6 +4,12 @@
     <TargetFrameworks>net461</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <None Update="Markdown\tests\**\*.txt" CopyToOutputDirectory="Always" />
+    <None Update="Markdown\tests\**\*.text" CopyToOutputDirectory="Always" />
+    <None Update="Markdown\tests\**\*.html" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj" />
     <ProjectReference Include="..\Eto.Parse\Eto.Parse.csproj" />
   </ItemGroup>

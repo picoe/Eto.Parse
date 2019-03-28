@@ -91,7 +91,7 @@ namespace Eto.Parse.Grammars
 			literal = (
 				(sq & (+!sq).WithName("value").Optional() & sq)
 				| (dq & (+!dq).WithName("value").Optional() & dq)
-				| ((+(Terminals.WhiteSpace.Inverse().Except(Terminals.Set("<[{(|)}]>"))))).WithName("value")
+				| (+(Terminals.WhiteSpace.Inverse()).Except(Terminals.Set("<[{(|)}]>"))).WithName("value")
 			).WithName("parser");
 
 
@@ -107,7 +107,7 @@ namespace Eto.Parse.Grammars
 				TermParser.Items.Add(repeatRule = ('{' & ows & RuleParser & ows & '}').WithName("parser"));
 				TermParser.Items.Add(optionalRule = ('[' & ows & RuleParser & ows & ']').WithName("parser"));
 			}
-			TermParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.Set("<[{(}]>").WithName("value").Named("parser"));
+			//TermParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.Set("<[{(}]>").WithName("value").Named("parser"));
 
 			list = (TermParser & -(~(rws.Named("ws")) & TermParser)).WithName("parser");
 
@@ -135,6 +135,7 @@ namespace Eto.Parse.Grammars
 					parser.Name = name;
 				}
 				m.Tag = parser;
+
 			};
 
 			literal.Matched += m => m.Tag = new LiteralTerminal(m["value"].Text);
