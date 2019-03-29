@@ -43,9 +43,9 @@ namespace Eto.Parse.Parsers
 			}
 
 		}
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
+			base.InnerInitialize(args);
 			if (TestCaseSensitive)
 			{
 				lookupCharacters = Characters;
@@ -54,12 +54,12 @@ namespace Eto.Parse.Parsers
 			}
 			else
 			{
-				lookupCharacters = new char[Characters.Length];
-				for (int i = 0; i < Characters.Length; i++)
-				{
-					lookupCharacters[i] = char.ToLowerInvariant(Characters[i]);
-				}
-				if (lookupCharacters.Length >= MinLookupCount)
+                lookupCharacters = new char[Characters.Length];
+                for (int i = 0; i < Characters.Length; i++)
+                {
+                    lookupCharacters[i] = char.ToLowerInvariant(Characters[i]);
+                }
+                if (lookupCharacters.Length >= MinLookupCount)
 					characterLookup = new HashSet<char>(lookupCharacters, new LowerCharComparer());
 			}
 		}
@@ -81,7 +81,7 @@ namespace Eto.Parse.Parsers
 		{
 			get
 			{ 
-				var chars = string.Join(",", Characters.Select(c => char.IsControl(c) || char.IsWhiteSpace(c) ? string.Format("0x{0:x2}", (int)c) : string.Format("'{0}'", c)));
+				var chars = string.Join(",", Characters.Select(CharToString));
 				return string.Format("{0}", chars);
 			}
 		}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Eto.Parse.Parsers
 {
@@ -30,6 +31,24 @@ namespace Eto.Parse.Parsers
 			: base(sequence)
 		{
 			Separator = DefaultSeparator;
+		}
+
+		public override string GetErrorMessage(ParserErrorArgs args)
+		{
+			if (args.Detailed && args.Push(this))
+			{
+				var sb = new StringBuilder();
+				foreach (var item in Items)
+				{
+					if (sb.Length > 0)
+						sb.Append(", ");
+					sb.Append(item != null ? item.GetErrorMessage(args) : "null");
+				}
+				sb.Insert(0, "(");
+				sb.Append(")");
+				return sb.ToString();
+			}
+			return DescriptiveName;
 		}
 
 		protected override int InnerParse(ParseArgs args)
@@ -90,39 +109,16 @@ namespace Eto.Parse.Parsers
 			return new SequenceParser(this, args);
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
 			separator = Separator ?? args.Grammar.Separator;
 			if (Items.Count == 0)
-				throw new InvalidOperationException("There are no items in this sequence");
-			if (args.Push(this))
-			{
-				if (args.Grammar.Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars))
-				{
-					var leftItem = Items[0];
-					if (leftItem != null)
-					{
-						foreach (var parent in args.RecursionFixes)
-						{
-							if (leftItem.IsLeftRecursive(parent))
-							{
-								Items[0] = new EmptyParser();
-								break;
-							}
-						}
-					}
-				}
-				foreach (var item in Items.Where(r => r != null))
-				{
-					item.Initialize(args);
-				}
+				throw new InvalidOperationException(string.Format("There are no items in this sequence {0}", DescriptiveName));
 
-				if (Separator != null)
-					Separator.Initialize(args);
+			if (Separator != null)
+				Separator.Initialize(args);
 
-				args.Pop();
-			}
+			base.InnerInitialize(args);
 		}
 
 		public override bool IsLeftRecursive(ParserContainsArgs args)
@@ -146,5 +142,14 @@ namespace Eto.Parse.Parsers
 			base.InnerReplace(args);
 			Separator = args.Replace(Separator);
 		}
+
+		protected override IEnumerable<Parser> GetChildren()
+		{
+            var children = base.GetChildren();
+            if (Separator != null)
+                children = children.Concat(new[] { Separator });
+            return children;
+		}
+
 	}
 }

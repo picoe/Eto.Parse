@@ -28,7 +28,7 @@ namespace Eto.Parse
 		public static T SeparateChildrenBy<T>(this T parser, Parser separator, bool overrideExisting = true)
 			where T: Parser
 		{
-			foreach (var item in parser.Children().OfType<ISeparatedParser>())
+			foreach (var item in parser.Children.OfType<ISeparatedParser>())
 			{
 				if (overrideExisting || item.Separator == null)
 					item.Separator = separator;

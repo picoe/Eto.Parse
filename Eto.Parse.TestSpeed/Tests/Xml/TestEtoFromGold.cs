@@ -20,6 +20,7 @@ namespace Eto.Parse.TestSpeed.Tests.Xml
 		{
 			var grm = new StreamReader(GetType().Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.Tests.Xml.Gold.XML.grm")).ReadToEnd();
 			gold = new Grammars.GoldGrammar().Build(grm);
+			gold.Grammar.EnableMatchEvents = false;
 			gold.Grammar.Match(suite.Xml);
 		}
 

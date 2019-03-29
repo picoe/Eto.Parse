@@ -196,20 +196,35 @@ namespace Eto.Parse
 		/// <summary>
 		/// Gets an enumeration of all child parsers of this instance
 		/// </summary>
-		public IEnumerable<Parser> Children()
+		public IEnumerable<Parser> Children
 		{
-			return Children(new ParserChildrenArgs());
+			get
+			{
+				return Scan(null);
+			}
 		}
 
-		/// <summary>
-		/// Gets an enumeration of all child parsers of this instance
-		/// </summary>
-		/// <remarks>
-		/// Implementors of parsers should implement this, and call <see cref="ParserChain.Push"/> and <see cref="ParserChain.Pop"/>
-		/// before calling the Children method of contained parsers.
-		/// </remarks>
-		/// <param name="args">Arguments to get the children</param>
-		public virtual IEnumerable<Parser> Children(ParserChildrenArgs args)
+		internal IEnumerable<Parser> Scan(Action<Parser> action = null, Func<Parser, bool> filter = null)
+		{
+			var visited = new HashSet<Parser>();
+			var stack = new Stack<Parser>();
+			stack.Push(this);
+			while (stack.Count > 0)
+			{
+				var current = stack.Pop();
+                action?.Invoke(current);
+                visited.Add(current);
+                foreach (var item in current.GetChildren())
+				{
+					if (!visited.Contains(item) && (filter == null || filter(item)))
+						stack.Push(item);
+				}
+			}
+			return visited;
+		}
+
+
+		protected virtual IEnumerable<Parser> GetChildren()
 		{
 			yield break;
 		}
@@ -221,9 +236,14 @@ namespace Eto.Parse
 		/// By default, this will use the DescriptiveName
 		/// </remarks>
 		/// <returns>The error message to display when not matched</returns>
-		public virtual string GetErrorMessage()
+		public virtual string GetErrorMessage(ParserErrorArgs args)
 		{
 			return DescriptiveName;
+		}
+
+		public string GetErrorMessage(bool detailed = false)
+		{
+			return GetErrorMessage(new ParserErrorArgs(detailed));
 		}
 
 		/// <summary>
@@ -239,34 +259,13 @@ namespace Eto.Parse
 			if (mode == ParseMode.Simple)
 			{
 				var match = InnerParse(args);
-				if (match < 0)
-				{
-					args.SetChildError();
-				}
+				if (match >= 0)
+					return match;
+
+				args.SetChildError();
 				return match;
 			}
-			else if (mode == ParseMode.NameOrError)
-			{
-				var pos = args.Scanner.Position;
-				var match = InnerParse(args);
-				if (match < 0)
-				{
-					if (!AddError)
-					{
-						args.SetChildError();
-					}
-					else
-					{
-						args.AddError(this);
-					}
-				}
-				else
-				{
-					args.AddMatch(this, pos, match);
-				}
-				return match;
-			}
-			else // ParseMode.Named
+			else if (mode == ParseMode.NamedChildren)
 			{
 				args.Push();
 				var pos = args.Scanner.Position;
@@ -274,6 +273,28 @@ namespace Eto.Parse
 				if (match < 0)
 				{
 					args.PopFailed();
+					if (AddError)
+					{
+						args.AddError(this);
+						return -1;
+					}
+					args.SetChildError();
+					return -1;
+				}
+				if (AddMatch)
+				{
+					args.PopMatch(this, pos, match);
+					return match;
+				}
+				args.PopSuccess();
+				return match;
+			}
+			else // if (mode == ParseMode.NameOrError)
+			{
+				var pos = args.Scanner.Position;
+				var match = InnerParse(args);
+				if (match < 0)
+				{
 					if (!AddError)
 					{
 						args.SetChildError();
@@ -283,9 +304,9 @@ namespace Eto.Parse
 						args.AddError(this);
 					}
 				}
-				else
+				else if (AddMatch)
 				{
-					args.PopMatch(this, pos, match);
+					args.AddMatch(this, pos, match);
 				}
 				return match;
 			}
@@ -301,6 +322,7 @@ namespace Eto.Parse
 		/// <param name="args">Parsing arguments</param>
 		protected abstract int InnerParse(ParseArgs args);
 
+		bool initialized;
 		/// <summary>
 		/// Called to initialize the parser when used in a grammar
 		/// </summary>
@@ -309,14 +331,32 @@ namespace Eto.Parse
 		/// things like left recursion in the grammar.
 		/// </remarks>
 		/// <param name="args">Initialization arguments</param>
-		public virtual void Initialize(ParserInitializeArgs args)
+		public void Initialize(ParserInitializeArgs args)
 		{
-			if (args.Push(this))
+			if (!initialized && args.Push(this))
 			{
-				hasNamedChildren = Children().Any(r => r.AddMatch);
-				mode = (hasNamedChildren && AddMatch) ? ParseMode.NamedChildren : AddMatch || AddError ? ParseMode.NameOrError : ParseMode.Simple;
+				initialized = true;
+				var parent = args.Parent;
+				args.Parent = this;
+				InnerInitialize(args);
+				args.Parent = parent;
+				hasNamedChildren = (Children.Any(r => r.AddMatch || r.hasNamedChildren));
+				var parentNamed = false;
+				if (parent != null && hasNamedChildren)
+				{
+					var parentHasMatches = parent.Scan(filter: p => p != this).Any(p => p.AddMatch);
+					//parentNamed = parent.Scan(filter: p => p != this).Any(p => p.AddMatch);
+					parentNamed = parent.AddMatch;
+				}
+
+				mode = (hasNamedChildren && (AddMatch/* || parentNamed*/)) ? ParseMode.NamedChildren : AddMatch || AddError ? ParseMode.NameOrError : ParseMode.Simple;
+
 				args.Pop();
 			}
+		}
+
+		protected virtual void InnerInitialize(ParserInitializeArgs args)
+		{
 		}
 
 		/// <summary>
@@ -395,7 +435,7 @@ namespace Eto.Parse
 			if (args.Push(this))
 			{
 				InnerReplace(args);
-				args.Pop();
+				//args.Pop();
 			}
 		}
 
@@ -410,7 +450,7 @@ namespace Eto.Parse
 		/// <param name="name">Name of the parser(s) to match, or null to set all children</param>
 		public void SetError(bool addError, string name = null)
 		{
-			var children = Children();
+			var children = Children;
 			if (name != null)
 				children = children.Where(r => r.Name == name);
 			foreach (var item in children)
@@ -426,7 +466,7 @@ namespace Eto.Parse
 		public void SetError<T>(bool addError, string name = null)
 			where T: Parser
 		{
-			var children = Children().OfType<T>();
+			var children = Children.OfType<T>();
 			if (name != null)
 				children = children.Where(r => r.Name == name);
 			foreach (var item in children)

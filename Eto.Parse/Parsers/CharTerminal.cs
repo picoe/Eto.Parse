@@ -28,9 +28,9 @@ namespace Eto.Parse.Parsers
 		{
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
+			base.InnerInitialize(args);
 			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 
@@ -51,6 +51,11 @@ namespace Eto.Parse.Parsers
 				scanner.Position--;
 			}
 			return -1;
+		}
+
+		internal string CharToString(char c)
+		{
+			return char.IsControl(c) || char.IsWhiteSpace(c) ? string.Format("0x{0:x2}", (int)c) : string.Format("'{0}'", c);
 		}
 	}
 }
