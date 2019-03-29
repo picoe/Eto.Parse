@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Eto.Parse.TestSpeed.Tests.Markdown
 {
-	public class MarkdownTestSuite : TestSuite
+	public class MarkdownSuite : BenchmarkSuite
 	{
 		HtmlTest[] htmlTests;
 
@@ -54,18 +54,6 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 			}
 		}
 
-		public MarkdownTestSuite()
-			: base("Markdown")
-		{
-			Iterations = 1000;
-		}
-
-		public override IEnumerable<ITest> GetTests()
-		{
-			yield return new TestEto();
-			yield return new TestMarkdownDeep();
-			yield return new TestMarkdownSharp();
-		}
 	}
 }
 

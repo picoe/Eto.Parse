@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Eto.Parse.Samples.Json
+namespace Eto.Parse.Samples.Json.MatchTokens
 {
 	/// <summary>
 	/// Base token class of an element matched in a json string

@@ -1,3 +1,4 @@
+#if BLAH
 using System;
 using System.Text;
 using System.Diagnostics;
@@ -6,7 +7,7 @@ using Eto.Parse.Tests.Markdown;
 
 namespace Eto.Parse.TestSpeed.Tests.Markdown
 {
-	public class TestMarkdownSharp : Test<MarkdownTestSuite>
+	public class TestMarkdownSharp : Benchmark<MarkdownSuite>
 	{
 		MarkdownSharp.Markdown markdown;
 
@@ -15,7 +16,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 		{
 		}
 
-		public override void Warmup(MarkdownTestSuite suite)
+		public override void Warmup(MarkdownSuite suite)
 		{
 			var tests = suite.HtmlTests;
 			markdown = new MarkdownSharp.Markdown();
@@ -28,7 +29,7 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 			}
 		}
 
-		public override void PerformTest(MarkdownTestSuite suite, StringBuilder output)
+		public override void PerformTest(MarkdownSuite suite, StringBuilder output)
 		{
 			var tests = suite.HtmlTests;
 			for (int testNum = 0; testNum < tests.Length; testNum++)
@@ -42,3 +43,4 @@ namespace Eto.Parse.TestSpeed.Tests.Markdown
 	}
 }
 
+#endif

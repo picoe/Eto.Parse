@@ -7,24 +7,13 @@ using System.Xml;
 
 namespace Eto.Parse.TestSpeed.Tests.Xml
 {
-	public class TestSystemXml : Test<XmlTestSuite>
+	public class TestSystemXml : Benchmark<XmlSuite, XmlDocument>
 	{
-		public TestSystemXml()
-			: base("System.Xml")
-		{
-		}
-
-		public override void Warmup(XmlTestSuite suite)
+		public override XmlDocument Execute(XmlSuite suite)
 		{
 			var doc = new XmlDocument();
 			doc.LoadXml(suite.Xml);
-		}
-
-		public override void PerformTest(XmlTestSuite suite, StringBuilder output)
-		{
-			var doc = new XmlDocument();
-			doc.LoadXml(suite.Xml);
+			return doc;
 		}
 	}
 }
-

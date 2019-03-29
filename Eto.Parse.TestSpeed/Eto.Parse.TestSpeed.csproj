@@ -12,12 +12,14 @@
     <EmbeddedResource Include="Tests\Json\sample-large.json" />
     <EmbeddedResource Include="Tests\Json\sample-small.json" />
     <EmbeddedResource Include="Tests\Json\Gold\JSON.egt" />
+    <EmbeddedResource Include="Tests\Xml\Gold\XML.egt" />
+    <EmbeddedResource Include="Tests\Xml\Gold\XML.grm" />
     <EmbeddedResource Include="Tests\Xml\sample-large.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tests\Json\Gold\JSON.grm" />
-    <EmbeddedResource Include="Tests\Xml\Gold\XML.egt" />
-    <EmbeddedResource Include="Tests\Xml\Gold\XML.grm" />
+    <None Remove="**\*.json" />
+    <None Remove="**\*.xml" />
+    <None Remove="**\*.egt;**\*.grm" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="bsn.GoldParser" Version="2.0.79" />
@@ -28,6 +30,7 @@
     <PackageReference Include="ServiceStack.Text" Version="4.5.14" />
     <PackageReference Include="Sprache" Version="2.2.0" />
     <PackageReference Include="SpracheJSON" Version="1.0.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eto.Parse.Samples\Eto.Parse.Samples.csproj" />

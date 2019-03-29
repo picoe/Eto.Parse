@@ -2,36 +2,36 @@ using System;
 using System.Text;
 using System.Diagnostics;
 using System.Linq;
+using Irony.Parsing;
 
 namespace Eto.Parse.TestSpeed.Tests.Json
 {
-	public class TestIrony : Test<JsonTestSuite>
+	public class IronyBenchmark : Benchmark<JsonSuite, ParseTree>
 	{
 		global::Irony.Parsing.Parser parser;
 
-		public TestIrony()
-			: base("Irony")
-		{
-		}
-
-		public override void Warmup(JsonTestSuite suite)
+		public IronyBenchmark()
 		{
 			var g = new global::Irony.Samples.Json.IronyJsonGrammar();
 			parser = new global::Irony.Parsing.Parser(g);
-			parser.Parse(suite.Json);
 		}
 
-		public override void PerformTest(JsonTestSuite suite, StringBuilder output)
+		public override ParseTree Execute(JsonSuite suite)
 		{
-			var pt = parser.Parse(suite.Json);
-			if (pt.HasErrors())
+			return parser.Parse(suite.Json);
+		}
+
+		public override bool Verify(JsonSuite suite, ParseTree result)
+		{
+			if (result.HasErrors())
 			{
-				foreach (var error in pt.ParserMessages)
+				foreach (var error in result.ParserMessages)
 					Console.WriteLine("Error: {0}, Location: {1}", error, error.Location);
 			}
 			if (suite.CompareOutput)
 			{
-				var results = pt.Root.ChildNodes.First(r => 
+				var output = new StringBuilder();
+				var results = result.Root.ChildNodes.First(r =>
 				{
 					return r.Term.Name == "Property" && r.ChildNodes.Any(s => s.Term.Name == "string" && s.Token.ValueString == "result");
 				}).ChildNodes.First(r => r.Term.Name == "Array").ChildNodes;
@@ -41,7 +41,9 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 					var id = item.ChildNodes.First(r => r.Term.Name == "Property" && r.ChildNodes.Any(s => s.Term.Name == "string" && s.Token.ValueString == suite.CompareProperty)).ChildNodes.First(r => r.Term.Name == "number").Token.Value;
 					output.Append(id);
 				}
+				suite.Compare(output.ToString());
 			}
+			return !result.HasErrors();
 		}
 	}
 }
