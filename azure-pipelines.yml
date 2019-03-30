@@ -2,7 +2,7 @@ variables:
   build.increment: $[counter('buildnumber', 10000)]
   build.version: 1.5.0-ci-$(build.increment)
   build.configuration: Release
-  build.arguments: /t:Package /p:Configuration=$(build.configuration) /p:BuildVersion=$(build.version) /p:Branch=$(Build.SourceBranch)
+  build.arguments: /t:Build /p:Configuration=$(build.configuration) /p:BuildVersion=$(build.version) /p:Branch=$(Build.SourceBranch)
 
 trigger:
   - master
