@@ -16,7 +16,7 @@ trigger:
   - task: msbuild@1
     displayName: Build and Package
     inputs: 
-      solution: build/Build.proj
+      solution: Eto.Parse.sln
       msbuildArguments: $(build.arguments)
   - task: PublishBuildArtifacts@1
     displayName: Publish nupkg
