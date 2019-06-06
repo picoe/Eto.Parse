@@ -91,7 +91,7 @@ namespace Eto.Parse.Grammars
 			literal = (
 				(sq & (+!sq).WithName("value").Optional() & sq)
 				| (dq & (+!dq).WithName("value").Optional() & dq)
-				| (+(Terminals.WhiteSpace.Inverse()).Except(Terminals.Set("<[{(|)}]>"))).WithName("value")
+				| (+(Terminals.WhiteSpace.Inverse().Except(Terminals.Set("<[{(|)}]>")))).WithName("value")
 			).WithName("parser");
 
 
@@ -109,9 +109,9 @@ namespace Eto.Parse.Grammars
 			}
 			//TermParser.Items.Add((ows & RuleNameParser & ows & ruleSeparator).Not() & Terminals.Set("<[{(}]>").WithName("value").Named("parser"));
 
-			list = (TermParser & -(~(rws.Named("ws")) & TermParser)).WithName("parser");
+			list = (+TermParser).SeparatedBy(~rws.Named("ws")).WithName("parser");
 
-			listRepeat = (list.Named("list") & ows & '|' & ~(ows & RuleParser.Named("expression"))).WithName("parser");
+			listRepeat = (list.Named("list").Separate() & ows & '|' & ~(ows & RuleParser.Named("expression"))).WithName("parser");
 			RuleParser.Items.Add(listRepeat);
 			RuleParser.Items.Add(list);
 

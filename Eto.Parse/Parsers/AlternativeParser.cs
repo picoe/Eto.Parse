@@ -118,7 +118,7 @@ namespace Eto.Parse.Parsers
 				if (second.Count > 0)
 				{
 					Items.Clear();
-					var secondParser = second.Count > 1 ? new AlternativeParser(second) : second[0];
+					var secondParser = second.Count > 1 ? new SequenceParser(second) : second[0];
 					if (first.Count > 0)
 					{
 						var firstParser = first.Count > 1 ? new AlternativeParser(first) : first[0];
