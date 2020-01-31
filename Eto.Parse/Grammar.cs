@@ -217,7 +217,7 @@ namespace Eto.Parse
 						var charRange = item as CharRangeTerminal;
 						if (charRange != null)
 						{
-							for (char i = charRange.Start; i < charRange.End; i++)
+							for (char i = charRange.Start; i <= charRange.End; i++)
 							{
 								if (charRange.Inverse)
 									inverse.Add(i);
