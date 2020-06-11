@@ -55,19 +55,18 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		public void EtoHelpers() => RunBenchmark<EtoHelpersBenchmark>();
 
 		[Benchmark]
-		public void EtoAst() => RunBenchmark<EtoAstBenchmark>();
-
-		[Benchmark]
 		public void NewtonsoftJson() => RunBenchmark<NewtonsoftJsonBenchmark>();
-
-		[Benchmark]
-		public void ServiceStack() => RunBenchmark<ServiceStackBenchmark>();
 
 		[Benchmark]
 		public void Irony() => RunBenchmark<IronyBenchmark>();
 
+#if !NETCOREAPP
+		[Benchmark]
+		public void ServiceStack() => RunBenchmark<ServiceStackBenchmark>();
+
 		[Benchmark]
 		public void Sprache() => RunBenchmark<SpracheBenchmark>();
+#endif
 	}
 
 }

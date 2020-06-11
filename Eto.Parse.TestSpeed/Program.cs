@@ -20,7 +20,8 @@ namespace Eto.Parse.TestSpeed
 	{
 		public static void Main(string[] args)
 		{
-			new Tests.Json.JsonSmall().VerifyAll();
+			new Tests.JsonAst.JsonAstLarge().VerifyAll();
+			new Tests.Json.JsonLarge().VerifyAll();
 
 			var config = new ManualConfig();
 			config.Add(DefaultConfig.Instance.GetLoggers().ToArray());

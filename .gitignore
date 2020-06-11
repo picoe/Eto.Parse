@@ -3,3 +3,4 @@ artifacts/
 *.suo
 *.user
 .vs
+BenchmarkDotNet.Artifacts

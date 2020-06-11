@@ -147,9 +147,10 @@ namespace Eto.Parse.Samples.Json.MatchTokens
 		public static object GetValue(Match match)
 		{
 			var dic = new Dictionary<string, object>(match.Matches.Count);
-			foreach (var child in match.Matches)
+            for (int i = 0; i < match.Matches.Count; i++)
 			{
-				dic.Add(child.Matches[0].StringValue, GetObjectValue(child.Matches[1]));
+                Match child = match.Matches[i];
+                dic.Add(child.Matches[0].StringValue, GetObjectValue(child.Matches[1]));
 			}
 			return dic;
 		}
@@ -285,9 +286,10 @@ namespace Eto.Parse.Samples.Json.MatchTokens
 		public static object GetValue(Match match)
 		{
 			var list = new List<object>(match.Matches.Count);
-			foreach (var child in match.Matches)
+            for (int i = 0; i < match.Matches.Count; i++)
 			{
-				list.Add(GetObjectValue(child));
+                Match child = match.Matches[i];
+                list.Add(GetObjectValue(child));
 			}
 			return list;
 		}

@@ -12,9 +12,10 @@ namespace Eto.Parse.Writers.Code
 		{
 			base.WriteContents(args, parser, name);
 			var items = new List<string>();
-			foreach (var r in parser.Items)
+            for (int i = 0; i < parser.Items.Count; i++)
 			{
-				var child = r != null ? args.Write(r) : "null";
+                Parser r = parser.Items[i];
+                var child = r != null ? args.Write(r) : "null";
 				items.Add(child);
 			};
 			args.Output.WriteLine("{0}.Items.AddRange(new Eto.Parse.Parser[] {{ {1} }});", name, string.Join(", ", items));

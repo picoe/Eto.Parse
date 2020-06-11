@@ -43,9 +43,10 @@ namespace Eto.Parse.Parsers
 			if (args.Detailed && args.Push(this))
 			{
 				var sb = new StringBuilder();
-				foreach (var item in Items)
+                for (int i = 0; i < Items.Count; i++)
 				{
-					if (sb.Length > 0)
+                    Parser item = Items[i];
+                    if (sb.Length > 0)
 						sb.Append(" | ");
 					sb.Append(item != null ? item.GetErrorMessage(args) : "null");
 				}
@@ -117,9 +118,10 @@ namespace Eto.Parse.Parsers
 				return true;
 			if (args.Push(this))
 			{
-				foreach (var item in Items)
+                for (int i = 0; i < Items.Count; i++)
 				{
-					if (item != null && item.IsLeftRecursive(args))
+                    Parser item = Items[i];
+                    if (item != null && item.IsLeftRecursive(args))
 					{
 						args.Pop();
 						return true;

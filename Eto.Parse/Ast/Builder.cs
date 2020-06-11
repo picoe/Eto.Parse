@@ -7,172 +7,242 @@ using System.Linq;
 
 namespace Eto.Parse.Ast
 {
-	public class ChildBuilder<T> : Builder<T>
-	{
-		public override void Visit(VisitArgs args)
-		{
-			var match = args.Match;
-			var matches = match.Matches;
-			var matchesCount = matches.Count;
-			for (int i = 0; i < matchesCount; i++)
-			{
-				args.Match = matches[i];
-				base.Visit(args);
-			}
-			args.Match = match;
-		}
-	}
+    public class ChildrenBuilder<T> : Builder<T>
+    {
+        public ChildrenBuilder()
+        {
+        }
 
-	public static class BuilderExtensions
-	{
-		public static ListBuilder<T, TRef> HasMany<T, TRef>(this Builder<T> builder)
-			where T : ICollection<TRef>
-		{
-			var child = new ListBuilder<T, TRef>();
-			child.Add = (o, v) => o.Add(v);
-			builder.Builders.Add(child);
-			return child;
-		}
+        public override sealed void Visit(VisitArgs args)
+        {
+            var match = args.Match;
+            if (Name == null)
+            {
+                var matches = match.Matches;
+                var matchesCount = matches.Count;
+                for (int i = 0; i < matchesCount; i++)
+                {
+                    args.Match = matches[i];
+                    VisitMatch(args);
+                }
+            }
+            else if (match.Name == Name)
+            {
+                VisitMatch(args);
+            }
+            else
+            {
+                var matches = match.Find(Name);
+                foreach (var m in matches)
+                {
+                    args.Match = m;
+                    VisitMatch(args);
+                }
+            }
+            args.Match = match;
+        }
 
-		public static KeyValueBuilder<T, TKey, TRef> HasKeyValue<T, TKey, TRef>(this Builder<T> builder, IBuilder keyBuilder, IBuilder valueBuilder)
-			where T : IDictionary<TKey, TRef>
-		{
-			var child = new KeyValueBuilder<T, TKey, TRef>();
-			child.KeyBuilder = keyBuilder;
-			child.ValueBuilder = valueBuilder;
-			child.Add = (o, k, v) => o.Add(k, v);
-			builder.Builders.Add(child);
-			return child;
-		}
-	}
+        protected virtual void VisitMatch(VisitArgs args)
+        {
+            base.Visit(args);
+        }
+    }
 
-	public class Builder<T> : IBuilder
-	{
-		public string Name { get; set; }
+    public class ConditionBuilder<T> : Builder<T>
+    {
+        public string Value { get; set; }
+
+        public StringComparison Comparison { get; set; } = StringComparison.Ordinal;
+
+        public override void Visit(VisitArgs args)
+        {
+            var old = args.Match;
+
+            var match = old.Matches[Name];
+            if (match.Success)
+            {
+                var val = Convert.ToString(match.Value);
+                if (string.Equals(val, Value, Comparison))
+                    base.Visit(args);
+            }
+            args.Match = old;
+        }
+    }
+
+    public static class BuilderExtensions
+    {
+        public static ListBuilder<T, TRef> HasMany<T, TRef>(this Builder<T> builder)
+            where T : ICollection<TRef>
+        {
+            var child = new ListBuilder<T, TRef>();
+            child.Add = (o, v) => o.Add(v);
+            builder.Builders.Add(child);
+            return child;
+        }
+
+        public static KeyValueBuilder<T, TKey, TRef> HasKeyValue<T, TKey, TRef>(this Builder<T> builder, IBuilder keyBuilder, IBuilder valueBuilder)
+            where T : IDictionary<TKey, TRef>
+        {
+            var child = new KeyValueBuilder<T, TKey, TRef>();
+            child.KeyBuilder = keyBuilder;
+            child.ValueBuilder = valueBuilder;
+            child.Add = (o, k, v) => o.Add(k, v);
+            builder.Builders.Add(child);
+            return child;
+        }
+    }
+
+    public class Builder<T> : IBuilder
+    {
+        public string Name { get; set; }
 
         public List<IBuilder> Builders { get; } = new List<IBuilder>();
 
         IEnumerable<IBuilder> IBuilder.Builders => GetBuilders();
 
-		protected virtual IEnumerable<IBuilder> GetBuilders() => Builders;
+        protected virtual IEnumerable<IBuilder> GetBuilders() => Builders;
 
-		IDictionary<string, IBuilder> builderLookup;
-		IList<IBuilder> namedBuilders;
-		IList<IBuilder> nullBuilders;
+        IDictionary<string, IBuilder> builderLookup;
+        IList<IBuilder> namedBuilders;
+        IList<IBuilder> nullBuilders;
 
-		public virtual void Initialize()
-		{
+        public virtual void Initialize()
+        {
+            /*
 			var allBuilders = GetBuilders();
 			namedBuilders = allBuilders.Where(r => r.Name != null).ToList(); //.Union(builders.Where(r => r.Name == null)).ToList();
 			if (namedBuilders.Count == 0)
 				namedBuilders = null;
-			builderLookup = allBuilders.Where(r => r.Name != null).ToDictionary(r => r.Name);
-			if (builderLookup.Count == 0)
-				builderLookup = null;
+			//builderLookup = allBuilders.Where(r => r.Name != null).ToDictionary(r => r.Name);
+			//if (builderLookup.Count == 0)
+			//	builderLookup = null;
 			nullBuilders = allBuilders.Where(r => r.Name == null).ToList();
-			
-		}
+			*/
 
-		public ChildBuilder<T> Children()
-		{
-			var builder = new ChildBuilder<T>();
-			Builders.Add(builder);
-			return builder;
-		}
+        }
 
-		public CreateBuilder<TRef> CreatedBy<TRef>(Func<TRef> create, Action<CreateBuilder<TRef>> map = null)
-		{
-			var builder = new CreateBuilder<TRef> { CreateInstance = create };
-            map?.Invoke(builder);
+        public ChildrenBuilder<T> Children(string name = null)
+        {
+            var builder = new ChildrenBuilder<T>();
+            builder.Name = name;
             Builders.Add(builder);
             return builder;
-		}
+        }
 
-		public CreateBuilder<TRef> CreatedBy<TRef>(string name, Action<CreateBuilder<TRef>> map = null)
-			where TRef : new()
-		{
-			return CreatedBy(name, () => new TRef(), map);
-		}
+        public CreateBuilder<TRef> Create<TRef>()
+            where TRef : new()
+        {
+            return Create<TRef>(() => new TRef());
+        }
 
-		public CreateBuilder<TRef> CreatedBy<TRef>(string name, Func<TRef> create, Action<CreateBuilder<TRef>> map = null)
-		{
-			var builder = CreatedBy(create, map);
+        public CreateBuilder<TRef> Create<TRef>(Func<TRef> create)
+        {
+            var builder = new CreateBuilder<TRef> { CreateInstance = create };
+            Builders.Add(builder);
+            return builder;
+        }
+
+        public CreateBuilder<TRef> Create<TRef>(string name)
+            where TRef : new()
+        {
+            return Create(name, () => new TRef());
+        }
+
+        public CreateBuilder<TRef> Create<TRef>(string name, Func<TRef> create)
+        {
+            var builder = Create(create);
+            builder.Name = name;
+            return builder;
+        }
+
+        public PropertyBuilder<T, TRet> Property<TRet>(string name, Action<T, TRet> setValue)
+        {
+            var builder = Property(setValue);
+            builder.Name = name;
+            return builder;
+        }
+
+        public PropertyBuilder<T, TRet> Property<TRet>(Action<T, TRet> setValue)
+        {
+            var builder = new PropertyBuilder<T, TRet>();
+            builder.SetValue = setValue;
+            Builders.Add(builder);
+            return builder;
+        }
+
+        public ConditionBuilder<T> Condition(string name, string value, StringComparison comparison = StringComparison.Ordinal)
+        {
+            var builder = new ConditionBuilder<T>();
+            builder.Name = name;
+            builder.Value = value;
+            builder.Comparison = comparison;
+            Builders.Add(builder);
+            return builder;
+        }
+
+        public ListBuilder<T, TRef> HasMany<TColl, TRef>(string name, Func<T, TColl> property)
+            where TRef : new()
+            where TColl : class, ICollection<TRef>
+        {
+            return HasMany<TColl, TRef>(name, property, () => new TRef());
+        }
+
+        public ListBuilder<T, TRef> HasMany<TColl, TRef>(string name, Func<T, TColl> property, Func<TRef> create)
+            where TColl : class, ICollection<TRef>
+        {
+            var builder = HasMany<TColl, TRef>(name, property, set: null);
+            builder.Create(create);
+            return builder;
+        }
+
+        public ListBuilder<T, TRef> HasMany<TColl, TRef>(string name, Func<T, TColl> get, Action<T, TColl> set = null)
+            where TColl : class, ICollection<TRef>
+        {
+			var builder = HasMany<TColl, TRef>(get, set);
 			builder.Name = name;
 			return builder;
-		}
+        }
 
-		public PropertyBuilder<T, TRet> Property<TRet>(string name, Action<T, TRet> setValue, Action<PropertyBuilder<T, TRet>> map = null)
-		{
-			var builder = Property(setValue, map);
-			builder.Name = name;
-			return builder;
-		}
-
-		public PropertyBuilder<T, TRet> Property<TRet>(Action<T, TRet> setValue, Action<PropertyBuilder<T, TRet>> map = null)
-		{
-			var builder = new PropertyBuilder<T, TRet>();
-			builder.SetValue = setValue;
-            map?.Invoke(builder);
+        public ListBuilder<T, TRef> HasMany<TColl, TRef>(Func<T, TColl> get, Action<T, TColl> set = null)
+            where TColl : class, ICollection<TRef>
+        {
+            var builder = new ListBuilder<T, TRef>();
+            builder.Add = (o, v) =>
+            {
+                var list = get(o);
+                if (list == null)
+                {
+                    if (set == null)
+                        throw new InvalidOperationException("Could not set new collection instance to property");
+                    list = Activator.CreateInstance<TColl>();
+                    set(o, list);
+                }
+                list.Add(v);
+            };
             Builders.Add(builder);
             return builder;
-		}
+        }
 
-		public ListBuilder<T, TRef> HasMany<TColl, TRef>(string name, Func<T, TColl> property, Action<ListBuilder<T, TRef>> map = null)
-			where TRef : new()
-			where TColl : class, ICollection<TRef>
-		{
-			return HasMany<TColl, TRef>(name, property, () => new TRef(), map);
-		}
-
-		public ListBuilder<T, TRef> HasMany<TColl, TRef>(string name, Func<T, TColl> property, Func<TRef> create, Action<ListBuilder<T, TRef>> map = null)
-			where TColl : class, ICollection<TRef>
-		{
-			var builder = HasMany<TColl, TRef>(property, set: null, map: map);
-			builder.CreatedBy(create);
-			builder.Name = name;
-			return builder;
-		}
-
-		public ListBuilder<T, TRef> HasMany<TColl, TRef>(Func<T, TColl> get, Action<T, TColl> set = null, Action<ListBuilder<T, TRef>> map = null)
-			where TColl : class, ICollection<TRef>
-		{
-			var builder = new ListBuilder<T, TRef>();
-			builder.Add = (o, v) =>
-			{
-				var list = get(o);
-				if (list == null)
-				{
-					if (set != null)
-						throw new InvalidOperationException("Could not set new collection instance to property");
-					list = Activator.CreateInstance<TColl>();
-					set(o, list);
-				}
-				list.Add(v);
-			};
-            map?.Invoke(builder);
+        public KeyValueBuilder<T, TKey, TRef> HasKeyValue<TKey, TRef>(Func<T, IDictionary<TKey, TRef>> property, IBuilder keyBuilder, IBuilder valueBuilder)
+        {
+            var builder = new KeyValueBuilder<T, TKey, TRef>();
+            builder.KeyBuilder = keyBuilder;
+            builder.ValueBuilder = valueBuilder;
+            builder.Add = (o, k, v) =>
+            {
+                var list = property(o);
+                list.Add(k, v);
+            };
             Builders.Add(builder);
             return builder;
-		}
+        }
 
-		public KeyValueBuilder<T, TKey, TRef> HasKeyValue<TKey, TRef>(Func<T, IDictionary<TKey, TRef>> property, IBuilder keyBuilder, IBuilder valueBuilder, Action<KeyValueBuilder<T, TKey, TRef>> map = null)
-		{
-			var builder = new KeyValueBuilder<T, TKey, TRef>();
-			builder.KeyBuilder = keyBuilder;
-			builder.ValueBuilder = valueBuilder;
-			builder.Add = (o, k, v) =>
-			{
-				var list = property(o);
-				list.Add(k, v);
-			};
-            map?.Invoke(builder);
-            Builders.Add(builder);
-            return builder;
-		}
+        public virtual void Visit(VisitArgs args)
+        {
+            /**
+			var matchName = args.Match.Name;
 
-		public virtual void Visit(VisitArgs args)
-		{
-            /**/
-            if (builderLookup != null && builderLookup.TryGetValue(args.Match.Name, out IBuilder builder))
+			if (matchName != null && builderLookup != null && builderLookup.TryGetValue(matchName, out IBuilder builder))
             {
                 builder.Visit(args);
                 return;
@@ -188,18 +258,23 @@ namespace Eto.Parse.Ast
 					if (builder.Name == name)
 					{
 						builder.Visit(args);
-						return;
 					}
 				}
 			}
-			/**/
+			/**
 			var nullCount = nullBuilders.Count;
 			for (int i = 0; i < nullCount; i++)
 			{
 				nullBuilders[i].Visit(args);
 			}
 			/**/
-		}
+            for (int i = 0; i < Builders.Count; i++)
+            {
+                var builder = Builders[i];
+                builder.Visit(args);
+            }
+            /**/
+        }
 
         internal void Do(Action<IBuilder> action)
         {

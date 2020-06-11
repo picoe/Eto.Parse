@@ -32,9 +32,10 @@ namespace Eto.Parse
 				{
 					yield return item;
 				}
-				foreach (var item in Items)
+                for (int i = 0; i < Items.Count; i++)
 				{
-					if (item != null)
+                    Parser item = Items[i];
+                    if (item != null)
 					{
 						foreach (var  child in item.Find(args))
 							yield return child;

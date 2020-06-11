@@ -1,25 +1,25 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using Eto.Parse.Samples.Json.Ast;
 
 namespace Eto.Parse.TestSpeed.Tests.Json
 {
-    public class EtoAstBenchmark : Benchmark<JsonSuite, JsonToken>
-    {
-        Eto.Parse.Samples.Json.JsonGrammar grammar;
+	public class EtoAstBenchmark : Benchmark<JsonSuite, JsonToken>
+	{
+		Eto.Parse.Samples.Json.JsonGrammar grammar;
 		JsonAstBuilder jsonAst;
 
 		public EtoAstBenchmark()
-        {
+		{
 			jsonAst = new JsonAstBuilder();
 			grammar = new Eto.Parse.Samples.Json.JsonGrammar();
-        }
+		}
 
-        public override JsonToken Execute(JsonSuite suite)
-        {
+		public override JsonToken Execute(JsonSuite suite)
+		{
 			return jsonAst.Build(grammar.Match(suite.Json));
-        }
+		}
 
 		public override bool Verify(JsonSuite suite, JsonToken result)
 		{

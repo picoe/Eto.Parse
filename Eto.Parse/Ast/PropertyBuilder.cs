@@ -32,7 +32,18 @@ namespace Eto.Parse.Ast
 		public override void Visit(VisitArgs args)
 		{
 			var instance = args.Instance;
-			var val = args.Match.Value;
+			object val;
+			if (Name != null)
+			{
+				var match = args.Match[Name];
+				if (!match.Success)
+					return;
+				val = match.Value;
+			}
+			else
+			{
+				val = args.Match.Value;
+			}
 
 			if (!(val is TRet))
 				val = Convert.ChangeType(val, typeof(TRet));

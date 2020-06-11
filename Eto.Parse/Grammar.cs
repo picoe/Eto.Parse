@@ -164,9 +164,10 @@ namespace Eto.Parse
 				first.Clear();
 				second.Clear();
                 Parser separator = null;
-                foreach (var item in alt.Items)
+                for (int i = 0; i < alt.Items.Count; i++)
 				{
-					if (item != null && item.IsLeftRecursive(alt))
+                    Parser item = alt.Items[i];
+                    if (item != null && item.IsLeftRecursive(alt))
 					{
                         var seqs = item.Scan(filter: p => {
                             if (ReferenceEquals(p, alt))
@@ -263,9 +264,10 @@ namespace Eto.Parse
 				{
 					var chars = new List<char>();
 					var inverse = new List<char>();
-					foreach (var item in alt.Items)
+                    for (int i1 = 0; i1 < alt.Items.Count; i1++)
 					{
-						var singleChar = item as SingleCharTerminal;
+                        Parser item = alt.Items[i1];
+                        var singleChar = item as SingleCharTerminal;
 						if (singleChar != null)
 						{
 							if (singleChar.Inverse)

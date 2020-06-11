@@ -1,0 +1,18 @@
+﻿# EditorConfig: http://EditorConfig.org
+# VSIX: https://visualstudiogallery.msdn.microsoft.com/c8bccfe2-650c-4b42-bc5c-845e21f96328
+
+# top-most EditorConfig file
+root = true
+
+# Set default charset
+[*.{js,py,cs}]
+charset = utf-8
+
+[*.{cs,tt,ttinclude}]
+indent_style = tab
+indent_size = 4
+
+[*.{resx,csproj,sln,props,targets}]
+indent_style = space
+indent_size = 2
+

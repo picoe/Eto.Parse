@@ -9,21 +9,21 @@ namespace Eto.Parse.Samples.Json.Ast
 		{
 			var token = new CreateBuilder<JsonToken>();
 
-			var jobject = CreatedBy("object", () => new JsonObject());
+			var jobject = Create("object", () => new JsonObject());
 			jobject.Children().HasKeyValue<JsonObject, string, JsonToken>(
 				new ValueBuilder { Name = "name" },
 				token
 			);
 
-			var jarray = CreatedBy("array", () => new JsonArray());
+			var jarray = Create("array", () => new JsonArray());
 			jarray.Children().HasMany<JsonArray, JsonToken>().Builders.Add(token);
 
-			token.CreatedBy("string", () => new JsonValue()).Property<string>((o, v) => o.Value = v);
+			token.Create("string", () => new JsonValue()).Property<string>((o, v) => o.Value = v);
 			token.Builders.Add(jobject);
 			token.Builders.Add(jarray);
-			token.CreatedBy("number", () => new JsonValue()).Property<decimal>((o, v) => o.Value = v);
-			token.CreatedBy("bool", () => new JsonValue()).Property<bool>((o, v) => o.Value = v);
-			token.CreatedBy(() => (JsonToken)null);
+			token.Create("number", () => new JsonValue()).Property<decimal>((o, v) => o.Value = v);
+			token.Create("bool", () => new JsonValue()).Property<bool>((o, v) => o.Value = v);
+			token.Create(() => (JsonToken)null);
 		}
 	}
 }

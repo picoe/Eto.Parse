@@ -1,3 +1,4 @@
+#if !NETCOREAPP
 using System;
 using System.Text;
 using System.Diagnostics;
@@ -30,3 +31,5 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		}
 	}
 }
+
+#endif
