@@ -1,9 +1,11 @@
-﻿<Project>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
   <PropertyGroup>
     <BasePath>$(MSBuildThisFileDirectory)</BasePath>
-    <ArtifactsPath>$(BasePath)artifacts\</ArtifactsPath>
-    <BaseIntermediateOutputPath>$(ArtifactsPath)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(ArtifactsPath)</BaseOutputPath>
+    <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
+    <BaseIntermediateOutputPath>$(ArtifactsDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(ArtifactsDir)</BaseOutputPath>
+    <PackageOutputPath>$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
 
     <Company>Picoe Software Solutions</Company>
     <Copyright>Copyright 2020 by Curtis Wensley</Copyright>
