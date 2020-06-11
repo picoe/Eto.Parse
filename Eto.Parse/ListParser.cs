@@ -32,9 +32,10 @@ namespace Eto.Parse
 				{
 					yield return item;
 				}
-				foreach (var item in Items)
+                for (int i = 0; i < Items.Count; i++)
 				{
-					if (item != null)
+                    Parser item = Items[i];
+                    if (item != null)
 					{
 						foreach (var  child in item.Find(args))
 							yield return child;
@@ -46,13 +47,15 @@ namespace Eto.Parse
 			//return ret;
 		}
 
-		public void InitializeItems(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			foreach (var item in Items)
+			for (int i = 0, itemCount = Items.Count; i < itemCount; i++)
 			{
+				var item = Items[i];
 				if (item != null)
 					item.Initialize(args);
 			}
+			base.InnerInitialize(args);
 		}
 
 		public override bool Contains(ParserContainsArgs args)
@@ -74,23 +77,9 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
+		protected override IEnumerable<Parser> GetChildren()
 		{
-			if (args.Push(this))
-			{
-				for (int i = 0; i < Items.Count; i++)
-				{
-					var item = Items[i];
-					if (item == null)
-						continue;
-					yield return item;
-					foreach (var child in item.Children(args))
-					{
-						yield return child;
-					}
-				}
-				args.Pop();
-			}
+			return Items.Where(r => r != null);
 		}
 
 		public void Add(params Parser[] parsers)
@@ -101,7 +90,8 @@ namespace Eto.Parse
 		protected override void InnerReplace(ParserReplaceArgs args)
 		{
 			base.InnerReplace(args);
-			for (int i = 0; i < Items.Count; i++)
+			var itemCount = Items.Count;
+			for (int i = 0; i < itemCount; i++)
 			{
 				Items[i] = args.Replace(Items[i]);
 			}

@@ -7,31 +7,26 @@ using System.IO;
 
 namespace Eto.Parse.TestSpeed.Tests.Xml
 {
-	public class TestEtoFromGold : Test<XmlTestSuite>
+	public class TestEtoFromGold : Benchmark<XmlSuite, GrammarMatch>
 	{
 		Grammars.GoldDefinition gold;
 
 		public TestEtoFromGold()
-			: base("Eto.Parse with gold grm")
-		{
-		}
-
-		public override void Warmup(XmlTestSuite suite)
 		{
 			var grm = new StreamReader(GetType().Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.Tests.Xml.Gold.XML.grm")).ReadToEnd();
 			gold = new Grammars.GoldGrammar().Build(grm);
-			gold.Grammar.Match(suite.Xml);
+			gold.Grammar.EnableMatchEvents = false;
+			gold.Grammar.Initialize();
 		}
 
-		public override void PerformTest(XmlTestSuite suite, StringBuilder output)
+		public override GrammarMatch Execute(XmlSuite suite)
 		{
-			var match = gold.Grammar.Match(suite.Xml);
-			if (!match.Success)
-			{
-				throw new Exception(match.ErrorMessage);
-			}
-			
+			return gold.Grammar.Match(suite.Xml);
+		}
+
+		public override bool Verify(XmlSuite suite, GrammarMatch result)
+		{
+			return result.Success;
 		}
 	}
 }
-

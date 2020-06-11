@@ -87,26 +87,20 @@ namespace Eto.Parse.Parsers
 			return new GroupParser(this, args);
 		}
 		
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
-			if (args.Push(this))
-			{
-				if (Line != null)
-					Line.Initialize(args);
-				if (Start != null)
-					Start.Initialize(args);
-				if (End != null)
-					End.Initialize(args);
-				args.Pop();
-			}
+			if (Line != null)
+				Line.Initialize(args);
+			if (Start != null)
+				Start.Initialize(args);
+			if (End != null)
+				End.Initialize(args);
+			base.InnerInitialize(args);
 		}
 
-		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
+		protected override IEnumerable<Parser> GetChildren()
 		{
-			var items = new Parser[] { Start, End, Line }.Where(r => r != null);
-			var childItems = items.SelectMany(r => r.Children(args));
-			return items.Concat(childItems);
+			return new [] { Start, End, Line }.Where(r => r != null);
 		}
 
 		protected override void InnerReplace(ParserReplaceArgs args)

@@ -34,21 +34,23 @@ namespace Eto.Parse
 
 		public string ErrorMessage
 		{
-			get
+			get { return GetErrorMessage(true); }
+		}
+
+		public string GetErrorMessage(bool detailed = false)
+		{
+			var sb = new StringBuilder();
+			if (ErrorIndex >= 0)
+				sb.AppendLine(string.Format("Index={0}, Line={1}, Context=\"{2}\"", ErrorIndex, Scanner.LineAtIndex(ErrorIndex), GetContext(ErrorIndex, 10)));
+			if (ChildErrorIndex >= 0 && ChildErrorIndex != ErrorIndex)
+				sb.AppendLine(string.Format("ChildIndex={0}, Line={1}, Context=\"{2}\"", ChildErrorIndex, Scanner.LineAtIndex(ChildErrorIndex), GetContext(ChildErrorIndex, 10)));
+			var messages = string.Join("\n", Errors.Select(r => r.GetErrorMessage(detailed)));
+			if (!string.IsNullOrEmpty(messages))
 			{
-				var sb = new StringBuilder();
-				if (ErrorIndex >= 0)
-					sb.AppendLine(string.Format("Index={0}, Context=\"{1}\"", ErrorIndex, GetContext(ErrorIndex, 10)));
-				if (ChildErrorIndex >= 0 && ChildErrorIndex != ErrorIndex)
-					sb.AppendLine(string.Format("ChildIndex={0}, Context=\"{1}\"", ChildErrorIndex, GetContext(ChildErrorIndex, 10)));
-				var messages = string.Join("\n", Errors.Select(r => r.GetErrorMessage()));
-				if (!string.IsNullOrEmpty(messages))
-				{
-					sb.AppendLine("Expected:");
-					sb.AppendLine(messages);
-				}
-				return sb.ToString();
+				sb.AppendLine("Expected:");
+				sb.AppendLine(messages);
 			}
+			return sb.ToString();
 		}
 	}
 }

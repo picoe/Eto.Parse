@@ -1,6 +1,7 @@
 using System;
 using Eto.Parse;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Eto.Parse.Parsers
 {
@@ -8,6 +9,7 @@ namespace Eto.Parse.Parsers
 	{
 		Parser separator;
 		bool skipUntilMatches;
+		bool hasChildMatch;
 
 		public Parser Separator { get; set; }
 
@@ -54,19 +56,23 @@ namespace Eto.Parse.Parsers
 			Separator = DefaultSeparator;
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
-			if (args.Push(this))
+			if (Separator != null)
+				Separator.Initialize(args);
+			if (Until != null)
+				Until.Initialize(args);
+			separator = Separator ?? args.Grammar.Separator;
+			skipUntilMatches = (Until != null && (Until.AddMatch || Until.Children.Any(r => r.AddMatch)));
+			hasChildMatch = false;
+			if (!AddMatch)
 			{
-				if (Separator != null)
-					Separator.Initialize(args);
-				if (Until != null)
-					Until.Initialize(args);
-				separator = Separator ?? args.Grammar.Separator;
-				skipUntilMatches = (Until != null && (Until.Name != null || Until.Children().Any(r => r.Name != null)));
-				args.Pop();
+				if (separator != null)
+					hasChildMatch |= separator.AddMatch || separator.Children.Any(r => r.AddMatch);
+				if (Inner != null)
+					hasChildMatch |= Inner.AddMatch || Inner.Children.Any(r => r.AddMatch);
 			}
+			base.InnerInitialize(args);
 		}
 
 		protected override int InnerParse(ParseArgs args)
@@ -106,21 +112,32 @@ namespace Eto.Parse.Parsers
 						}
 					}
 
+					if (hasChildMatch)
+						args.Push();
+
 					if (separator != null && count > 0)
 					{
 						sepMatch = separator.Parse(args);
 						if (sepMatch < 0)
+						{
+							if (hasChildMatch)
+								args.PopFailed();
 							break;
+						}
 					}
 
 					var childMatch = Inner.Parse(args);
 					if (childMatch > 0)
 					{
+						if (hasChildMatch)
+							args.PopSuccess();
 						length += childMatch + sepMatch;
 						count++;
 					}
 					else
 					{
+						if (hasChildMatch)
+							args.PopFailed();
 						if (sepMatch > 0)
 							scanner.Position = curPos;
 						break;
@@ -204,6 +221,16 @@ namespace Eto.Parse.Parsers
 			base.InnerReplace(args);
 			Separator = args.Replace(Separator);
 			Until = args.Replace(Until);
+		}
+
+		protected override IEnumerable<Parser> GetChildren()
+		{
+            var children = base.GetChildren();
+            if (Separator != null)
+                children = children.Concat(new[] { Separator });
+            if (Until != null)
+                children = children.Concat(new[] { Until });
+            return children;
 		}
 	}
 }

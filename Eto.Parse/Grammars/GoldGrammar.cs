@@ -372,6 +372,7 @@ namespace Eto.Parse.Grammars
 		public void ToCode(string grammar, TextWriter writer, string className = "GeneratedGrammar")
 		{
 			var definition = Build(grammar);
+			definition.Grammar.Initialize();
 			var iw = new IndentedTextWriter(writer, "    ");
 
 			iw.WriteLine("/* Date Created: {0}, Source:", DateTime.Now);

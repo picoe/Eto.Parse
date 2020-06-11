@@ -9,22 +9,16 @@ using bsn.GoldParser.Parser;
 
 namespace Eto.Parse.TestSpeed.Tests.Xml
 {
-	public class TestBsnGold : Test<XmlTestSuite>
+	public class TestBsnGold : Benchmark<XmlSuite, object>
 	{
 		bsn.GoldParser.Grammar.CompiledGrammar grammar;
 
 		public TestBsnGold()
-			: base("bsn.GoldParser")
-		{
-		}
-
-		public override void Warmup(XmlTestSuite suite)
 		{
 			grammar = CompiledGrammar.Load(new BinaryReader(GetType().Assembly.GetManifestResourceStream("Eto.Parse.TestSpeed.Tests.Xml.Gold.XML.egt")));
-			Parse(suite);
 		}
 
-		void Parse(XmlTestSuite suite)
+		public override object Execute(XmlSuite suite)
 		{
 			using (var reader = new StringReader(suite.Xml))
 			{
@@ -39,13 +33,8 @@ namespace Eto.Parse.TestSpeed.Tests.Xml
 					var ct = processor.CurrentToken;
 					throw new InvalidOperationException(string.Format("Parsing failed, position: {0}, text: {1}", ct.Position, ct.Text));
 				}
+				return null;
 			}
-		}
-
-		public override void PerformTest(XmlTestSuite suite, StringBuilder output)
-		{
-			Parse(suite);
 		}
 	}
 }
-

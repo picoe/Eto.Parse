@@ -2,6 +2,7 @@ using System;
 using Eto.Parse;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Eto.Parse.Parsers
 {
@@ -28,13 +29,32 @@ namespace Eto.Parse.Parsers
 		}
 
 		public AlternativeParser(IEnumerable<Parser> sequence)
-				: base(sequence)
+			: base(sequence)
 		{
 		}
 
 		public AlternativeParser(params Parser[] sequence)
-				: base(sequence)
+			: base(sequence)
 		{
+		}
+
+		public override string GetErrorMessage(ParserErrorArgs args)
+		{
+			if (args.Detailed && args.Push(this))
+			{
+				var sb = new StringBuilder();
+                for (int i = 0; i < Items.Count; i++)
+				{
+                    Parser item = Items[i];
+                    if (sb.Length > 0)
+						sb.Append(" | ");
+					sb.Append(item != null ? item.GetErrorMessage(args) : "null");
+				}
+				sb.Insert(0, "(");
+				sb.Append(")");
+				return sb.ToString();
+			}
+			return DescriptiveName;
 		}
 
 		protected override int InnerParse(ParseArgs args)
@@ -92,59 +112,16 @@ namespace Eto.Parse.Parsers
 			return new AlternativeParser(this, args);
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
-		{
-			base.Initialize(args);
-			if (args.Push(this))
-			{
-				var first = new List<Parser>();
-				var second = new List<Parser>();
-				foreach (var item in Items)
-				{
-					if (args.Grammar.Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars) && item != null && item.IsLeftRecursive(new ParserContainsArgs(this)))
-					{
-						second.Add(item);
-						args.RecursionFixes.Add(this);
-						item.Initialize(args);
-						args.RecursionFixes.Remove(this);
-					}
-					else
-					{
-						first.Add(item);
-						if (item != null)
-							item.Initialize(args);
-					}
-				}
-				if (second.Count > 0)
-				{
-					Items.Clear();
-					var secondParser = second.Count > 1 ? new AlternativeParser(second) : second[0];
-					if (first.Count > 0)
-					{
-						var firstParser = first.Count > 1 ? new AlternativeParser(first) : first[0];
-						if (first.Count == 1 && first[0] == null)
-						{
-							Items.Add(-secondParser);
-						}
-						else
-							Items.Add(new SequenceParser(firstParser, -secondParser));
-					}
-					else
-						Items.Add(+secondParser);
-				}
-				args.Pop();
-			}
-		}
-
 		public override bool IsLeftRecursive(ParserContainsArgs args)
 		{
 			if (base.IsLeftRecursive(args))
 				return true;
 			if (args.Push(this))
 			{
-				foreach (var item in Items)
+                for (int i = 0; i < Items.Count; i++)
 				{
-					if (item != null && item.IsLeftRecursive(args))
+                    Parser item = Items[i];
+                    if (item != null && item.IsLeftRecursive(args))
 					{
 						args.Pop();
 						return true;

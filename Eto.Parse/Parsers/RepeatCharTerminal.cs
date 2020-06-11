@@ -10,7 +10,7 @@ namespace Eto.Parse.Parsers
 		public int Minimum { get; set; }
 		public int Maximum { get; set; }
 
-		protected RepeatCharItem(RepeatCharItem other)
+		RepeatCharItem(RepeatCharItem other)
 		{
 			Test = other.Test;
 			Minimum = other.Minimum;
@@ -39,6 +39,8 @@ namespace Eto.Parse.Parsers
 	{
 		readonly List<RepeatCharItem> _items;
 		public IList<RepeatCharItem> Items { get { return _items; } }
+
+		RepeatCharItem singleItem;
 
 		protected RepeatCharTerminal(RepeatCharTerminal other, ParserCloneArgs args)
 			: base(other, args)
@@ -71,32 +73,63 @@ namespace Eto.Parse.Parsers
 			_items.Add(new RepeatCharItem(test, minimum, maximum));
 		}
 
+		protected override void InnerInitialize(ParserInitializeArgs args)
+		{
+			base.InnerInitialize(args);
+			if (_items.Count == 1)
+				singleItem = _items[0];
+		}
+
 		protected override int InnerParse(ParseArgs args)
 		{
 			var scanner = args.Scanner;
 			var length = 0;
 			var pos = scanner.Position;
 			var ch = scanner.ReadChar();
-			for (int i = 0; i < _items.Count; i++)
+			if (singleItem != null)
+			{
+				var max = singleItem.Maximum;
+				var test = singleItem.Test;
+			beg1:
+				if (ch == -1 || !test(unchecked((char)ch)))
+					goto end1;
+				length++;
+				ch = scanner.ReadChar();
+				if (length < max)
+					goto beg1;
+			end1:
+				if (length < singleItem.Minimum)
+					goto abort;
+
+				scanner.Position = pos + length;
+				return length;
+			}
+
+			var itemCount = _items.Count;
+			for (int i = 0; i < itemCount; i++)
 			{
 				var item = _items[i];
 				var count = 0;
-				while (ch != -1 && item.Test((char)ch))
-				{
-					length++;
-					count++;
-					ch = scanner.ReadChar();
-					if (count >= item.Maximum)
-						break;
-				}
+				var max = item.Maximum;
+				var test = item.Test;
+			beg2:
+				if (ch == -1 || !test(unchecked((char)ch)))
+					goto end2;
+				count++;
+				ch = scanner.ReadChar();
+				if (count < max)
+					goto beg2;
+			end2:
 				if (count < item.Minimum)
-				{
-					scanner.Position = pos;
-					return -1;
-				}
+					goto abort;
+				length += count;
 			}
 			scanner.Position = pos + length;
 			return length;
+
+		abort:
+			scanner.Position = pos;
+			return -1;
 		}
 
 		public override Parser Clone(ParserCloneArgs args)

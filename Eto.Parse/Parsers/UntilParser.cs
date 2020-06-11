@@ -45,15 +45,10 @@ namespace Eto.Parse.Parsers
 			this.Skip = skip;
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
-			if (args.Push(this))
-			{
-				skipMatches = this.Children().Any(r => r.Name != null);
-
-				args.Pop();
-			}
+			skipMatches = this.Children.Any(r => r.Name != null);
+			base.InnerInitialize(args);
 		}
 
 		protected override int InnerParse(ParseArgs args)

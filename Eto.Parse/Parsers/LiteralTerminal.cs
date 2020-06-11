@@ -31,9 +31,9 @@ namespace Eto.Parse.Parsers
 			Value = value;
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
+			base.InnerInitialize(args);
 			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 

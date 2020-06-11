@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <BasePath>$(MSBuildThisFileDirectory)</BasePath>
+    <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
+    <BaseIntermediateOutputPath>$(ArtifactsDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(ArtifactsDir)</BaseOutputPath>
+    <PackageOutputPath>$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
+
+    <Company>Picoe Software Solutions</Company>
+    <Copyright>Copyright 2020 by Curtis Wensley</Copyright>
+    <Version Condition="$(Version) == ''">1.5.0</Version>
+    <FileVersion Condition="$(FileVersion) == ''">1.5.0</FileVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/picoe/Eto.Parse</RepositoryUrl>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="$(BasePath)\LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+  </ItemGroup>
+
+</Project>

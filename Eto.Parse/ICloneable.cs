@@ -1,11 +1,11 @@
 ﻿using System;
 namespace Eto.Parse
 {
-	#if PCL
-	interface ICloneable
+#if NETSTANDARD1_0
+    interface ICloneable
 	{
 		object Clone();
 	}
-	#endif
+#endif
 }
 

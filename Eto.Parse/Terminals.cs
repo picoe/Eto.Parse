@@ -100,7 +100,7 @@ namespace Eto.Parse
 				if (typeof(Parser).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
 				{
 					var parser = property.GetValue(null, null) as Parser;
-					yield return new Tuple<string, Parser>(property.Name, parser.Named(property.Name));
+					yield return new Tuple<string, Parser>(property.Name, parser.WithName(property.Name));
 				}
 			}
 

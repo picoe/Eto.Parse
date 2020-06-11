@@ -12,18 +12,19 @@ namespace Eto.Parse.Tests.Markdown
 	[TestFixture]
 	public class MarkdownTests
 	{
-		public static readonly string BasePath = Path.Combine(Path.GetDirectoryName(typeof(MarkdownTests).Assembly.Location), "Markdown", "tests");
+        public static string AssemblyBasePath => Path.GetDirectoryName(new Uri(typeof(MarkdownTests).Assembly.CodeBase).LocalPath);
+        public static string BasePath => Path.Combine(AssemblyBasePath, "Markdown", "tests");
 		MarkdownGrammar grammar;
 		MarkdownDeep.Markdown deep;
 
-		[TestFixtureSetUp]
+        [SetUp]
 		public void SetUp()
 		{
 			grammar = new MarkdownGrammar();
 			deep = new MarkdownDeep.Markdown();
 		}
 
-		[Test, TestCaseSource("AllTests")]
+        [Test, TestCaseSource(nameof(AllTests))]
 		public void TestFile(string name)
 		{
 			//TestFile(name, deep.Transform);
@@ -76,7 +77,7 @@ namespace Eto.Parse.Tests.Markdown
 			return html.Trim();
 		}
 
-		public IEnumerable<string> AllTests
+		public static IEnumerable<string> AllTests
 		{
 			get
 			{
@@ -100,7 +101,7 @@ namespace Eto.Parse.Tests.Markdown
 			}
 		}
 
-		public IEnumerable<string> GetTests(string path, string pattern = "*.html")
+		public static IEnumerable<string> GetTests(string path, string pattern = "*.html")
 		{
 			var dir = Path.Combine(BasePath, path);
 			if (Directory.Exists(dir))

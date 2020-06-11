@@ -15,7 +15,7 @@ namespace Eto.Parse
 				return null;
 			if (ReferenceEquals(parser, SearchParser))
 			{
-				Debug.WriteLine("Replacing {0} with {1}", SearchParser, ReplaceParser);
+				//Debug.WriteLine("Replacing {0} with {1}", SearchParser, ReplaceParser);
 				return ReplaceParser;
 			}
 			parser.Replace(this);

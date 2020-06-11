@@ -26,9 +26,9 @@ namespace Eto.Parse.Parsers
 			FalseValues = new string[] { "false", "no", "off", "0" };
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
+			base.InnerInitialize(args);
 			caseSensitive = CaseSensitive ?? args.Grammar.CaseSensitive;
 		}
 

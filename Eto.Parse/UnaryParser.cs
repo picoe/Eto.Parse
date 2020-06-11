@@ -24,6 +24,16 @@ namespace Eto.Parse
 			}
 		}
 
+		public override string GetErrorMessage(ParserErrorArgs args)
+		{
+			if (args.Push(this))
+			{
+				if (Inner != null)
+					return string.Format("{0}: {1}", base.DescriptiveName, Inner.GetErrorMessage(args));
+			}
+			return base.DescriptiveName;
+		}
+
 		public UnaryParser()
 		{
 		}
@@ -44,14 +54,13 @@ namespace Eto.Parse
 			this.Inner = inner;
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
-			if (Inner != null && args.Push(this))
+			if (Inner != null)
 			{
 				Inner.Initialize(args);
-				args.Pop();
 			}
+			base.InnerInitialize(args);
 		}
 
 		public override bool Contains(ParserContainsArgs args)
@@ -107,17 +116,10 @@ namespace Eto.Parse
 			return false;
 		}
 
-		public override IEnumerable<Parser> Children(ParserChildrenArgs args)
+		protected override IEnumerable<Parser> GetChildren()
 		{
-			if (Inner != null && args.Push(this))
-			{
+			if (Inner != null)
 				yield return Inner;
-				foreach (var child in Inner.Children(args))
-				{
-					yield return child;
-				}
-				args.Pop();
-			}
 		}
 
 		protected override void InnerReplace(ParserReplaceArgs args)

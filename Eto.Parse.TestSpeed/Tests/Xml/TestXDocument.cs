@@ -9,22 +9,11 @@ using System.IO;
 
 namespace Eto.Parse.TestSpeed.Tests.Xml
 {
-	public class TestXDocument : Test<XmlTestSuite>
+	public class TestXDocument : Benchmark<XmlSuite, XDocument>
 	{
-		public TestXDocument()
-			: base("XDocument")
+		public override XDocument Execute(XmlSuite suite)
 		{
-		}
-
-		public override void Warmup(XmlTestSuite suite)
-		{
-			var doc = XDocument.Load(new StringReader(suite.Xml));
-		}
-
-		public override void PerformTest(XmlTestSuite suite, StringBuilder output)
-		{
-			var doc = XDocument.Load(new StringReader(suite.Xml));
+			return XDocument.Load(new StringReader(suite.Xml));
 		}
 	}
 }
-

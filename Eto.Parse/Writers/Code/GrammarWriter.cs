@@ -16,7 +16,7 @@ namespace Eto.Parse.Writers.Code
 			if (!string.IsNullOrEmpty(writer.ClassName))
 				return "this";
 			else
-				return GetIdentifier(parser.Name);
+				return GetIdentifier(parser.Name ?? "grammar");
 		}
 
 		public override void WriteObject(TextParserWriterArgs args, Grammar parser, string name)

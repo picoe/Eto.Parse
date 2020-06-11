@@ -50,7 +50,7 @@ namespace Eto.Parse.Parsers
 		{
 			get
 			{ 
-				return string.Format("'{0}'", character);
+				return CharToString(character);
 			}
 		}
 

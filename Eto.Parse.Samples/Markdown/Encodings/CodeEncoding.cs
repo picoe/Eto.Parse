@@ -50,13 +50,12 @@ namespace Eto.Parse.Samples.Markdown.Encodings
 				return -1;
 			}
 
-			public override void Initialize(ParserInitializeArgs args)
+			protected override void InnerInitialize(ParserInitializeArgs args)
 			{
-				base.Initialize(args);
-				if (Surrounding != null && args.Push(this))
+				base.InnerInitialize(args);
+				if (Surrounding != null)
 				{
 					Surrounding.Initialize(args);
-					args.Pop();
 				}
 			}
 

@@ -9,8 +9,12 @@ namespace Eto.Parse.Writers.Display
 	{
 		public override void WriteContents(TextParserWriterArgs args, ListParser parser, string name)
 		{
-			foreach (var item in parser.Items)
+			var count = parser.Items.Count;
+			for (int i = 0; i < count; i++)
+			{
+				var item = parser.Items[i];
 				args.Write(item);
+			}
 		}
 	}
 	

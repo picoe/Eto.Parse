@@ -41,7 +41,7 @@ namespace Eto.Parse
 		public virtual string WriteParser(TArgs args, Parser parser)
 		{
 			if (parser == null)
-				throw new ArgumentNullException("parser");
+				return null;
 			var type = parser.GetType();
 			while (type != null)
 			{

@@ -40,8 +40,8 @@ namespace Eto.Parse.Writers.Code
 				return name;
 			if (!args.Parsers.Contains(parser))
 			{
-				WriteObject(args, (T)parser, name);
 				args.Push(parser);
+				WriteObject(args, (T)parser, name);
 				WriteContents(args, (T)parser, name);
 				args.Pop();
 			}

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Eto.Parse.Parsers
 {
@@ -32,14 +34,13 @@ namespace Eto.Parse.Parsers
 			return -1;
 		}
 
-		public override void Initialize(ParserInitializeArgs args)
+		protected override void InnerInitialize(ParserInitializeArgs args)
 		{
-			base.Initialize(args);
-			if (Except != null && args.Push(this))
+			if (Except != null)
 			{
 				Except.Initialize(args);
-				args.Pop();
 			}
+			base.InnerInitialize(args);
 		}
 
 		public override Parser Clone(ParserCloneArgs args)
@@ -51,6 +52,11 @@ namespace Eto.Parse.Parsers
 		{
 			base.InnerReplace(args);
 			Except = args.Replace(Except);
+		}
+
+		protected override IEnumerable<Parser> GetChildren()
+		{
+			return new [] { Except }.Where(r => r != null).Concat(base.GetChildren());
 		}
 	}
 }

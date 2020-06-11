@@ -9,6 +9,8 @@ namespace Eto.Parse
 
 		public Grammar Grammar { get; private set; }
 
+		public Parser Parent { get; internal set;}
+
 		public List<Parser> RecursionFixes
 		{
 			get { return recursionFixes ?? (recursionFixes = new List<Parser>()); }

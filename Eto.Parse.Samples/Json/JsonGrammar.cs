@@ -8,8 +8,8 @@ namespace Eto.Parse.Samples.Json
 	/// Defines the grammar for parsing a json string
 	/// </summary>
 	/// <remarks>
-	/// To use the results of this grammar, look at <see cref="JsonToken"/>, <see cref="JsonObject"/>, and
-	/// <see cref="JsonArray"/>, which wrap the match results to provide easy access to each of the values, as
+	/// To use the results of this grammar, look at <see cref="MatchTokens.JsonToken"/>, <see cref="MatchTokens.JsonObject"/>, and
+	/// <see cref="MatchTokens.JsonArray"/>, which wrap the match results to provide easy access to each of the values, as
 	/// if it were a full fledged json parser.
 	/// </remarks>
 	public class JsonGrammar : Grammar

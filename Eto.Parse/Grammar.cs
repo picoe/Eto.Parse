@@ -128,42 +128,105 @@ namespace Eto.Parse
 		/// </remarks>
 		public void Initialize()
 		{
-			IEnumerable<Parser> children = null;
-			Func<IEnumerable<Parser>> getchildren = () => children ?? (children = Children().ToList());
 			if (Optimizations.HasFlag(GrammarOptimizations.CharacterSetAlternations))
 			{
-				OptimizeCharacterSets(getchildren());
+				OptimizeCharacterSets();
 			}
 
 			if (Optimizations.HasFlag(GrammarOptimizations.TrimUnnamedUnaryParsers))
 			{
-				OptimizeUnaryParsers(getchildren());
+				OptimizeUnmatchedUnaryParsers();
+			}
+
+			if (Optimizations.HasFlag(GrammarOptimizations.FixRecursiveGrammars))
+			{
+				FixRecursiveGrammars();
 			}
 
 			if (Optimizations.HasFlag(GrammarOptimizations.TrimSingleItemSequencesOrAlterations))
 			{
-				OptimizeSingleItemParsers(getchildren());
+				OptimizeSingleItemParsers();
 			}
 
+			//BuildChildren(new ParserChildrenArgs());
 			Initialize(new ParserInitializeArgs(this));
 			initialized = true;
 		}
 
-		void OptimizeSingleItemParsers(IEnumerable<Parser> children)
+		void FixRecursiveGrammars()
 		{
-			var sequences = from r in children.OfType<SequenceParser>()
-				where
-				r.Items.Count == 1
-				&& r.GetType() == typeof(SequenceParser)
-				select r;
-			var alternations = from r in children.OfType<AlternativeParser>()
-				where
-				r.Items.Count == 1
-				&& r.GetType() == typeof(AlternativeParser)
-				select r;
+			var empty = new EmptyParser();
+            var alternates = Children.OfType<AlternativeParser>();
+			var first = new List<Parser>();
+			var second = new List<Parser>();
+			foreach (var alt in alternates.Distinct().ToList())
+			{
+				first.Clear();
+				second.Clear();
+                Parser separator = null;
+                for (int i = 0; i < alt.Items.Count; i++)
+				{
+                    Parser item = alt.Items[i];
+                    if (item != null && item.IsLeftRecursive(alt))
+					{
+                        var seqs = item.Scan(filter: p => {
+                            if (ReferenceEquals(p, alt))
+                                return false;
+                            if (p is SequenceParser seq && seq.Items.Count > 0 && seq.Items[0].IsLeftRecursive(alt))
+                            {
+                                seq.Items[0] = empty;
+                                return true;
+                            }
 
-			var parsers = sequences.Cast<ListParser>().Union(alternations.Cast<ListParser>()).ToList();
-			foreach (var parser in parsers)
+                            return false;
+                        }).OfType<SequenceParser>();
+						foreach (var seq in seqs)
+						{
+                            separator = seq.Separator;
+                            seq.Items.RemoveAt(0);
+						}
+						if (!item.IsLeftRecursive(alt))
+							second.Add(item);
+						else
+							Debug.WriteLine(string.Format("Warning: Item in alternate is still recursive {0}", item.DescriptiveName));
+					}
+					else
+					{
+						first.Add(item);
+					}
+				}
+
+				if (second.Count > 0)
+				{
+					Debug.WriteLine(string.Format("Fixing recursion in alternate: {0}", alt.DescriptiveName));
+					alt.Items.Clear();
+					var secondParser = second.Count > 1 ? new AlternativeParser(second) : second[0];
+					if (first.Count > 0)
+					{
+						var firstParser = first.Count > 1 ? new AlternativeParser(first) : first[0];
+                        var repeat = new RepeatParser(secondParser, 0) { Separator = separator };
+
+                        if (first.Count == 1 && first[0] == null)
+						{
+							alt.Items.Add(repeat);
+						}
+						else
+							alt.Items.Add(new SequenceParser(firstParser, repeat) { Separator = separator });
+					}
+					else
+						alt.Items.Add(new RepeatParser(secondParser, 1) { Separator = separator });
+				}
+			}
+		}
+
+		void OptimizeSingleItemParsers()
+		{
+			var parsers = from r in Children.OfType<ListParser>()
+			              where
+			                  r.Items.Count == 1
+			                  && (r is SequenceParser || r is AlternativeParser)
+			              select r;
+			foreach (var parser in parsers.ToList())
 			{
 				var replacement = parser.Items[0];
 				if (parser.Name != null)
@@ -174,10 +237,10 @@ namespace Eto.Parse
 			}
 		}
 
-		void OptimizeUnaryParsers(IEnumerable<Parser> children)
+		void OptimizeUnmatchedUnaryParsers()
 		{
-			var parsers = from r in children.OfType<UnaryParser>()
-			              where r.Name == null && r.Inner != null && r.GetType() == typeof(UnaryParser)
+			var parsers = from r in Children.OfType<UnaryParser>()
+			              where !r.AddMatch && !r.AddError && r.Inner != null && r.GetType() == typeof(UnaryParser)
 			              select r;
 			foreach (var unary in parsers.ToList())
 			{
@@ -185,18 +248,26 @@ namespace Eto.Parse
 			}
 		}
 
-		void OptimizeCharacterSets(IEnumerable<Parser> children)
+		void OptimizeCharacterSets()
 		{
 			// turns character sets, ranges, and single characters into a single parser
-			foreach (var alt in children.OfType<AlternativeParser>().Where(r => r.Items.Count > 2))
+			var parsers = Children.OfType<AlternativeParser>().Where(r => r.Items.Count > 2);
+			foreach (var alt in parsers.ToList())
 			{
-				if (alt.Items.All(r => r.Name == null && (r is CharSetTerminal || r is CharRangeTerminal || r is SingleCharTerminal)))
+				if (alt.Items.All(r => r != null && r.Name == null &&
+				    (r is CharSetTerminal
+				    || r is CharRangeTerminal
+				    || r is SingleCharTerminal
+				    || (r is LiteralTerminal && ((LiteralTerminal)r).Value.Length == 1)
+				    )
+				    ))
 				{
 					var chars = new List<char>();
 					var inverse = new List<char>();
-					foreach (var item in alt.Items)
+                    for (int i1 = 0; i1 < alt.Items.Count; i1++)
 					{
-						var singleChar = item as SingleCharTerminal;
+                        Parser item = alt.Items[i1];
+                        var singleChar = item as SingleCharTerminal;
 						if (singleChar != null)
 						{
 							if (singleChar.Inverse)
@@ -224,6 +295,12 @@ namespace Eto.Parse
 								else
 									chars.Add(i);
 							}
+							continue;
+						}
+						var literal = item as LiteralTerminal;
+						if (literal != null)
+						{
+							chars.Add(literal.Value[0]);
 							continue;
 						}
 					}
@@ -347,7 +424,8 @@ namespace Eto.Parse
 		/// <param name="terminalNames">Array of terminal names</param>
 		public void SetTerminals(params string[] terminalNames)
 		{
-			foreach (var child in Children().Where(r => Array.IndexOf(terminalNames, r.Name) >= 0).ToList())
+			var children = Children.Where(r => Array.IndexOf(terminalNames, r.Name) >= 0).ToList();
+			foreach (var child in children)
 			{
 				child.AddError = false;
 				child.AddMatch = false;

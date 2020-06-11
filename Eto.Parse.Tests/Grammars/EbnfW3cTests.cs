@@ -211,7 +211,8 @@ Extender ::= #x00B7 | #x02D0 | #x02D1 | #x0387 | #x0640 | #x0E46 | #x0EC6 | #x30
 
 		// from http://docs.killianfaughnan.com/csvsqldocs/x235.html
 		// uses w3c format with square brackets meaning optional instead of character sets
-		const string sqlW3cEbnf = @"command ::= define_data
+		public const string sqlW3cEbnf = @"
+command ::= define_data
     | modify_data
     | system_command
  
@@ -254,13 +255,19 @@ insert_command ::=
     (""VALUES""|""values"")
     ""(""((character_set)+"","")+"")""
  
+table_name ::= (character_set)+
+
+column_name ::= (character_set)+
+
+update_value ::= (character_set)+
+
 update_command ::=
     (""UPDATE""|""update"")
-    (character_set)+
+    table_name
     (""SET""|""set"")
-    (character_set)+
+    column_name
     ""=""
-    (character_set)+
+    update_value
     [(""WHERE""|""where"") condition]
  
 delete_command ::=

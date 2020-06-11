@@ -8,34 +8,27 @@ using Eto.Parse.Grammars;
 
 namespace Eto.Parse.TestSpeed.Tests.Xml
 {
-	public class TestEtoFromEbnf : Test<XmlTestSuite>
+	public class TestEtoFromEbnf : Benchmark<XmlSuite, GrammarMatch>
 	{
 		Grammar grammar;
 
 		public TestEtoFromEbnf()
-			: base("Eto.Parse with w3c ebnf spec")
-		{
-		}
-
-		public override void Warmup(XmlTestSuite suite)
 		{
 			const string grm = Eto.Parse.Tests.Grammars.EbnfW3cTests.xmlW3cEbnf;
 			grammar = new EbnfGrammar(EbnfStyle.W3c).Build(grm, "document");
 			// no need to return a match for each terminal character
 			grammar.SetTerminals("Letter", "BaseChar", "Ideographic", "CombiningChar", "Digit", "Extender", "PubidChar", "Char", "S", "EnumeratedType", "NameChar", "Eq");
 			grammar.EnableMatchEvents = false;
-			grammar.Match(suite.Xml);
 		}
 
-		public override void PerformTest(XmlTestSuite suite, StringBuilder output)
+		public override GrammarMatch Execute(XmlSuite suite)
 		{
-			var match = grammar.Match(suite.Xml);
-			if (!match.Success)
-			{
-				throw new Exception(match.ErrorMessage);
-			}
-			
+			return grammar.Match(suite.Xml);
+		}
+
+		public override bool Verify(XmlSuite suite, GrammarMatch result)
+		{
+			return result.Success;
 		}
 	}
 }
-
