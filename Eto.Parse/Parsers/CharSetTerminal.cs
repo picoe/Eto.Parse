@@ -68,7 +68,7 @@ namespace Eto.Parse.Parsers
 		{
 			if (characterLookup != null)
 				return characterLookup.Contains(ch);
-			ch = TestCaseSensitive ? char.ToLowerInvariant(ch) : ch;
+			ch = TestCaseSensitive ? ch : char.ToLowerInvariant(ch);
 			for (int i = 0; i < Characters.Length; i++)
 			{
 				if (lookupCharacters[i] == ch)
