@@ -64,70 +64,78 @@ Example
 
 For example, the following defines a simple hello world parser in **Fluent API**:
 
-	// optional repeating whitespace
-	var ws = Terminals.WhiteSpace.Repeat(0);
+```cs
+// optional repeating whitespace
+var ws = Terminals.WhiteSpace.Repeat(0);
 
-	// parse a value with or without brackets
-	var valueParser = Terminals.Set('(')
-		.Then(Terminals.AnyChar.Repeat().Until(ws.Then(')')).Named("value"))
-		.Then(Terminals.Set(')'))
-		.SeparatedBy(ws)
-		.Or(Terminals.WhiteSpace.Inverse().Repeat().Named("value"));
+// parse a value with or without brackets
+var valueParser = Terminals.Set('(')
+	.Then(Terminals.AnyChar.Repeat().Until(ws.Then(')')).Named("value"))
+	.Then(Terminals.Set(')'))
+	.SeparatedBy(ws)
+	.Or(Terminals.WhiteSpace.Inverse().Repeat().Named("value"));
 
-	// our grammar
-	var grammar = new Grammar(
-		ws
-		.Then(valueParser.Named("first"))
-		.Then(valueParser.Named("second"))
-		.Then(Terminals.End)
-		.SeparatedBy(ws)
-	);
+// our grammar
+var grammar = new Grammar(
+	ws
+	.Then(valueParser.Named("first"))
+	.Then(valueParser.Named("second"))
+	.Then(Terminals.End)
+	.SeparatedBy(ws)
+);
+```
 
 Or using **shorthand operators**:
 
-	// optional repeating whitespace
-	var ws = -Terminals.WhiteSpace;
+```cs
+// optional repeating whitespace
+var ws = -Terminals.WhiteSpace;
 
-	// parse a value with or without brackets
-	Parser valueParser = 
-		('(' & ws & (+Terminals.AnyChar ^ (ws & ')')).Named("value") & ws & ')')
-		| (+!Terminals.WhiteSpace).Named("value");
+// parse a value with or without brackets
+Parser valueParser = 
+	('(' & ws & (+Terminals.AnyChar ^ (ws & ')')).Named("value") & ws & ')')
+	| (+!Terminals.WhiteSpace).Named("value");
 
-	// our grammar
-	var grammar = new Grammar(
-		ws & valueParser.Named("first") & 
-		ws & valueParser.Named("second") & 
-		ws & Terminals.End
-	);
+// our grammar
+var grammar = new Grammar(
+	ws & valueParser.Named("first") & 
+	ws & valueParser.Named("second") & 
+	ws & Terminals.End
+);
+```
 
 Or, using **EBNF**:
 
-	var grammar = new EbnfGrammar().Build(@"
-	(* := is an extension to define a literal with no whitespace between repeats and sequences *)
-	ws := {? Terminals.WhiteSpace ?};
-	
-	letter or digit := ? Terminals.LetterOrDigit ?;
-	
-	simple value := letter or digit, {letter or digit};
-	
-	bracket value = simple value, {simple value};
-	
-	optional bracket = '(', bracket value, ')' | simple value;
-	
-	first = optional bracket;
-	
-	second = optional bracket;
-	
-	grammar = ws, first, second, ws;
-	", "grammar");
+```cs
+var grammar = new EbnfGrammar().Build(@"
+(* := is an extension to define a literal with no whitespace between repeats and sequences *)
+ws := {? Terminals.WhiteSpace ?};
+
+letter or digit := ? Terminals.LetterOrDigit ?;
+
+simple value := letter or digit, {letter or digit};
+
+bracket value = simple value, {simple value};
+
+optional bracket = '(', bracket value, ')' | simple value;
+
+first = optional bracket;
+
+second = optional bracket;
+
+grammar = ws, first, second, ws;
+", "grammar");
+```
 
 These can parse the following text input:
 
-	var input = "  hello ( parsing world )  ";
-	var match = grammar.Match(input);
-	
-	var firstValue = match["first"]["value"].Value;
-	var secondValue = match["second"]["value"].Value;
+```cs
+var input = "  hello ( parsing world )  ";
+var match = grammar.Match(input);
+
+var firstValue = match["first"]["value"].Value;
+var secondValue = match["second"]["value"].Value;
+```
 
 **firstValue** will equal "hello", and **secondValue** will equal "parsing world".
 
