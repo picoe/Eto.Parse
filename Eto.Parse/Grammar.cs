@@ -80,6 +80,12 @@ namespace Eto.Parse
 		public bool AllowPartialMatch { get; set; }
 
 		public bool Trace { get; set; }
+		
+		/// <summary>
+		/// Sets the maximum character set range when <see cref="GrammarOptimizations.CharacterSetAlternations"/> is enabled.
+		/// </summary>
+		/// <value></value>
+		public int MaxCharacterSetRangeOptimization { get; set; } = 100;
 
 		public GrammarOptimizations Optimizations { get; set; }
 
@@ -264,6 +270,7 @@ namespace Eto.Parse
 				{
 					var chars = new List<char>();
 					var inverse = new List<char>();
+					var additionalParsers = new List<Parser>();
                     for (int i1 = 0; i1 < alt.Items.Count; i1++)
 					{
                         Parser item = alt.Items[i1];
@@ -288,12 +295,19 @@ namespace Eto.Parse
 						var charRange = item as CharRangeTerminal;
 						if (charRange != null)
 						{
-							for (char i = charRange.Start; i <= charRange.End; i++)
+							if (charRange.End - charRange.Start > MaxCharacterSetRangeOptimization)
 							{
-								if (charRange.Inverse)
-									inverse.Add(i);
-								else
-									chars.Add(i);
+								additionalParsers.Add(charRange);
+							}
+							else
+							{
+								for (char i = charRange.Start; i <= charRange.End; i++)
+								{
+									if (charRange.Inverse)
+										inverse.Add(i);
+									else
+										chars.Add(i);
+								}
 							}
 							continue;
 						}
@@ -313,6 +327,8 @@ namespace Eto.Parse
 						{
 							Inverse = true
 						});
+					if (additionalParsers.Count > 0)
+						alt.Items.AddRange(additionalParsers);
 				}
 			}
 		}
