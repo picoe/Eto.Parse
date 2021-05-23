@@ -24,15 +24,15 @@ namespace Eto.Parse.TestSpeed
 			new Tests.Json.JsonLarge().VerifyAll();
 
 			var config = new ManualConfig();
-			config.Add(DefaultConfig.Instance.GetLoggers().ToArray());
-			config.Add(DefaultConfig.Instance.GetExporters().ToArray());
-			config.Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
+			config.AddLogger(DefaultConfig.Instance.GetLoggers().ToArray());
+			config.AddExporter(DefaultConfig.Instance.GetExporters().ToArray());
+			config.AddColumnProvider(DefaultConfig.Instance.GetColumnProviders().ToArray());
 
-			config.Add(JitOptimizationsValidator.DontFailOnError);
-			config.Add(Job.Default);
-			config.Add(MemoryDiagnoser.Default);
-			config.Add(StatisticColumn.OperationsPerSecond);
-			config.Add(RankColumn.Arabic);
+			config.AddValidator(JitOptimizationsValidator.DontFailOnError);
+			config.AddJob(Job.Default);
+			config.AddDiagnoser(MemoryDiagnoser.Default);
+			config.AddColumn(StatisticColumn.OperationsPerSecond);
+			config.AddColumn(RankColumn.Arabic);
 
 			var switcher = BenchmarkSwitcher.FromAssembly(typeof(MainClass).Assembly);
 			switcher.Run(args, config);
