@@ -8,7 +8,7 @@ namespace Eto.Parse.Parsers
 		public char Start { get; set; }
 
 		public char End { get; set; }
-
+		
 		protected CharRangeTerminal(CharRangeTerminal other, ParserCloneArgs args)
 			: base(other, args)
 		{
@@ -28,6 +28,9 @@ namespace Eto.Parse.Parsers
 
 		protected override bool Test(char ch)
 		{
+			if (!TestCaseSensitive)
+				ch = char.ToLowerInvariant(ch);
+				
 			return ch >= Start && ch <= End;
 		}
 
@@ -40,5 +43,16 @@ namespace Eto.Parse.Parsers
 		{
 			return new CharRangeTerminal(this, args);
 		}
+
+		protected override void InnerInitialize(ParserInitializeArgs args)
+		{
+			base.InnerInitialize(args);
+			if (!TestCaseSensitive)
+			{
+				Start = char.ToLowerInvariant(Start);
+				End = char.ToLowerInvariant(End);
+			}
+		}
+
 	}
 }
