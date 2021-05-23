@@ -14,6 +14,10 @@ Eto.Parse is a highly optimized recursive decent LL(k) parser framework that can
 You can use BNF, EBNF, or Gold parser grammars to define your parser, code them directly using a fluent API, or use shorthand operators (or a mix of each).
     </PackageDescription>
     <PackageReleaseNotes>
+Change for v1.6:
+* Fixed CharSetTerminal.CaseSensitive as it was inverted
+* Add support for CharRangeTerminal.CaseSensitive
+
 Changes for v1.5:
 * Add .NET Standard 2.0 target
 * Add .NET 4.5 target

@@ -19,7 +19,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/artifacts/${input:configuration}/netcoreapp3.1/Eto.Parse.TestSpeed.dll",
+            "program": "${workspaceFolder}/artifacts/${input:configuration}/net5.0/Eto.Parse.TestSpeed.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
