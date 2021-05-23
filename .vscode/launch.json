@@ -9,7 +9,7 @@
             "type": "mono",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/artifacts/${input:configuration}/net472/Eto.Parse.TestSpeed.exe",
+            "program": "${workspaceFolder}/artifacts/${input:configuration}/net48/Eto.Parse.TestSpeed.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"

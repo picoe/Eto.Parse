@@ -19,30 +19,35 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
 
-    - name: Build
-      run: dotnet build ${{ env.BuildParameters }}
+      - name: Build
+        run: dotnet build ${{ env.BuildParameters }}
 
-    - name: Pack
-      run: dotnet pack ${{ env.BuildParameters }}
+      - name: Pack
+        run: dotnet pack ${{ env.BuildParameters }}
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: nuget
-        path: artifacts/nuget/**/*.nupkg
+      - name: Test
+        run: dotnet test --no-build --filter TestCategory!=not-working ${{ env.BuildParameters }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: nuget
+          path: artifacts/nuget/**/*.nupkg
 
   publish:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
 
       - name: Download NuGet Packages
         uses: actions/download-artifact@v1

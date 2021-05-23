@@ -102,9 +102,9 @@ namespace Eto.Parse.Ast
 
         protected virtual IEnumerable<IBuilder> GetBuilders() => Builders;
 
-        IDictionary<string, IBuilder> builderLookup;
-        IList<IBuilder> namedBuilders;
-        IList<IBuilder> nullBuilders;
+        // IDictionary<string, IBuilder> builderLookup;
+        // IList<IBuilder> namedBuilders;
+        // IList<IBuilder> nullBuilders;
 
         public virtual void Initialize()
         {

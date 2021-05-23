@@ -31,8 +31,10 @@ namespace Eto.Parse.TestSpeed.Tests.Xml
 		[Benchmark]
 		public void XDocument() => RunBenchmark<TestXDocument>();
 
+#if !NETCOREAPP
 		[Benchmark]
 		public void BsnGold() => RunBenchmark<TestBsnGold>();
+#endif
 	}
 }
 
