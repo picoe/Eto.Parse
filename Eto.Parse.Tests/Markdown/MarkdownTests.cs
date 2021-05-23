@@ -12,7 +12,7 @@ namespace Eto.Parse.Tests.Markdown
 	[TestFixture, Category("not-working")]
 	public class MarkdownTests
 	{
-        public static string AssemblyBasePath => Path.GetDirectoryName(new Uri(typeof(MarkdownTests).Assembly.CodeBase).LocalPath);
+        public static string AssemblyBasePath => Path.GetDirectoryName(typeof(MarkdownTests).Assembly.Location);
         public static string BasePath => Path.Combine(AssemblyBasePath, "Markdown", "tests");
 		MarkdownGrammar grammar;
 		MarkdownDeep.Markdown deep;
