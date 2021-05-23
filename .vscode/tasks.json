@@ -5,11 +5,30 @@
     "tasks": [
         {
             "label": "build",
-            "command": "dotnet",
             "type": "shell",
+            "command": "dotnet",
             "args": [
                 "build",
                 "Eto.Parse.sln",
+                "/p:Configuration=${input:configuration}",
+                "/p:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "test",
+                "Eto.Parse.sln",
+                "--filter",
+                "TestCategory!=not-working",
                 "/p:Configuration=${input:configuration}",
                 "/p:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"

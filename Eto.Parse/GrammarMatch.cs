@@ -13,6 +13,10 @@ namespace Eto.Parse
 
 		public int ChildErrorIndex { get; private set; }
 
+		public int ErrorLine => ErrorIndex >= 0 ? Scanner.LineAtIndex(ErrorIndex) : -1;
+
+		public int ChildErrorLine => ChildErrorIndex >= 0 ? Scanner.LineAtIndex(ChildErrorIndex) : -1;
+
 		public IEnumerable<Parser> Errors { get { return errors ?? Enumerable.Empty<Parser>(); } }
 
 		public GrammarMatch(Grammar grammar, Scanner scanner, int index, int length, MatchCollection matches, int errorIndex, int childErrorIndex, IEnumerable<Parser> errors)

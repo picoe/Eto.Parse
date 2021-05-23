@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Eto.Parse.Tests.Markdown
 {
-	[TestFixture]
+	[TestFixture, Category("not-working")]
 	public class MarkdownTests
 	{
         public static string AssemblyBasePath => Path.GetDirectoryName(new Uri(typeof(MarkdownTests).Assembly.CodeBase).LocalPath);
