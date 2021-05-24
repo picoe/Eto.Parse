@@ -6,38 +6,38 @@ using System.Text;
 
 namespace Eto.Parse.Ast
 {
-    public class CreateBuilder<T> : ChildrenBuilder<T>
-    {
-        public Func<T> CreateInstance { get; set; }
+	public class CreateBuilder<T> : Builder<T>
+	{
+		public Func<T> CreateInstance { get; set; }
 
-        protected override void VisitMatch(VisitArgs args)
-        {
-            var oldMatch = args.Match;
-            if (Name != null && oldMatch.Name != Name)
-            {
-                var match = oldMatch[Name];
-                if (!match.Success)
-                    return;
-                args.Match = match;
-            }
+		public override bool Visit(VisitArgs args)
+		{
+			var oldMatch = args.Match;
+			if (Name != null && oldMatch.Name != Name)
+			{
+				return false;
+			}
+			bool ret;
 
-            if (CreateInstance != null)
-            {
-                var old = args.Instance;
-                var val = CreateInstance();
-                args.Instance = val;
+			if (CreateInstance != null)
+			{
+				var old = args.Instance;
+				var val = CreateInstance();
+				args.Instance = val;
 
-                base.VisitMatch(args);
+				base.Visit(args);
+				ret = true;
 
-                args.Instance = old;
-                args.Child = val;
-            }
-            else
-                base.VisitMatch(args);
+				args.Instance = old;
+				args.Child = val;
+			}
+			else
+				ret = base.Visit(args);
 
-            args.Match = oldMatch;
-        }
+			args.Match = oldMatch;
+			return ret;
+		}
 
-    }
+	}
 
 }

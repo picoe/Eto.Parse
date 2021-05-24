@@ -1,4 +1,3 @@
-#if !NETCOREAPP
 using System.Text;
 using ServiceStack.Text;
 
@@ -46,5 +45,3 @@ namespace Eto.Parse.TestSpeed.Tests.Json
 		}
 	}
 }
-
-#endif

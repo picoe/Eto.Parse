@@ -8,9 +8,10 @@ namespace Eto.Parse.Ast
 {
 	public class ValueBuilder : IBuilder
 	{
-		public void Visit(VisitArgs args)
+		public bool Visit(VisitArgs args)
 		{
 			args.Child = args.Match.Value;
+			return true;
 		}
 
 		public string Name { get; set; }
@@ -29,16 +30,13 @@ namespace Eto.Parse.Ast
 	{
 		public Action<T, TRet> SetValue { get; set; }
 
-		public override void Visit(VisitArgs args)
+		public override bool Visit(VisitArgs args)
 		{
 			var instance = args.Instance;
 			object val;
-			if (Name != null)
+			if (Name != null && args.Match.Name != Name)
 			{
-				var match = args.Match[Name];
-				if (!match.Success)
-					return;
-				val = match.Value;
+				return false;
 			}
 			else
 			{
@@ -51,6 +49,7 @@ namespace Eto.Parse.Ast
 			SetValue((T)instance, (TRet)val); 
 
 			args.Child = val;
+			return true;
 		}
 	}
 
