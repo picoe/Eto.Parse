@@ -17,6 +17,8 @@ You can use BNF, EBNF, or Gold parser grammars to define your parser, code them 
 Change for v1.6:
 * Fixed CharSetTerminal.CaseSensitive as it was inverted
 * Add support for CharRangeTerminal.CaseSensitive
+* Clone copies Name and AddMatch properties
+* Large character set ranges no longer cause out of memory issues
 
 Changes for v1.5:
 * Add .NET Standard 2.0 target

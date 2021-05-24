@@ -189,7 +189,12 @@ namespace Eto.Parse
 		/// <param name="args">Arguments for the copy</param>
 		protected Parser(Parser other, ParserCloneArgs args)
 		{
-			AddError = other.AddError;
+			Name = other.Name;
+			addMatch = other.addMatch;
+			addMatchSet = other.addMatchSet;
+			addError = other.addError;
+			addErrorSet = other.addErrorSet;
+			
 			args.Add(other, this);
 		}
 
