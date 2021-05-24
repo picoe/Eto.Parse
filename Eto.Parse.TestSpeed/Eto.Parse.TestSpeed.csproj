@@ -28,14 +28,14 @@
     <PackageReference Include="Irony" Version="1.1.0" />
     <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
     <PackageReference Include="MarkdownSharp" Version="2.0.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageReference Include="bsn.GoldParser" Version="2.0.79" />
     <PackageReference Include="ServiceStack.Text" Version="4.5.14" />
-    <PackageReference Include="Sprache" Version="2.3.0" />
+    <PackageReference Include="Sprache" Version="2.3.1" />
     <PackageReference Include="SpracheJSON" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
