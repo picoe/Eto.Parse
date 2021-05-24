@@ -3,11 +3,14 @@ using Eto.Parse.Ast;
 
 namespace Eto.Parse.Samples.Json.Ast
 {
+	/// <summary>
+	/// Ast builder to generic token objects, for any json schema
+	/// </summary>
 	public class JsonAstBuilder : AstBuilder<JsonToken>
 	{
 		public JsonAstBuilder()
 		{
-			var token = new CreateBuilder<JsonToken>();
+			var token = new Builder<JsonToken>();
 
 			var jobject = Create("object", () => new JsonObject());
 			jobject.Children().HasKeyValue<JsonObject, string, JsonToken>(
@@ -16,7 +19,7 @@ namespace Eto.Parse.Samples.Json.Ast
 			);
 
 			var jarray = Create("array", () => new JsonArray());
-			jarray.Children().HasMany<JsonArray, JsonToken>().Builders.Add(token);
+			jarray.HasMany<JsonArray, JsonToken>().Builders.Add(token);
 
 			token.Create("string", () => new JsonValue()).Property<string>((o, v) => o.Value = v);
 			token.Builders.Add(jobject);

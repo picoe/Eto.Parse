@@ -31,7 +31,7 @@ namespace Eto.Parse.Ast
 			valueName = ValueBuilder.Name;
 		}
 
-		public override void Visit(VisitArgs args)
+		public override bool Visit(VisitArgs args)
 		{
 			TRef value = default(TRef);
 			TKey key = default(TKey);
@@ -40,45 +40,59 @@ namespace Eto.Parse.Ast
 
 			var matches = args.Match.Matches;
 			var matchCount = matches.Count;
+			if (matchCount == 0)
+				return false;
+			var keySet = false;
+			var valueSet = false;
 			for (int i = 0; i < matchCount; i++)
 			{
 				var match = args.Match = matches[i];
 				args.ResetChild();
-				if (namedKey && match.Name == keyName)
+				if (namedKey && !keySet && match.Name == keyName)
 				{
-					KeyBuilder.Visit(args);
+					keySet = KeyBuilder.Visit(args);
 					key = (TKey)args.Child;
 					continue;
 				}
 
 				if (namedValue && match.Name == valueName)
 				{
-					ValueBuilder.Visit(args);
+					valueSet = ValueBuilder.Visit(args);
 					value = (TRef)args.Child;
 					continue;
 				}
-				if (!namedKey)
+				
+				if (!namedKey && !keySet)
 				{
-					KeyBuilder.Visit(args);
+					keySet = KeyBuilder.Visit(args);
 					if (args.ChildSet)
 					{
 						key = (TKey)args.Child;
 						continue;
 					}
 				}
+				
 				if (!namedValue)
 				{
-					ValueBuilder.Visit(args);
+					valueSet = ValueBuilder.Visit(args);
 					if (args.ChildSet)
 					{
 						value = (TRef)args.Child;
 						continue;
 					}
 				}
+				
+				if (keySet && valueSet)
+					break;
 			}
-
-			Add((T)args.Instance, key, value);
+			
+			var ret = keySet && valueSet;
+			
+			if (ret)
+				Add((T)args.Instance, key, value);
+				
 			args.Match = old;
+			return ret;
 		}
 	}
 }

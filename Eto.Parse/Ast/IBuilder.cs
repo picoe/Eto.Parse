@@ -10,7 +10,7 @@ namespace Eto.Parse.Ast
 	{
 		string Name { get; }
 
-		void Visit(VisitArgs args);
+		bool Visit(VisitArgs args);
 
 		void Initialize();
 

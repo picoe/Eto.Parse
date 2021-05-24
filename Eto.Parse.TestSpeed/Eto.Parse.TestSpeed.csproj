@@ -31,10 +31,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+    <PackageReference Include="ServiceStack.Text" Version="5.11.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageReference Include="bsn.GoldParser" Version="2.0.79" />
-    <PackageReference Include="ServiceStack.Text" Version="4.5.14" />
     <PackageReference Include="Sprache" Version="2.3.1" />
     <PackageReference Include="SpracheJSON" Version="1.0.1" />
   </ItemGroup>

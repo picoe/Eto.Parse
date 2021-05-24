@@ -12,10 +12,11 @@ namespace Eto.Parse.Ast
 	{
 		public Action<T, TRef> Add { get; set; }
 
-		public override void Visit(VisitArgs args)
+		public override bool Visit(VisitArgs args)
 		{
 			var oldMatch = args.Match;
 			IList<Match> matches;
+			var ret = false;
 			if (Name != null)
 			{
 				matches = args.Match.Find(Name).ToList();
@@ -27,14 +28,18 @@ namespace Eto.Parse.Ast
 
             for (int i = 0; i < matches.Count; i++)
 			{
-                Match match = matches[i];
-                args.Match = match;
+				Match match = matches[i];
+				args.Match = match;
 				args.ResetChild();
 				base.Visit(args);
 				if (args.ChildSet)
+				{
 					Add((T)args.Instance, (TRef)args.Child);
+					ret = true;
+				}
 			}
 			args.Match = oldMatch;
+			return ret;
 		}
 	}
 
