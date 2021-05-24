@@ -5,9 +5,8 @@ Eto.Parse
 Links
 -----
 
-* Join the [forums](http://groups.google.com/group/eto-parse)
-* Chat in [#eto.parse](http://webchat.freenode.net/?channels=eto.parse) on freenode
-* Download using [nuget](https://www.nuget.org/packages/Eto.Parse/) with Visual Studio or [Xamarin Studio nuget addin](https://github.com/mrward/monodevelop-nuget-addin)
+* Chat in [picoe/Eto](https://gitter.im/picoe/Eto) on gitter
+* Download using [nuget](https://www.nuget.org/packages/Eto.Parse/)
 
 Description
 -----------
